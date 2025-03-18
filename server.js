@@ -29,7 +29,7 @@ app.get('/redirect', (req, res) => {
   // Sla de tracking code op in de URL als een parameter
   if (platform === 'android') {
     // Gebruik je echte Android app ID
-    res.redirect(`https://play.google.com/store/apps/details?id=com.Mascelli.FitnessApp?referrer=tracking_code%3D${trackingCode}`);
+    res.redirect(`https://play.google.com/store/apps/details?id=com.Mascelli.FitnessApp&referrer=tracking_code%3D${trackingCode}`);
   } else if (platform === 'ios') {
     // Gebruik je echte iOS app ID
     res.redirect(`https://apps.apple.com/app/id1234567890?mt=8&ct=${trackingCode}`);
