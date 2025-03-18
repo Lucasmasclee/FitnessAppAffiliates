@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RijlesPlanner Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo.png" alt="RijlesPlanner Logo" class="logo">
+    <h1>Download de RijlesPlanner App</h1>
+    <p>Kies je platform om de app te downloaden:</p>
+    
+    <div id="download-buttons">
+        <a href="#" id="android-button" class="button">Android Download</a>
+        <a href="#" id="ios-button" class="button">iOS Download</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Haal een unieke tracking code op van de server
+            fetch('/generate-code')
+                .then(response => response.json())
+                .then(data => {
+                    const trackingCode = data.trackingCode;
+                    
+                    // Sla de tracking code op in localStorage
+                    localStorage.setItem('app_tracking_code', trackingCode);
+                    
+                    // Update de download links met de tracking code
+                    document.getElementById('android-button').href = `/redirect?platform=android&trackingCode=${trackingCode}`;
+                    document.getElementById('ios-button').href = `/redirect?platform=ios&trackingCode=${trackingCode}`;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
