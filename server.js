@@ -20,21 +20,24 @@ app.get('/generate-code', (req, res) => {
   res.json({ trackingCode });
 });
 
-// Route om door te sturen naar de juiste app store
 app.get('/redirect', (req, res) => {
   const { platform, trackingCode } = req.query;
   
   console.log(`Redirecting user with tracking code: ${trackingCode} to platform: ${platform}`);
   
-  // Sla de tracking code op in de URL als een parameter
+  // Log the full URL for debugging
+  let redirectUrl = '';
+  
   if (platform === 'android') {
-    // Gebruik je echte Android app ID
-    res.redirect(`https://play.google.com/store/apps/details?id=com.Mascelli.FitnessApp&referrer=tracking_code%3D${trackingCode}`);
+    redirectUrl = `https://play.google.com/store/apps/details?id=com.Mascelli.FitnessApp&referrer=tracking_code%3D${encodeURIComponent(trackingCode)}`;
+    console.log(`Android redirect URL: ${redirectUrl}`);
+    res.redirect(redirectUrl);
   } else if (platform === 'ios') {
-    // Gebruik je echte iOS app ID
-    res.redirect(`https://apps.apple.com/app/id1234567890?mt=8&ct=${trackingCode}`);
+    redirectUrl = `https://apps.apple.com/app/id1234567890?mt=8&ct=${encodeURIComponent(trackingCode)}`;
+    console.log(`iOS redirect URL: ${redirectUrl}`);
+    res.redirect(redirectUrl);
   } else {
-    // Fallback voor onbekende platforms
+    console.log(`Unknown platform: ${platform}, redirecting to home`);
     res.redirect('/');
   }
 });
