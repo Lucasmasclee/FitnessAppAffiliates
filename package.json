@@ -1,0 +1,7 @@
+{
+  "name": "fitness-app-affiliates",
+  "private": true,
+  "scripts": {
+    "serve": "npx serve . -l 3000"
+  }
+}

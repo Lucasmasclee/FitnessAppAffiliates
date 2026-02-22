@@ -1,0 +1,6 @@
+node_modules/
+js/config.js
+.env
+.env.local
+.local.env
+*.log

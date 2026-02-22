@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Affiliate dashboard – Fitness App Affiliates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">Fitness<span>Affiliates</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="become-affiliate.html">Become affiliate</a></li>
+      <li><a href="affiliate.html" class="active">Affiliate dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="section">
+      <h1 class="section-title">Affiliate dashboard</h1>
+      <p class="section-subtitle">Overview of your performance via your affiliate link.</p>
+
+      <div id="dashboard-gate" class="card" style="max-width: 480px; display: none;">
+        <h2 style="margin-top: 0;">Sign in to view your dashboard</h2>
+        <p>You need to be signed in with the Google account you used to register as an affiliate.</p>
+        <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
+      </div>
+
+      <div id="dashboard-content" style="display: none;">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-clicks">0</div>
+            <div class="stat-label">Clicks on your link</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-downloads">0</div>
+            <div class="stat-label">Downloads via your link</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-monthly">0</div>
+            <div class="stat-label">Monthly subscriptions via your link</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-yearly">0</div>
+            <div class="stat-label">Yearly subscriptions via your link</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 2.5rem;">
+          <h2 style="margin-top: 0;">Your affiliate link</h2>
+          <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Share this link so clicks and conversions count.</p>
+          <code id="affiliate-link" style="display: block; padding: 0.75rem; background: var(--bg-elevated); border-radius: var(--radius); font-size: 0.9rem; word-break: break-all;">—</code>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Fitness App Affiliates – Together for a fitness app that actually works.
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script>
+    (function () {
+      var gate = document.getElementById("dashboard-gate");
+      var content = document.getElementById("dashboard-content");
+      var linkEl = document.getElementById("affiliate-link");
+      var baseUrl = (typeof window.AFFILIATE_CONFIG !== "undefined" && window.AFFILIATE_CONFIG.appBaseUrl)
+        ? window.AFFILIATE_CONFIG.appBaseUrl
+        : "https://yourapp.com/ref/";
+
+      function showGate() {
+        gate.style.display = "block";
+        content.style.display = "none";
+      }
+      function showContent() {
+        gate.style.display = "none";
+        content.style.display = "block";
+      }
+
+      function loadDashboard(user) {
+        if (!window.__affiliateSupabase || !user) {
+          showGate();
+          return;
+        }
+        window.__affiliateSupabase
+          .from("affiliates")
+          .select("id, affiliate_code, email")
+          .eq("user_id", user.id)
+          .single()
+          .then(function (result) {
+            if (result.error || !result.data) {
+              showContent();
+              linkEl.textContent = "Complete registration on the Become affiliate page to get your link.";
+              return;
+            }
+            var aff = result.data;
+            linkEl.textContent = baseUrl.replace(/\/?$/, "/") + aff.affiliate_code;
+            return window.__affiliateSupabase
+              .from("affiliate_stats")
+              .select("clicks, downloads, monthly_subs, yearly_subs")
+              .eq("affiliate_id", aff.id)
+              .single();
+          })
+          .then(function (statsResult) {
+            if (!statsResult || statsResult.error) return;
+            var s = statsResult.data;
+            document.getElementById("stat-clicks").textContent = (s.clicks || 0).toLocaleString("en-US");
+            document.getElementById("stat-downloads").textContent = (s.downloads || 0).toLocaleString("en-US");
+            document.getElementById("stat-monthly").textContent = (s.monthly_subs || 0).toLocaleString("en-US");
+            document.getElementById("stat-yearly").textContent = (s.yearly_subs || 0).toLocaleString("en-US");
+          });
+        showContent();
+      }
+
+      if (typeof window.affiliateAuth === "undefined") {
+        document.getElementById("stat-clicks").textContent = "—";
+        document.getElementById("stat-downloads").textContent = "—";
+        document.getElementById("stat-monthly").textContent = "—";
+        document.getElementById("stat-yearly").textContent = "—";
+        linkEl.textContent = baseUrl + "your-code";
+        showContent();
+        return;
+      }
+
+      window.affiliateAuth.onReady(function (user) {
+        if (user) {
+          loadDashboard(user);
+        } else {
+          showGate();
+        }
+      });
+
+      document.getElementById("btn-google").addEventListener("click", function () {
+        window.affiliateAuth.signInWithGooglePopup().then(function () {
+          loadDashboard(window.affiliateAuth.user);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

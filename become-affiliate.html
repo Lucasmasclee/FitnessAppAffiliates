@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Become an affiliate – Fitness App Affiliates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">Fitness<span>Affiliates</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="become-affiliate.html" class="active">Become affiliate</a></li>
+      <li><a href="affiliate.html">Affiliate dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="section">
+      <h1 class="section-title">Become an affiliate</h1>
+      <p class="section-subtitle">All the details about the affiliate program and how to join.</p>
+
+      <div id="auth-gate" class="card" style="max-width: 480px; display: none;">
+        <h2 style="margin-top: 0;">Sign in to continue</h2>
+        <p>Register with Google to become an affiliate. You’ll then fill in your contact details so we can get in touch and give you your personal link.</p>
+        <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
+      </div>
+
+      <div id="form-block" style="display: none;">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="margin-top: 0;">What you get</h2>
+          <ul style="margin-bottom: 0;">
+            <li>A personal affiliate link to share</li>
+            <li>Commission on downloads and subscriptions via your link</li>
+            <li>A dashboard with clicks, downloads, and subscriptions (monthly and yearly)</li>
+            <li>Support from our team when you have questions</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="margin-top: 0;">Terms</h2>
+          <p>You share the link in a fair way (no misleading or spam). Subscriptions signed up through your link count toward your commission. We pay out according to our affiliate terms, which you’ll receive after signing up.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+          <h2 style="margin-top: 0;">Sign up</h2>
+          <p>Fill in the form below. We’ll get in touch to send you your link and login details. No obligations until you’re ready to get started.</p>
+        </div>
+
+        <h2 class="section-title">Registration form</h2>
+        <p class="section-subtitle">Leave your details and we’ll call or email you to take the next step.</p>
+
+        <form id="affiliate-form" class="card" style="max-width: 480px;">
+          <div class="form-group">
+            <label for="email">Email address *</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone number *</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+          </div>
+          <div class="form-group">
+            <label for="social">Social media (optional)</label>
+            <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
+            <span class="form-note">e.g. @username or link to profile</span>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-submit">Contact me</button>
+        </form>
+
+        <p id="form-message" style="margin-top: 1rem; color: var(--success); display: none;"></p>
+        <p id="form-error" style="margin-top: 1rem; color: #ef4444; display: none;"></p>
+      </div>
+
+      <div id="debug-panel" style="display: none; margin-top: 2rem; padding: 1rem; background: #1a1d21; border: 1px solid #333; border-radius: 8px; font-family: monospace; font-size: 0.85rem; max-height: 280px; overflow: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="color: #f59e0b;">Debug: laatste fouten</strong>
+          <button type="button" id="debug-copy" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Kopieer</button>
+        </div>
+        <pre id="debug-log" style="margin: 0; color: #e6edf3; white-space: pre-wrap; word-break: break-all;"></pre>
+      </div>
+    </section>
+
+    <footer>
+      Fitness App Affiliates – Together for a fitness app that actually works.
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script>
+    window.__affiliateErrors = [];
+    function affiliateDebugLog(label, err) {
+      var msg = (err && (err.message || err.error_description || String(err))) || String(err);
+      var entry = new Date().toISOString() + " [" + label + "] " + msg;
+      window.__affiliateErrors.push(entry);
+      if (window.__affiliateErrors.length > 20) window.__affiliateErrors.shift();
+      if (typeof console !== "undefined" && console.error) console.error("[Affiliate]", label, err);
+      var pre = document.getElementById("debug-log");
+      var panel = document.getElementById("debug-panel");
+      if (pre && panel && panel.style.display !== "none") {
+        pre.textContent = window.__affiliateErrors.slice(-10).join("\n\n");
+      }
+    }
+  </script>
+  <script src="js/auth.js?v=2"></script>
+  <script>
+    (function () {
+      var authGate = document.getElementById("auth-gate");
+      var formBlock = document.getElementById("form-block");
+      var btnGoogle = document.getElementById("btn-google");
+      var form = document.getElementById("affiliate-form");
+      var formMessage = document.getElementById("form-message");
+      var formError = document.getElementById("form-error");
+      var btnSubmit = document.getElementById("btn-submit");
+
+      var debugPanel = document.getElementById("debug-panel");
+      var debugLog = document.getElementById("debug-log");
+      var showDebug = typeof URLSearchParams !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
+      if (showDebug && debugPanel && debugLog) {
+        debugPanel.style.display = "block";
+        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "Geen fouten nog. Log in met Google om events te zien.";
+        window.addEventListener("error", function (e) {
+          affiliateDebugLog("error", e.message + " " + (e.filename || "") + ":" + (e.lineno || ""));
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          affiliateDebugLog("unhandledrejection", e.reason);
+        });
+        document.getElementById("debug-copy").addEventListener("click", function () {
+          var t = (window.__affiliateErrors || []).join("\n\n");
+          navigator.clipboard.writeText(t).then(function () { alert("Gekopieerd naar klembord."); });
+        });
+      }
+
+      function showGate() {
+        authGate.style.display = "block";
+        formBlock.style.display = "none";
+      }
+      function showForm() {
+        authGate.style.display = "none";
+        formBlock.style.display = "block";
+      }
+
+      function updateUI(user) {
+        if (user) {
+          showForm();
+          var emailEl = document.getElementById("email");
+          if (user.email && !emailEl.value) emailEl.value = user.email;
+        } else {
+          showGate();
+        }
+      }
+
+      function init() {
+        if (typeof window.affiliateAuth === "undefined") {
+          if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] No auth config, showing form without login.");
+          showForm();
+          return;
+        }
+        window.affiliateAuth.onReady(function (user) {
+          if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Auth ready, user:", user ? (user.email || user.id) : "none");
+          updateUI(user);
+        });
+        window.affiliateAuth.onAuthChange(function (user) {
+          if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Auth change, user:", user ? (user.email || user.id) : "none");
+          updateUI(user);
+        });
+      }
+
+      if (btnGoogle) {
+        btnGoogle.addEventListener("click", function () {
+          if (typeof window.affiliateAuth === "undefined") {
+            showForm();
+            return;
+          }
+          formError.style.display = "none";
+          btnGoogle.disabled = true;
+          if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Opening Google sign-in popup…");
+          window.affiliateAuth.signInWithGooglePopup()
+            .then(function (user) {
+              if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Popup finished, user:", user ? (user.email || user.id) : "none");
+              function tryUpdate() {
+                window.affiliateAuth.getSession().then(function (r) {
+                  var u = r.data.session && r.data.session.user ? r.data.session.user : user;
+                  if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Session after refresh:", u ? (u.email || u.id) : "none");
+                  updateUI(u);
+                  if (!u) {
+                    try {
+                      var errStored = sessionStorage.getItem("affiliate-auth-callback-error");
+                      if (errStored && typeof window.affiliateDebugLog === "function") {
+                        var parsed = JSON.parse(errStored);
+                        window.affiliateDebugLog("Callback error (popup)", parsed.message || errStored);
+                        sessionStorage.removeItem("affiliate-auth-callback-error");
+                      } else if (typeof window.affiliateDebugLog === "function") {
+                        window.affiliateDebugLog("No session after popup", "getSession returned no user");
+                      }
+                    } catch (e) {}
+                    setTimeout(function () {
+                      window.affiliateAuth.getSession().then(function (r2) {
+                        var u2 = r2.data.session && r2.data.session.user ? r2.data.session.user : null;
+                        if (u2) updateUI(u2);
+                        else window.location.reload();
+                      });
+                    }, 300);
+                  }
+                });
+              }
+              tryUpdate();
+            })
+            .catch(function (err) {
+              if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Sign-in error", err);
+              var msg = (err && (err.message || err.error_description || err.error)) || "Sign-in failed. Try again.";
+              formError.textContent = msg;
+              formError.style.display = "block";
+            })
+            .finally(function () {
+              btnGoogle.disabled = false;
+            });
+        });
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        formError.style.display = "none";
+        formMessage.style.display = "none";
+        var email = document.getElementById("email").value.trim();
+        var phone = document.getElementById("phone").value.trim();
+        var social = document.getElementById("social").value.trim();
+
+        if (!email || !phone) {
+          formError.textContent = "Please fill in email and phone.";
+          formError.style.display = "block";
+          return;
+        }
+
+        if (typeof window.affiliateAuth === "undefined" || !window.AFFILIATE_CONFIG) {
+          formMessage.textContent = "Thanks! We’ve received your details and will get in touch as soon as possible.";
+          formMessage.style.display = "block";
+          form.reset();
+          return;
+        }
+
+        function doSubmit(session) {
+          if (!session || !session.access_token) {
+            formError.textContent = "Please sign in again.";
+            formError.style.display = "block";
+            return;
+          }
+          btnSubmit.disabled = true;
+          var url = window.AFFILIATE_CONFIG.supabaseUrl + "/functions/v1/submit-affiliate";
+          var token = session.access_token;
+          var headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          };
+          if (window.AFFILIATE_CONFIG.supabaseAnonKey) {
+            headers["apikey"] = window.AFFILIATE_CONFIG.supabaseAnonKey;
+          }
+          var body = { email: email, phone: phone, social_media: social || null };
+          if (token) body.access_token = token;
+          fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(body),
+          })
+            .then(function (res) {
+              return res.text().then(function (text) {
+                var data = {};
+                try { data = text ? JSON.parse(text) : {}; } catch (e) {}
+                return { ok: res.ok, status: res.status, data: data };
+              });
+            })
+            .then(function (result) {
+              btnSubmit.disabled = false;
+              if (result.ok && result.data.success) {
+                formMessage.textContent = "Thanks! We’ve received your details and will get in touch as soon as possible. You can view your dashboard once we’ve set up your link.";
+                formMessage.style.display = "block";
+                form.reset();
+                if (result.data.affiliate_code) {
+                  formMessage.innerHTML += " <a href=\"affiliate.html\">Go to dashboard</a>";
+                }
+              } else {
+                var errMsg = result.data && result.data.error ? result.data.error : "Something went wrong. Please try again.";
+                if (result.status === 401) {
+                  errMsg = "Session expired or invalid. Please sign out and sign in again, then try Contact me again.";
+                }
+                formError.textContent = errMsg;
+                formError.style.display = "block";
+              }
+            })
+            .catch(function () {
+              btnSubmit.disabled = false;
+              formError.textContent = "Network error. Please try again.";
+              formError.style.display = "block";
+            });
+        }
+
+        window.affiliateAuth.refreshSession().then(function (refreshResult) {
+          var session = refreshResult.data.session;
+          if (session) {
+            doSubmit(session);
+            return;
+          }
+          window.affiliateAuth.getSession().then(function (result) {
+            doSubmit(result.data.session);
+          });
+        }).catch(function () {
+          window.affiliateAuth.getSession().then(function (result) {
+            doSubmit(result.data.session);
+          });
+        });
+      });
+
+      init();
+    })();
+  </script>
+</body>
+</html>

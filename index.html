@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Fitness App Affiliates – Earn with the app that actually works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">Fitness<span>Affiliates</span></a>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="become-affiliate.html">Become affiliate</a></li>
+      <li><a href="affiliate.html">Affiliate dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="section">
+      <h1 class="section-title">A fitness app that actually works.<br>You earn from it.</h1>
+      <p class="section-subtitle">We build an app with correct information. Users make 2× more progress and save 2× more time. Become an affiliate and earn from every new user.</p>
+
+      <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="margin-top: 0;">About us</h2>
+        <p>Our goal is simple: give users a fitness app that actually works. No wrong exercises, no confusing plans—just reliable info and clear progress. That’s why users make <strong>2× more progress</strong> and save <strong>2× more time</strong>. As an affiliate you bring that app to your audience and earn from it.</p>
+      </div>
+
+      <h2 class="section-title">Why become an affiliate?</h2>
+      <p class="section-subtitle">Commission on every user who discovers the app through you. No hassle, real impact.</p>
+
+      <ul style="list-style: none; padding: 0;">
+        <li class="card"><strong>Fair commission</strong> – Earn per download and per subscription signed up through your link.</li>
+        <li class="card"><strong>Real value</strong> – You promote an app that actually helps people: better results, less time wasted.</li>
+        <li class="card"><strong>Simple system</strong> – Your own link, clear stats, and monthly insight into your performance.</li>
+        <li class="card"><strong>No hassle</strong> – No complicated contracts; we keep it clear and transparent.</li>
+      </ul>
+
+      <h2 style="margin-top: 3rem;">How it works</h2>
+      <ol style="color: var(--text-muted); padding-left: 1.25rem; max-width: 560px;">
+        <li style="margin-bottom: 0.5rem;">Sign up as an affiliate and get your personal link.</li>
+        <li style="margin-bottom: 0.5rem;">Share the link with your followers, friends, or community.</li>
+        <li style="margin-bottom: 0.5rem;">Earn from every click, download, and subscription via your link.</li>
+        <li>Track your results in your own affiliate dashboard.</li>
+      </ol>
+
+      <p style="margin-top: 3rem;">
+        <a href="become-affiliate.html" class="btn btn-primary" id="btn-become-affiliate">Become an affiliate</a>
+      </p>
+    </section>
+
+    <footer>
+      Fitness App Affiliates – Together for a fitness app that actually works.
+    </footer>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById("btn-become-affiliate");
+      if (!btn) return;
+
+      function handleClick(e) {
+        if (typeof window.affiliateAuth === "undefined") {
+          return;
+        }
+        if (window.affiliateAuth.user) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        btn.disabled = true;
+        window.affiliateAuth.signInWithGooglePopup()
+          .then(function () {
+            window.location.href = "become-affiliate.html";
+          })
+          .catch(function (err) {
+            btn.disabled = false;
+            alert(err.message || "Inloggen mislukt. Probeer het opnieuw.");
+          });
+      }
+
+      btn.addEventListener("click", function (e) {
+        if (typeof window.affiliateAuth === "undefined") return;
+        if (!window.affiliateAuth.ready) return;
+        if (window.affiliateAuth.user) return;
+        handleClick(e);
+      });
+
+      if (typeof window.affiliateAuth !== "undefined") {
+        window.affiliateAuth.onReady(function (user) {
+          if (user) btn.removeAttribute("disabled");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

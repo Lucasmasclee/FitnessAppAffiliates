@@ -1,0 +1,7 @@
+# Edge Function submit-affiliate: we validate the JWT ourselves (getClaims) in the function.
+# If verify_jwt = true (default), the Supabase gateway checks the JWT and can return 401
+# before the request reaches the function (e.g. "Missing authorization header").
+# With verify_jwt = false the request always reaches the function; we then require a valid
+# token (from header or body) and return 401 ourselves if invalid.
+[functions.submit-affiliate]
+verify_jwt = false

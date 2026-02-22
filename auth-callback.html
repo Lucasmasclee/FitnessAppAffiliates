@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Sign-in successful</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh; margin: 0; background: #0d0f12; color: #e6edf3; padding: 1rem; text-align: center; }
+    p { margin: 0; }
+    .btn { padding: 0.6rem 1.2rem; font-size: 1rem; font-weight: 600; background: #f59e0b; color: #0d0f12; border: none; border-radius: 8px; cursor: pointer; }
+    .btn:hover { background: #fbbf24; }
+    #close-btn { display: none; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <p>Sign-in successful.</p>
+  <p id="status">One moment…</p>
+  <a href="become-affiliate.html" id="continue-link" class="btn" style="display: none; text-decoration: none; color: inherit;">Continue to form</a>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script>
+    (function () {
+      var statusEl = document.getElementById("status");
+      var continueLink = document.getElementById("continue-link");
+      var nextPage = "become-affiliate.html";
+
+      function goToForm() {
+        window.location.href = nextPage;
+      }
+
+      if (typeof window.AFFILIATE_CONFIG === "undefined" || !window.AFFILIATE_CONFIG.supabaseUrl || !window.supabase) {
+        goToForm();
+        return;
+      }
+      var supabase = window.supabase.createClient(
+        window.AFFILIATE_CONFIG.supabaseUrl,
+        window.AFFILIATE_CONFIG.supabaseAnonKey,
+        { auth: { detectSessionInUrl: true } }
+      );
+
+      function markDone() {
+        try { localStorage.setItem("affiliate-auth-done", String(Date.now())); } catch (e) {}
+        if (window.opener) {
+          try { window.opener.postMessage("supabase-auth-done", window.location.origin); } catch (e) {}
+          try { window.close(); } catch (e) {}
+          if (!window.closed) {
+            statusEl.textContent = "You can close this window or continue here.";
+            continueLink.style.display = "inline-block";
+          }
+        } else {
+          goToForm();
+        }
+      }
+
+      if (!window.opener) {
+        statusEl.textContent = "Redirecting to the form…";
+        supabase.auth.getSession().then(function () { markDone(); }).catch(function () { markDone(); });
+        return;
+      }
+
+      function waitForSession(attempt) {
+        if (attempt > 15) {
+          markDone();
+          return;
+        }
+        supabase.auth.getSession().then(function (r) {
+          if (r.data.session) {
+            markDone();
+            return;
+          }
+          setTimeout(function () { waitForSession(attempt + 1); }, 150);
+        }).catch(function () {
+          setTimeout(function () { waitForSession(attempt + 1); }, 150);
+        });
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var hashParams = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
+      var code = params.get("code") || hashParams.get("code");
+      if (code && typeof supabase.auth.exchangeCodeForSession === "function") {
+        supabase.auth.exchangeCodeForSession(code).then(function () {
+          markDone();
+        }).catch(function (err) {
+          try {
+            sessionStorage.setItem("affiliate-auth-callback-error", JSON.stringify({
+              message: (err && err.message) || String(err),
+              code: err && err.code,
+              status: err && err.status
+            }));
+          } catch (e) {}
+          statusEl.textContent = "Sign-in problem. Try closing this window and sign in again.";
+          setTimeout(function () { waitForSession(0); }, 300);
+        });
+      } else {
+        setTimeout(function () { waitForSession(0); }, 300);
+      }
+
+      continueLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        goToForm();
+      });
+    })();
+  </script>
+</body>
+</html>
