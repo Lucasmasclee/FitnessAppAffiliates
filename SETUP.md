@@ -197,6 +197,145 @@ window.AFFILIATE_CONFIG = {
 
 ---
 
+## 7b. Website online zetten met je eigen domein (bijv. liftbetter.cloud)
+
+Om de site live te zetten op **https://liftbetter.cloud** (of een ander domein) doe je het volgende.
+
+### Stap 1: Hosting kiezen
+
+De site is alleen HTML/CSS/JS; elke host voor statische sites werkt. Voorbeelden:
+
+| Optie | Hoe |
+|-------|-----|
+| **Netlify** | [netlify.com](https://netlify.com) → “Add new site” → “Deploy manually” of koppel een Git-repo. Upload de map (alle bestanden behalve `node_modules`, `.local.env`). |
+| **Vercel** | [vercel.com](https://vercel.com) → “Add New Project” → importeer je Git-repo of upload de map. |
+| **Cloudflare Pages** | [dash.cloudflare.com](https://dash.cloudflare.com) → Pages → Create project → upload of koppel Git. |
+
+Belangrijk: **`js/config.js`** staat in `.gitignore`. Op de host moet die wél bestaan. Doe één van de twee:
+
+- **Build settings** op de host: “Build command” leeg of `echo done`, “Publish directory” = root (`.`). Voeg in het dashboard bij **Environment variables** of **Build env** geen secrets toe voor deze statische site; de config zit in `config.js`.
+- Of: lokaal een **productie-**`config.js` maken (met `appBaseUrl: "https://liftbetter.cloud/ref/"` en dezelfde Supabase keys), die je wél meedeployt (bijv. in een “production” branch of via een build step die `config.production.js` als `config.js` kopieert). **Let op:** dan staan je Supabase anon key (en eventueel andere waarden) in de repo; alleen anon key mag publiek, geen service_role of wachtwoorden.
+
+Eenvoudigste: op Netlify/Vercel/Cloudflare de site deployen vanuit Git, en **Environment variables** gebruiken waar de host dat ondersteunt. Voor een puur statische site zonder build: na deploy handmatig een `config.js` op de host toevoegen (als de host “Edit file” toestaat), of een klein build script dat uit env vars een `config.js` schrijft.
+
+Hieronder gaan we ervan uit dat de site bereikbaar wordt op **https://liftbetter.cloud** (of een tijdelijke URL van de host).
+
+### Stap 2: Domein koppelen (liftbetter.cloud)
+
+1. Bij je **host** (Netlify/Vercel/Cloudflare): zoek “Custom domain” of “Domain settings”.
+2. Voeg **liftbetter.cloud** toe. De host toont dan wat je in DNS moet zetten, bijvoorbeeld:
+   - **CNAME**: `liftbetter.cloud` → `jouw-site.netlify.app` (of wat de host aangeeft), of
+   - **A-record** naar het IP dat de host geeft.
+3. Bij de **partij waar je liftbetter.cloud hebt gekocht** (registrar, bijv. TransIP, Namecheap, Cloudflare, etc.):
+   - Ga naar DNS-instellingen voor **liftbetter.cloud**.
+   - Voeg het CNAME- of A-record toe zoals de host aangeeft.
+   - Soms moet je voor het **root-domein** (liftbetter.cloud) een “ALIAS”/“ANAME” of “CNAME flattening” gebruiken; de host legt dat uit.
+4. Wacht 5–60 minuten. Daarna zou **https://liftbetter.cloud** naar je site moeten wijzen. De host regelt meestal automatisch een **SSL-certificaat** (HTTPS).
+
+### Stap 3: config.js voor productie
+
+Zorg dat op de live site in **`js/config.js`** in ieder geval staat:
+
+- **supabaseUrl** en **supabaseAnonKey**: dezelfde waarden als lokaal (Supabase Project URL en anon key).
+- **appBaseUrl**: basis voor affiliate-links, bijv. `https://liftbetter.cloud/ref/` (zonder domein wijzigen we geen bestaande keys).
+
+Voorbeeld:
+
+```js
+window.AFFILIATE_CONFIG = {
+  supabaseUrl: "https://JOUW_PROJECT_REF.supabase.co",
+  supabaseAnonKey: "JOUW_ANON_KEY",
+  appBaseUrl: "https://liftbetter.cloud/ref/",
+};
+```
+
+### Stap 4: Supabase – Redirect URLs
+
+1. Supabase Dashboard → **Authentication** → **URL Configuration**.
+2. Bij **Redirect URLs** voeg je toe:
+   - `https://liftbetter.cloud/auth-callback.html`
+3. Optioneel: zet **Site URL** op `https://liftbetter.cloud` (dan gebruikt Supabase dit als standaard redirect-base).
+
+### Stap 5: Google Cloud – OAuth
+
+1. [Google Cloud Console](https://console.cloud.google.com) → **APIs & Services** → **Credentials** → je OAuth 2.0 Client.
+2. Bij **Authorized JavaScript origins** voeg toe:
+   - `https://liftbetter.cloud`
+3. **Authorized redirect URIs** blijft: `https://JOUW_PROJECT_REF.supabase.co/auth/v1/callback` (niets veranderen voor het domein).
+
+Daarna zou de site op **https://liftbetter.cloud** moeten werken, inclusief Google-inloggen en “Contact me”.
+
+---
+
+## 7c. Exacte stappen op Render.com
+
+Volg deze stappen om de site op **Render** te zetten en daarna je domein **liftbetter.cloud** te koppelen.
+
+### 1. Repository op GitHub
+
+Zorg dat je project op **GitHub** staat en dat je de laatste wijzigingen hebt gepusht (inclusief de map `scripts/` met `render-build.js`). **Niet** pushen: `.local.env`, `js/config.js` (staan in `.gitignore`).
+
+### 2. Nieuwe Static Site op Render
+
+1. Ga naar **[dashboard.render.com](https://dashboard.render.com)** en log in.
+2. Klik op **New +** → **Static Site**.
+3. Bij **Connect a repository** kies **GitHub** en geef Render toegang tot je account als dat nog niet is gedaan. Selecteer het repository van dit project (bijv. `FitnessAppAffiliates`).
+4. Vul de velden in:
+   - **Name**: bijvoorbeeld `liftbetter-affiliates` (mag je zelf kiezen).
+   - **Branch**: `main` (of de branch die je gebruikt).
+   - **Root Directory**: laat **leeg** (project staat in de root).
+   - **Build Command**:  
+     `node scripts/render-build.js`  
+     (Dit script maakt tijdens de build `js/config.js` aan uit je environment variables.)
+   - **Publish Directory**:  
+     `.`  
+     (De hele map na de build is de site; er is geen aparte "output" map.)
+5. Klik nog **niet** op **Create Static Site**.
+
+### 3. Environment variables toevoegen
+
+1. Scroll naar **Environment** (of klik op **Advanced** als die sectie verborgen is).
+2. Klik op **Add Environment Variable** en voeg deze drie toe (waarden uit je Supabase Dashboard → Project Settings → API):
+
+   | Key | Value |
+   |-----|--------|
+   | `SUPABASE_URL` | Je Supabase Project URL (bijv. `https://xxxxx.supabase.co`) |
+   | `SUPABASE_ANON_KEY` | Je Supabase anon public key |
+   | `APP_BASE_URL` | `https://liftbetter.cloud/ref/` |
+
+3. Klik op **Create Static Site**. Render start de eerste deploy.
+
+### 4. Eerste deploy afwachten
+
+- Onder je Static Site zie je **Logs**. De build draait `node scripts/render-build.js` en schrijft `js/config.js`.
+- Als de build groen/succesvol is, krijg je een URL zoals **`https://liftbetter-affiliates.onrender.com`**. Open die URL om te testen.
+
+### 5. Custom domain (liftbetter.cloud) toevoegen
+
+1. In Render: open je **Static Site** → tab **Settings**.
+2. Scroll naar **Custom Domains**.
+3. Klik op **Add Custom Domain**.
+4. Voer in: **`liftbetter.cloud`** (en eventueel **`www.liftbetter.cloud`** als je dat ook wilt).
+5. Render toont wat je in DNS moet zetten (bijv. CNAME naar `jouw-site.onrender.com` of een A-record).
+6. Ga naar de **DNS-instellingen** bij de partij waar je **liftbetter.cloud** hebt gekocht en voeg het CNAME- of A-record toe zoals Render aangeeft.
+7. In Render: bij je custom domain kun je **Verify** doen. Na 5–60 minuten wijst **https://liftbetter.cloud** naar je site; Render regelt HTTPS.
+
+### 6. Supabase – Redirect URL
+
+1. Supabase Dashboard → **Authentication** → **URL Configuration**.
+2. Bij **Redirect URLs** voeg toe: **`https://liftbetter.cloud/auth-callback.html`** (en eventueel je Render-URL zoals `https://liftbetter-affiliates.onrender.com/auth-callback.html`).
+3. Optioneel: **Site URL** = **`https://liftbetter.cloud`**.
+
+### 7. Google Cloud – OAuth
+
+1. [Google Cloud Console](https://console.cloud.google.com) → **APIs & Services** → **Credentials** → je OAuth 2.0 Client.
+2. Bij **Authorized JavaScript origins** voeg toe: **`https://liftbetter.cloud`** (en eventueel je Render-URL).
+3. **Authorized redirect URIs** blijft: **`https://JOUW_PROJECT_REF.supabase.co/auth/v1/callback`**.
+
+Daarna is de site live op **https://liftbetter.cloud**. Bij elke push naar je branch bouwt Render opnieuw en gebruikt dezelfde environment variables voor `js/config.js`.
+
+---
+
 ## 8. Flow summary
 
 | Step | What happens |
