@@ -35,7 +35,15 @@
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-value" id="stat-clicks">0</div>
-            <div class="stat-label">Clicks on your link</div>
+            <div class="stat-label">Total clicks on your link</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-clicks-ios">0</div>
+            <div class="stat-label">iOS clicks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-clicks-android">0</div>
+            <div class="stat-label">Android clicks</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-downloads">0</div>
@@ -105,7 +113,7 @@
             linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
             return window.__affiliateSupabase
               .from("affiliate_stats")
-              .select("clicks, downloads, monthly_subs, yearly_subs")
+              .select("clicks, clicks_ios, clicks_android, downloads, monthly_subs, yearly_subs")
               .eq("affiliate_id", aff.id)
               .single();
           })
@@ -113,6 +121,8 @@
             if (!statsResult || statsResult.error) return;
             var s = statsResult.data;
             document.getElementById("stat-clicks").textContent = (s.clicks || 0).toLocaleString("en-US");
+            document.getElementById("stat-clicks-ios").textContent = (s.clicks_ios || 0).toLocaleString("en-US");
+            document.getElementById("stat-clicks-android").textContent = (s.clicks_android || 0).toLocaleString("en-US");
             document.getElementById("stat-downloads").textContent = (s.downloads || 0).toLocaleString("en-US");
             document.getElementById("stat-monthly").textContent = (s.monthly_subs || 0).toLocaleString("en-US");
             document.getElementById("stat-yearly").textContent = (s.yearly_subs || 0).toLocaleString("en-US");
@@ -122,6 +132,8 @@
 
       if (typeof window.affiliateAuth === "undefined") {
         document.getElementById("stat-clicks").textContent = "—";
+        document.getElementById("stat-clicks-ios").textContent = "—";
+        document.getElementById("stat-clicks-android").textContent = "—";
         document.getElementById("stat-downloads").textContent = "—";
         document.getElementById("stat-monthly").textContent = "—";
         document.getElementById("stat-yearly").textContent = "—";

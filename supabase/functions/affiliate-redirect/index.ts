@@ -1,8 +1,23 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-function detectTargetUrl(req: Request): string {
+type Platform = "ios" | "android" | "other";
+
+function detectPlatform(req: Request): Platform {
   const ua = (req.headers.get("user-agent") || "").toLowerCase();
 
+  if (ua.includes("android")) return "android";
+  if (
+    ua.includes("iphone") ||
+    ua.includes("ipad") ||
+    ua.includes("ipod") ||
+    ua.includes("ios")
+  ) {
+    return "ios";
+  }
+  return "other";
+}
+
+function pickTargetUrl(platform: Platform): string {
   const appStoreUrl = Deno.env.get("APPSTORE_URL") || "";
   const playStoreUrl = Deno.env.get("PLAYSTORE_URL") || "";
   const fallback =
@@ -11,20 +26,8 @@ function detectTargetUrl(req: Request): string {
     playStoreUrl ||
     "https://liftbetter.cloud/";
 
-  if (ua.includes("android") && playStoreUrl) {
-    return playStoreUrl;
-  }
-
-  if (
-    (ua.includes("iphone") ||
-      ua.includes("ipad") ||
-      ua.includes("ipod") ||
-      ua.includes("ios")) &&
-    appStoreUrl
-  ) {
-    return appStoreUrl;
-  }
-
+  if (platform === "android" && playStoreUrl) return playStoreUrl;
+  if (platform === "ios" && appStoreUrl) return appStoreUrl;
   return fallback;
 }
 
@@ -33,7 +36,8 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
-  const targetUrl = detectTargetUrl(req);
+  const platform = detectPlatform(req);
+  const targetUrl = pickTargetUrl(platform);
 
   try {
     const url = new URL(req.url);
@@ -68,7 +72,7 @@ Deno.serve(async (req) => {
 
     const { data: stats, error: statsError } = await supabase
       .from("affiliate_stats")
-      .select("clicks")
+      .select("clicks, clicks_ios, clicks_android")
       .eq("affiliate_id", affiliate.id)
       .single();
 
@@ -77,21 +81,31 @@ Deno.serve(async (req) => {
       console.error("affiliate-redirect: stats lookup error:", statsError.message);
     }
 
+    const incIos = platform === "ios" ? 1 : 0;
+    const incAndroid = platform === "android" ? 1 : 0;
+
     if (!stats) {
       const { error: insertError } = await supabase.from("affiliate_stats").insert({
         affiliate_id: affiliate.id,
         clicks: 1,
+        clicks_ios: incIos,
+        clicks_android: incAndroid,
         updated_at: new Date().toISOString(),
       });
       if (insertError) {
         console.error("affiliate-redirect: stats insert error:", insertError.message);
       }
     } else {
-      const current = Number((stats as any).clicks ?? 0);
+      const currentTotal = Number((stats as any).clicks ?? 0);
+      const currentIos = Number((stats as any).clicks_ios ?? 0);
+      const currentAndroid = Number((stats as any).clicks_android ?? 0);
+
       const { error: updateError } = await supabase
         .from("affiliate_stats")
         .update({
-          clicks: current + 1,
+          clicks: currentTotal + 1,
+          clicks_ios: currentIos + incIos,
+          clicks_android: currentAndroid + incAndroid,
           updated_at: new Date().toISOString(),
         })
         .eq("affiliate_id", affiliate.id);
@@ -105,4 +119,3 @@ Deno.serve(async (req) => {
 
   return Response.redirect(targetUrl, 302);
 });
-
