@@ -450,6 +450,16 @@ label {
   color: var(--text-muted);
 }
 
+/* More details CTA */
+.more-details-cta {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.more-details-cta .btn {
+  text-decoration: none;
+}
+
 /* Footer */
 footer {
   border-top: 1px solid var(--border);
