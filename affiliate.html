@@ -72,9 +72,9 @@
       var gate = document.getElementById("dashboard-gate");
       var content = document.getElementById("dashboard-content");
       var linkEl = document.getElementById("affiliate-link");
-      var baseUrl = (typeof window.AFFILIATE_CONFIG !== "undefined" && window.AFFILIATE_CONFIG.appBaseUrl)
-        ? window.AFFILIATE_CONFIG.appBaseUrl
-        : "https://yourapp.com/ref/";
+      var originBaseUrl = (window.location && window.location.origin)
+        ? window.location.origin.replace(/\/$/, "")
+        : "https://liftbetter.cloud";
 
       function showGate() {
         gate.style.display = "block";
@@ -102,7 +102,7 @@
               return;
             }
             var aff = result.data;
-            linkEl.textContent = baseUrl.replace(/\/?$/, "/") + aff.affiliate_code;
+            linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
             return window.__affiliateSupabase
               .from("affiliate_stats")
               .select("clicks, downloads, monthly_subs, yearly_subs")
@@ -125,7 +125,7 @@
         document.getElementById("stat-downloads").textContent = "—";
         document.getElementById("stat-monthly").textContent = "—";
         document.getElementById("stat-yearly").textContent = "—";
-        linkEl.textContent = baseUrl + "your-code";
+        linkEl.textContent = originBaseUrl + "/your-code";
         showContent();
         return;
       }

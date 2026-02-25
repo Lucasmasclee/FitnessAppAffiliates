@@ -70,10 +70,9 @@ In Google Cloud Console, bij je OAuth client:
 1. Ga naar [supabase.com](https://supabase.com) en open je project.
 2. Klik in het linkermenu op **SQL Editor**.
 3. Klik op **New query** (nieuwe query).
-4. Open op je computer het bestand `supabase/migrations/001_affiliates.sql` (in deze projectmap). Kopieer **alle** tekst uit dat bestand.
-5. Plak die tekst in het grote invoerveld in de SQL Editor.
-6. Klik onderaan op **Run** (of Ctrl+Enter).
-7. Als het goed is, zie je onderaan iets als “Success” of “Success. No rows returned”. De tabellen bestaan nu.
+4. Open op je computer de bestanden `supabase/migrations/001_affiliates.sql` en `002_branch_link_alias.sql`. Kopieer alle tekst uit beide (eerst 001, dan 002) en plak in de SQL Editor (of voer ze apart uit).
+5. Klik onderaan op **Run** (of Ctrl+Enter).
+6. De tabellen en de kolom branch_link_alias bestaan nu. (Bij succes zie je onderaan iets als “Success” of “Success. No rows returned”. De tabellen bestaan nu.
 
 Klaar. Je hoeft geen Supabase CLI te installeren.
 
@@ -351,29 +350,77 @@ Daarna is de site live op **https://liftbetter.cloud**. Bij elke push naar je br
 
 ---
 
-## 9. Updating stats (clicks, downloads, subscriptions)
+## 9. Branch.io: link toevoegen aan affiliate + clicks in dashboard
 
-The dashboard reads from the `affiliate_stats` table. Your main app (or another backend) should update this table when:
+Affiliate-links zijn Branch-links (bijv. `https://liftbetter.app.link/join1`). Je koppelt handmatig één Branch-link per affiliate in Supabase; het dashboard toont die link en het aantal clicks dat via de Branch webhook binnenkomt.
 
-- Someone clicks the affiliate link → increment `clicks`.
+### 9.1 Migratie en Edge Function
+
+- De migratie **002_branch_link_alias.sql** voegt de kolom `branch_link_alias` toe aan `affiliates` en een functie om clicks te verhogen. Voer deze migratie uit als je dat nog niet deed (zie sectie 3).
+- De Edge Function **branch-webhook** ontvangt click-events van Branch en verhoogt `affiliate_stats.clicks` voor de juiste affiliate.
+
+### 9.2 Branch webhook instellen
+
+1. **Supabase secrets**  
+   Supabase Dashboard → **Edge Functions** → **Secrets**. Voeg toe:
+   - `BRANCH_WEBHOOK_SECRET`: een lang, willekeurig geheim (bijv. gegenereerd met een password manager). Dit gebruik je straks in Branch als custom header.
+
+2. **branch-webhook deployen**  
+   In de projectmap:
+   ```bash
+   npx supabase functions deploy branch-webhook
+   ```
+   De URL van de function is:  
+   `https://JOUW_PROJECT_REF.supabase.co/functions/v1/branch-webhook`
+
+3. **Branch Dashboard**  
+   - Ga naar [Branch Dashboard](https://dashboard.branch.io) → **Data Feeds** → **Webhooks**.
+   - **Add New Webhook**.
+   - **Select an event**: kies **click**.
+   - **Webhook URL**: `https://JOUW_PROJECT_REF.supabase.co/functions/v1/branch-webhook`
+   - Bij **Filters** of **Headers** (als Branch dat aanbiedt): voeg een custom header toe, bijv. **Name**: `x-webhook-secret`, **Value**: dezelfde waarde als `BRANCH_WEBHOOK_SECRET`.
+   - Sla op.
+
+Als Branch geen custom headers ondersteunt op de webhook-URL, kun je het geheim als query parameter toevoegen (bijv. `?secret=...`) en in de Edge Function die parameter lezen; beveiliging blijft dan belangrijk.
+
+### 9.3 Branch-link aan affiliate koppelen
+
+Na registratie van een affiliate:
+
+1. Kies in Branch een link (of maak er een) met een vast alias, bijv. `join1`, `join2` (zoals in je bulk-upload).
+2. In Supabase: **Table Editor** → **affiliates** → open de rij van die affiliate.
+3. Vul bij **branch_link_alias** het alias in (bijv. `join1`) en sla op.
+
+Het dashboard toont dan voor die affiliate de link `https://liftbetter.app.link/join1` en het aantal clicks dat via de webhook binnenkomt.
+
+### 9.4 Optioneel: branchLinkBaseUrl in config
+
+Op het dashboard wordt de link getoond als `https://liftbetter.app.link` + alias. Als je een ander Branch-domein gebruikt, zet dan in `js/config.js` (of in de Render env) `branchLinkBaseUrl: "https://jouw-domein.app.link"`. Zie `js/config.example.js`.
+
+---
+
+## 10. Overige stats (downloads, subscriptions)
+
+De dashboard leest verder uit `affiliate_stats`. Clicks worden automatisch bijgewerkt via de Branch webhook (zie sectie 9). Voor downloads en abonnementen moet je eigen logica (bijv. in je app of backend) deze tabel bijwerken:
+
 - Someone downloads via the link → increment `downloads`.
-- Someone signs up for a monthly subscription via the link → increment `monthly_subs`.
-- Someone signs up for a yearly subscription via the link → increment `yearly_subs`.
+- Someone signs up for a monthly subscription → increment `monthly_subs`.
+- Someone signs up for a yearly subscription → increment `yearly_subs`.
 
 Example (from a backend with the Supabase service role key):
 
 ```js
 await supabase.from('affiliate_stats').update({
-  clicks: existing.clicks + 1,
+  monthly_subs: existing.monthly_subs + 1,
   updated_at: new Date().toISOString()
 }).eq('affiliate_id', affiliateId);
 ```
 
-Resolve `affiliateId` by looking up `affiliates` with `affiliate_code` from the link (e.g. from the URL path or query parameter).
+Resolve `affiliateId` by looking up `affiliates` (e.g. by `affiliate_code` or `branch_link_alias`).
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 - **“Missing authorization” or “Invalid or expired session”**  
   User is not signed in or token expired. They should sign in again with Google on the become-affiliate page.
@@ -396,6 +443,9 @@ Resolve `affiliateId` by looking up `affiliates` with `affiliate_code` from the 
   De Edge Function moet OPTIONS-requests beantwoorden met status 200 en CORS-headers. De code in `supabase/functions/submit-affiliate/index.ts` doet dat. **Redeploy de function** na wijzigingen:  
   `npx supabase functions deploy submit-affiliate`  
   De frontend stuurt ook de `apikey`-header (anon key) mee; zorg dat die in `js/config.js` staat.
+
+- **Clicks op dashboard blijven 0 / Branch webhook geeft 401**  
+  Zet in Supabase **Edge Functions** → **Secrets** de secret `BRANCH_WEBHOOK_SECRET`. In Branch bij de webhook moet de header `x-webhook-secret` exact dezelfde waarde hebben. Controleer ook dat de affiliate in Supabase een `branch_link_alias` heeft (bijv. `join1`) die overeenkomt met de Branch-link.
 
 - **401 “Missing authorization header” bij “Contact me”**  
   Het Supabase-gateway controleert standaard de JWT en geeft dan 401 voordat het verzoek je function bereikt. Daarom staat in **`supabase/config.toml`** voor deze function **`verify_jwt = false`**. De function controleert de token zelf (header of body). Zorg dat `supabase/config.toml` in je project staat en **deploy opnieuw**:  
@@ -425,6 +475,7 @@ Als je na Google-inloggen errors ziet maar niet weet welke:
 | **Supabase** | Redirect URL voor auth | Supabase Dashboard → **Authentication** → **URL Configuration** → **Redirect URLs**. Voeg exact toe: `http://localhost:3000/auth-callback.html` (of de poort die jij gebruikt). Voor productie ook `https://jouwdomein.com/auth-callback.html`. |
 | **Google Cloud** | OAuth redirect URI | Google Cloud Console → APIs & Services → Credentials → je OAuth 2.0 Client → **Authorized redirect URIs**: moet `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback` zijn (zelfde projectref als in Supabase URL). |
 | **Google Cloud** | JavaScript origins | In dezelfde OAuth client: **Authorized JavaScript origins**: `http://localhost:3000` (dev) en `https://jouwdomein.com` (prod). |
+| **Supabase** | `BRANCH_WEBHOOK_SECRET` | Edge Functions → Secrets. Zelfde waarde als de header `x-webhook-secret` die je in Branch bij de webhook instelt. |
 
 Veelvoorkomende fouten bij Google-inlog:
 

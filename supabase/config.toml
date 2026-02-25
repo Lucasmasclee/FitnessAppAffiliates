@@ -5,3 +5,12 @@
 # token (from header or body) and return 401 ourselves if invalid.
 [functions.submit-affiliate]
 verify_jwt = false
+
+# Branch sends webhooks without a Supabase JWT; we verify x-webhook-secret instead.
+[functions.branch-webhook]
+verify_jwt = false
+
+# Affiliate redirect links (/join1 etc.) are public; we count clicks and then redirect
+# based on platform (iOS / Android / fallback) without Supabase JWT.
+[functions.affiliate-redirect]
+verify_jwt = false

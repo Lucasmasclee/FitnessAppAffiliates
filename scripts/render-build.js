@@ -9,11 +9,13 @@ const path = require("path");
 const supabaseUrl = process.env.SUPABASE_URL || "";
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 const appBaseUrl = process.env.APP_BASE_URL || "https://liftbetter.cloud/ref/";
+const branchLinkBaseUrl = process.env.BRANCH_LINK_BASE_URL || "https://liftbetter.app.link";
 
 const config = `window.AFFILIATE_CONFIG = {
   supabaseUrl: ${JSON.stringify(supabaseUrl)},
   supabaseAnonKey: ${JSON.stringify(supabaseAnonKey)},
   appBaseUrl: ${JSON.stringify(appBaseUrl)},
+  branchLinkBaseUrl: ${JSON.stringify(branchLinkBaseUrl)},
 };
 `;
 
