@@ -151,6 +151,250 @@ main {
   margin-bottom: 1rem;
 }
 
+/* Home – affiliate hero & benefits */
+.hero-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 880px) {
+  .hero-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.hero-copy {
+  flex: 1.15;
+}
+
+.hero-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 4.2vw, 2.8rem);
+  margin: 0.75rem 0 0.75rem;
+}
+
+.hero-subtitle {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 34rem;
+}
+
+.hero-highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.hero-meta {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.hero-meta span {
+  opacity: 0.9;
+}
+
+.hero-meta strong {
+  color: var(--accent);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.benefit-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+
+.benefit-tagline {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.benefit-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Home – app section */
+.app-section {
+  margin-top: 3.5rem;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 880px) {
+  .app-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.app-copy {
+  max-width: 30rem;
+}
+
+.app-copy h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.app-copy p {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+}
+
+.app-screenshots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .app-screenshots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.app-screenshot {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #1f2937, #020617);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  aspect-ratio: 9 / 19;
+}
+
+.app-screenshot img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.app-screenshot::after {
+  content: "Preview";
+  position: absolute;
+  inset: auto 0 0;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  text-align: center;
+  color: rgba(248, 250, 252, 0.8);
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+}
+
+.app-stores {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.store-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.store-button:hover {
+  background: #111827;
+  border-color: var(--accent);
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.8);
+  transform: translateY(-1px);
+}
+
+.store-icon-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #020617;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.store-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.store-text span:first-child {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.store-text span:last-child {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 /* Forms */
 input, textarea {
   width: 100%;
