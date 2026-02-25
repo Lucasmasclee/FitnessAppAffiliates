@@ -17,7 +17,12 @@ function detectPlatform(req: Request): Platform {
   return "other";
 }
 
-function pickTargetUrl(platform: Platform): string {
+function pickTargetUrl(platform: Platform, code: string): string {
+  const appsflyerBase = (Deno.env.get("APPSFLYER_ONELINK_URL") || "").replace(/\?.*$/, "").replace(/\/$/, "");
+  if (appsflyerBase && code) {
+    return `${appsflyerBase}?af_sub1=${encodeURIComponent(code)}`;
+  }
+
   const appStoreUrl = Deno.env.get("APPSTORE_URL") || "";
   const playStoreUrl = Deno.env.get("PLAYSTORE_URL") || "";
   const fallback =
@@ -26,7 +31,11 @@ function pickTargetUrl(platform: Platform): string {
     playStoreUrl ||
     "https://liftbetter.cloud/";
 
-  if (platform === "android" && playStoreUrl) return playStoreUrl;
+  if (platform === "android" && playStoreUrl) {
+    const referrer = encodeURIComponent(`affiliate_code=${code}`);
+    const sep = playStoreUrl.includes("?") ? "&" : "?";
+    return `${playStoreUrl}${sep}referrer=${referrer}`;
+  }
   if (platform === "ios" && appStoreUrl) return appStoreUrl;
   return fallback;
 }
@@ -36,13 +45,12 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
+  const url = new URL(req.url);
+  const code = (url.searchParams.get("code") || "").trim();
   const platform = detectPlatform(req);
-  const targetUrl = pickTargetUrl(platform);
+  const targetUrl = pickTargetUrl(platform, code || "");
 
   try {
-    const url = new URL(req.url);
-    const code = (url.searchParams.get("code") || "").trim();
-
     if (!code) {
       return Response.redirect(targetUrl, 302);
     }
