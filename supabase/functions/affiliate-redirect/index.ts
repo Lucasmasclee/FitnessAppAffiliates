@@ -125,5 +125,12 @@ Deno.serve(async (req) => {
     console.error("affiliate-redirect: unexpected error:", e);
   }
 
-  return Response.redirect(targetUrl, 302);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: targetUrl,
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+      Pragma: "no-cache",
+    },
+  });
 });
