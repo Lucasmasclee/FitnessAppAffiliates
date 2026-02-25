@@ -47,7 +47,15 @@
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-downloads">0</div>
-            <div class="stat-label">Downloads via your link</div>
+            <div class="stat-label">Total downloads via your link</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-downloads-ios">0</div>
+            <div class="stat-label">iOS downloads</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-downloads-android">0</div>
+            <div class="stat-label">Android downloads</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-monthly">0</div>
@@ -113,7 +121,7 @@
             linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
             return window.__affiliateSupabase
               .from("affiliate_stats")
-              .select("clicks, clicks_ios, clicks_android, downloads, monthly_subs, yearly_subs")
+              .select("clicks, clicks_ios, clicks_android, downloads, downloads_ios, downloads_android, monthly_subs, yearly_subs")
               .eq("affiliate_id", aff.id)
               .single();
           })
@@ -124,6 +132,8 @@
             document.getElementById("stat-clicks-ios").textContent = (s.clicks_ios || 0).toLocaleString("en-US");
             document.getElementById("stat-clicks-android").textContent = (s.clicks_android || 0).toLocaleString("en-US");
             document.getElementById("stat-downloads").textContent = (s.downloads || 0).toLocaleString("en-US");
+            document.getElementById("stat-downloads-ios").textContent = (s.downloads_ios || 0).toLocaleString("en-US");
+            document.getElementById("stat-downloads-android").textContent = (s.downloads_android || 0).toLocaleString("en-US");
             document.getElementById("stat-monthly").textContent = (s.monthly_subs || 0).toLocaleString("en-US");
             document.getElementById("stat-yearly").textContent = (s.yearly_subs || 0).toLocaleString("en-US");
           });
@@ -135,6 +145,8 @@
         document.getElementById("stat-clicks-ios").textContent = "—";
         document.getElementById("stat-clicks-android").textContent = "—";
         document.getElementById("stat-downloads").textContent = "—";
+        document.getElementById("stat-downloads-ios").textContent = "—";
+        document.getElementById("stat-downloads-android").textContent = "—";
         document.getElementById("stat-monthly").textContent = "—";
         document.getElementById("stat-yearly").textContent = "—";
         linkEl.textContent = originBaseUrl + "/your-code";

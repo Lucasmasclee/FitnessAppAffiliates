@@ -14,3 +14,8 @@ verify_jwt = false
 # based on platform (iOS / Android / fallback) without Supabase JWT.
 [functions.affiliate-redirect]
 verify_jwt = false
+
+# Affiliate download tracker is called from the Flutter app without Supabase JWT;
+# it increments downloads (total + platform-specific).
+[functions.affiliate-download]
+verify_jwt = false
