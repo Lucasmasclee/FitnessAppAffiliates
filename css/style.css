@@ -427,8 +427,8 @@ main {
   border: none;
   background: transparent;
   box-shadow: none;
-  width: 180px;
-  height: 54px;
+  width: 160px;
+  height: 48px;
   align-items: center;
   justify-content: center;
 }
@@ -443,7 +443,7 @@ main {
 
 @media (max-width: 480px) {
   .store-button-image img {
-    max-height: 48px;
+    max-height: 42px;
   }
 }
 
