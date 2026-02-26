@@ -18,6 +18,11 @@
       <li><a href="become-affiliate.html" class="active">Become affiliate</a></li>
       <li><a href="affiliate.html">Affiliate dashboard</a></li>
     </ul>
+    <div class="nav-auth">
+      <span class="nav-user" data-nav-email style="display: none;"></span>
+      <button type="button" class="btn btn-secondary btn-nav" data-nav-login>Log in</button>
+      <button type="button" class="btn btn-secondary btn-nav" data-nav-logout style="display: none;">Log out</button>
+    </div>
   </nav>
 
   <main>
@@ -112,6 +117,7 @@
     }
   </script>
   <script src="js/auth.js?v=2"></script>
+  <script src="js/nav-auth.js?v=1"></script>
   <script>
     (function () {
       var authGate = document.getElementById("auth-gate");
