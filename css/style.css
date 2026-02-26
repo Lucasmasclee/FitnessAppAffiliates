@@ -104,8 +104,8 @@ nav .logo span { color: var(--accent); }
 
 .nav-menu-icon {
   position: relative;
-  width: 18px;
-  height: 14px;
+  width: 20px;
+  height: 16px;
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
@@ -115,7 +115,7 @@ nav .logo span { color: var(--accent); }
   display: block;
   height: 2px;
   border-radius: 999px;
-  background: var(--text-muted);
+  background: var(--accent);
 }
 
 /* Dropdown menu panel */
