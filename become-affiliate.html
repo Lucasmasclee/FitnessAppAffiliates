@@ -13,15 +13,19 @@
 <body>
   <nav>
     <a href="index.html" class="logo">Lift<span>Better</span></a>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="become-affiliate.html" class="active">Become affiliate</a></li>
-      <li><a href="affiliate.html">Affiliate dashboard</a></li>
-    </ul>
-    <div class="nav-auth">
-      <span class="nav-user" data-nav-email style="display: none;"></span>
-      <button type="button" class="btn btn-secondary btn-nav" data-nav-login>Log in</button>
-      <button type="button" class="btn btn-secondary btn-nav" data-nav-logout style="display: none;">Log out</button>
+    <button type="button" class="nav-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
+      <span class="nav-menu-label">Menu</span>
+      <span class="nav-menu-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    <div class="nav-menu-panel" id="nav-menu" hidden>
+      <a href="index.html" class="nav-menu-link">Home</a>
+      <a href="become-affiliate.html" class="nav-menu-link active">Become affiliate</a>
+      <a href="affiliate.html" class="nav-menu-link">Affiliate dashboard</a>
+      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login>Log in</button>
+      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
     </div>
   </nav>
 
@@ -118,6 +122,7 @@
   </script>
   <script src="js/auth.js?v=2"></script>
   <script src="js/nav-auth.js?v=1"></script>
+  <script src="js/nav-menu.js?v=1"></script>
   <script>
     (function () {
       var authGate = document.getElementById("auth-gate");
