@@ -585,6 +585,20 @@ label {
 }
 .form-group { margin-bottom: 1.25rem; }
 .form-note { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
+.form-note-inline { margin-top: 0; }
+
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.form-checkbox-row input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
 
 /* Stats grid (affiliate dashboard) */
 .stats-grid {

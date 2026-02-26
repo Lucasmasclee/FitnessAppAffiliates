@@ -80,19 +80,37 @@
 
         
 
-        <form id="affiliate-form" class="card" style="max-width: 480px;">
+        <form id="affiliate-form" class="card" style="max-width: 600px;">
           <div class="form-group">
             <label for="email">Email address *</label>
             <input type="email" id="email" name="email" placeholder="you@example.com" required>
           </div>
           <div class="form-group">
-            <label for="phone">Phone number *</label>
-            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+            <label for="phone">Phone number (optional)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
           </div>
           <div class="form-group">
             <label for="social">Social media (optional)</label>
             <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
-            <span class="form-note">e.g. @username or link to profile</span>
+            <!-- <span class="form-note">e.g. @username or link to profile</span> -->
+          </div>
+          <div class="form-group">
+            <label class="form-checkbox-row">
+              <input type="checkbox" id="terms-consent" required style="width: auto;">
+              <span class="form-note form-note-inline">
+                By clicking &quot;Contact me&quot;, I agree with the
+                <a href="terms.html" target="_blank" rel="noopener">terms and conditions</a>.
+              </span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label class="form-checkbox-row">
+              <input type="checkbox" id="privacy-consent" required style="width: auto;">
+              <span class="form-note form-note-inline">
+                I have read and agree with the
+                <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.
+              </span>
+            </label>
           </div>
           <button type="submit" class="btn btn-primary" id="btn-submit">Contact me</button>
         </form>
@@ -257,9 +275,22 @@
         var email = document.getElementById("email").value.trim();
         var phone = document.getElementById("phone").value.trim();
         var social = document.getElementById("social").value.trim();
+        var termsConsent = document.getElementById("terms-consent");
+        var privacyConsent = document.getElementById("privacy-consent");
 
-        if (!email || !phone) {
-          formError.textContent = "Please fill in email and phone.";
+        if (termsConsent && !termsConsent.checked) {
+          formError.textContent = "Please agree to the terms and conditions.";
+          formError.style.display = "block";
+          return;
+        }
+        if (privacyConsent && !privacyConsent.checked) {
+          formError.textContent = "Please agree to the privacy policy.";
+          formError.style.display = "block";
+          return;
+        }
+
+        if (!email) {
+          formError.textContent = "Please fill in your email address.";
           formError.style.display = "block";
           return;
         }
