@@ -365,7 +365,11 @@
               } else {
                 var errMsg = result.data && result.data.error ? result.data.error : "Something went wrong. Please try again.";
                 if (errMsg === "Email and phone are required") {
-                  errMsg = "Please fill in your email address.";
+                  if (!email) {
+                    errMsg = "Please fill in your email address.";
+                  } else if (!phone) {
+                    errMsg = "Right now this environment still requires a phone number as well. Please also fill in your phone number, or redeploy the updated backend where phone is optional.";
+                  }
                 }
                 if (result.status === 401) {
                   errMsg = "Session expired or invalid. Please sign out and sign in again, then try Contact me again.";
