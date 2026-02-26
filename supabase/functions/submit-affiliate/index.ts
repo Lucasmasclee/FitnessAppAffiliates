@@ -81,9 +81,9 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { email, phone, social_media } = body ?? {};
-    if (!email || !phone) {
+    if (!email) {
       return new Response(
-        JSON.stringify({ error: "Email and phone are required" }),
+        JSON.stringify({ error: "Email is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -105,8 +105,8 @@ Deno.serve(async (req) => {
       .upsert(
         {
           user_id: userId,
-          email: String(email).trim(),
-          phone: String(phone).trim(),
+          email: email ? String(email).trim() : null,
+          phone: phone ? String(phone).trim() : null,
           social_media: social_media ? String(social_media).trim() : null,
           affiliate_code: affiliateCode,
           updated_at: new Date().toISOString(),
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
     const twilioFrom = Deno.env.get("TWILIO_PHONE_NUMBER");
 
     if (toNumber && twilioSid && twilioToken && twilioFrom) {
-      const smsBody = `New affiliate: ${email} | ${phone}${social_media ? ` | ${social_media}` : ""} | code: ${affiliateCode}`;
+      const smsBody = `New affiliate. Email: ${email || "n/a"}, Phone: ${phone || "n/a"}, Social: ${social_media ? social_media : "n/a"}, Code: ${affiliateCode}`;
       const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
       const basicAuth = btoa(`${twilioSid}:${twilioToken}`);
       const form = new URLSearchParams({

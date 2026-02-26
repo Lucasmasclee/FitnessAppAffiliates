@@ -89,10 +89,25 @@
             <label for="phone">Phone number (optional)</label>
             <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
           </div>
+          
           <div class="form-group">
             <label for="social">Social media (optional)</label>
             <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
             <!-- <span class="form-note">e.g. @username or link to profile</span> -->
+          </div>
+          <div class="form-group">
+            <label for="preferred-method">Preferred contact method (optional)</label>
+            <select id="preferred-method" name="preferred_method">
+              <option value="">No preference</option>
+              <option value="email">Email</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="messages">Messages</option>
+              <option value="phone">Phone call</option>
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="other_social">Other social media</option>
+            </select>
+            <span class="form-note">We’ll try to contact you using this channel first.</span>
           </div>
           <div class="form-group">
             <label class="form-checkbox-row">
@@ -275,6 +290,7 @@
         var email = document.getElementById("email").value.trim();
         var phone = document.getElementById("phone").value.trim();
         var social = document.getElementById("social").value.trim();
+        var preferredMethod = document.getElementById("preferred-method").value;
         var termsConsent = document.getElementById("terms-consent");
         var privacyConsent = document.getElementById("privacy-consent");
 
@@ -318,7 +334,12 @@
           if (window.AFFILIATE_CONFIG.supabaseAnonKey) {
             headers["apikey"] = window.AFFILIATE_CONFIG.supabaseAnonKey;
           }
-          var body = { email: email, phone: phone, social_media: social || null };
+          var body = {
+            email: email,
+            phone: phone,
+            social_media: social || null,
+            preferred_contact_method: preferredMethod || null
+          };
           if (token) body.access_token = token;
           fetch(url, {
             method: "POST",
@@ -343,6 +364,9 @@
                 }
               } else {
                 var errMsg = result.data && result.data.error ? result.data.error : "Something went wrong. Please try again.";
+                if (errMsg === "Email and phone are required") {
+                  errMsg = "Please fill in your email address.";
+                }
                 if (result.status === 401) {
                   errMsg = "Session expired or invalid. Please sign out and sign in again, then try Contact me again.";
                 }
