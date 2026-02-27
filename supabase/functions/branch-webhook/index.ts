@@ -101,6 +101,8 @@ Deno.serve(async (req) => {
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+  // Aggregate counter via SQL-functie (bestaand gedrag)
   const { error } = await supabase.rpc("increment_clicks_by_branch_alias", { p_alias: alias });
   if (error) {
     console.error("increment_clicks_by_branch_alias error:", error.message);
@@ -108,6 +110,27 @@ Deno.serve(async (req) => {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+  }
+
+  // Extra: event-row voor tijdsreeksen
+  try {
+    const { data: affiliate, error: affError } = await supabase
+      .from("affiliates")
+      .select("id")
+      .eq("branch_link_alias", alias)
+      .single();
+
+    if (!affError && affiliate) {
+      const { error: insertError } = await supabase.from("affiliate_click_events").insert({
+        affiliate_id: (affiliate as any).id,
+        occurred_at: new Date().toISOString(),
+      });
+      if (insertError) {
+        console.error("branch-webhook: affiliate_click_events insert error:", insertError.message);
+      }
+    }
+  } catch (e) {
+    console.error("branch-webhook: unexpected error while inserting click event:", e);
   }
 
   return new Response(JSON.stringify({ ok: true }), {

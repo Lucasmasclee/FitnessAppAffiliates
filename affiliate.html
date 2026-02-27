@@ -33,7 +33,7 @@
   <main>
     <section class="section">
       <h1 class="section-title">Affiliate dashboard</h1>
-      <p class="section-subtitle">Overview of your performance via your affiliate link.</p>
+      <p class="section-subtitle">See exactly what your link is doing – earnings, funnel, payouts and everything you need to grow.</p>
 
       <div id="dashboard-gate" class="card" style="max-width: 480px; display: none;">
         <h2 style="margin-top: 0;">Sign in to view your dashboard</h2>
@@ -41,46 +41,437 @@
         <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
       </div>
 
-      <div id="dashboard-content" style="display: none;">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="stat-clicks">0</div>
-            <div class="stat-label">Total clicks on your link</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-clicks-ios">0</div>
-            <div class="stat-label">iOS clicks</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-clicks-android">0</div>
-            <div class="stat-label">Android clicks</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-downloads">0</div>
-            <div class="stat-label">Total downloads via your link</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-downloads-ios">0</div>
-            <div class="stat-label">iOS downloads</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-downloads-android">0</div>
-            <div class="stat-label">Android downloads</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-monthly">0</div>
-            <div class="stat-label">Monthly subscriptions via your link</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-yearly">0</div>
-            <div class="stat-label">Yearly subscriptions via your link</div>
-          </div>
-        </div>
+      <div id="dashboard-content">
+        <div class="dashboard-layout">
+          <!-- 1. Overview -->
+          <div class="dashboard-top-row">
+            <div class="card">
+              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Earnings overview</h2>
+              <p style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
+                Expected total earnings from your link – This number is only an estimate, and might differ from the actual earnings.
+              </p>
+              <div class="earnings-overview">
+                <div>
+                  <div class="earnings-main-number" id="earnings-expected-total">€0</div>
+                  <div class="earnings-sub-label" id="earnings-subtitle">Based on approved & pending commissions.</div>
+                </div>
+                <div>
+                  <div class="earnings-split">
+                    <div>
+                      <div class="earnings-split-item-label">Paid out (all time)</div>
+                      <div class="earnings-split-item-value" id="earnings-paid-out">€0</div>
+                    </div>
+                    <div>
+                      <div class="earnings-split-item-label">Expected payouts</div>
+                      <div class="earnings-split-item-value" id="earnings-expected-payouts">€0</div>
+                    </div>
+                  </div>
+                  <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
+                    Next payout: 1st of the month · Minimum payout: €50
+                  </p>
+                </div>
+              </div>
+            </div>
 
-        <div class="card" style="margin-top: 2.5rem;">
-          <h2 style="margin-top: 0;">Your affiliate link</h2>
-          <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Share this link so clicks and conversions count.</p>
-          <code id="affiliate-link" style="display: block; padding: 0.75rem; background: var(--bg-elevated); border-radius: var(--radius); font-size: 0.9rem; word-break: break-all;">—</code>
+            <!-- 3. Affiliate links & tracking -->
+            <div class="card">
+              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate link</h2>
+              <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
+                Share this link so every click, install and subscription is tracked.
+              </p>
+              <div class="affiliate-link-row">
+                <div class="affiliate-link-chip">
+                  <code id="affiliate-link">—</code>
+                  <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-link">Copy</button>
+                </div>
+                <div class="affiliate-link-meta">
+                  <span id="affiliate-qr-note">Want different links for different channels? Message us.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI cards -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Key metrics</h2>
+                <p>Quick snapshot of how your link is performing.</p>
+              </div>
+            </div>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label">Clicks</div>
+                <div class="kpi-value" id="kpi-clicks-all">0</div>
+                <!-- <div class="kpi-subtext" id="kpi-clicks-breakdown">Today: 0 · 7d: 0 · 30d: 0</div> -->
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Installs (attributed)</div>
+                <div class="kpi-value" id="kpi-installs-all">0</div>
+                <div class="kpi-subtext" id="kpi-installs-breakdown">Today: 0 · 7d: 0 · 30d: 0</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Paying users</div>
+                <div class="kpi-value" id="kpi-paying-users">0</div>
+                <div class="kpi-subtext" id="kpi-paying-users-breakdown">New last 30d: 0</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Click → Install</div>
+                <div class="kpi-value" id="kpi-conv-click-install-main">0%</div>
+                <div class="kpi-subtext" id="kpi-conv-click-install-sub">All-time conversion from clicks to installs.</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Install → Paying user</div>
+                <div class="kpi-value" id="kpi-conv-install-paid-main">0%</div>
+                <div class="kpi-subtext" id="kpi-conv-install-paid-sub">All-time conversion from installs to paying users.</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Avg earnings per user (EPU)</div>
+                <div class="kpi-value" id="kpi-epu-main">€0</div>
+                <div class="kpi-subtext" id="kpi-epu-breakdown">Based on all paid users.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Performance analytics -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Performance analytics</h2>
+                <p>See how your traffic turns into installs, paying users and revenue.</p>
+              </div>
+              <div class="date-range-row">
+                <label for="date-from" style="font-size: 0.8rem; color: var(--text-muted);">Range</label>
+                <input type="date" id="date-from">
+                <input type="date" id="date-to">
+                <button type="button" class="btn btn-secondary btn-ghost" id="btn-range-apply">Apply</button>
+                <button type="button" class="btn btn-secondary btn-ghost" id="btn-range-30d">Last 30 days</button>
+              </div>
+            </div>
+
+            <div class="analytics-grid">
+              <div class="chart-card">
+                <div class="chart-header">
+                  <div>
+                    <div class="chart-title">Clicks per day</div>
+                    <div class="chart-subtitle">See how often people hit your link.</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="chart-subtitle" style="margin-bottom: 0.25rem;">Last 7 days</div>
+                  <div class="sparkline" id="sparkline-clicks-7d">
+                    <div class="sparkline-empty">Waiting for data…</div>
+                  </div>
+                </div>
+                <div style="margin-top: 1rem;">
+                  <div class="chart-subtitle" style="margin-bottom: 0.25rem;">Last 30 days</div>
+                  <div class="sparkline" id="sparkline-clicks-30d">
+                    <div class="sparkline-empty">Waiting for data…</div>
+                  </div>
+                </div>
+                <div style="margin-top: 1rem;">
+                  <div class="chart-subtitle" style="margin-bottom: 0.25rem;">Last 12 months</div>
+                  <div class="sparkline" id="sparkline-clicks-365d">
+                    <div class="sparkline-empty">Waiting for data…</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-header">
+                  <div>
+                    <div class="chart-title">Revenue & conversion trend</div>
+                    <div class="chart-subtitle" id="chart-revenue-subtitle">Last 30 days</div>
+                  </div>
+                </div>
+                <div class="sparkline" id="sparkline-revenue">
+                  <div class="sparkline-empty">Waiting for data…</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Funnel insight -->
+            <div class="funnel-card" style="margin-top: 1.5rem;">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Funnel insight</div>
+                  <div class="chart-subtitle">From click to install to paid user.</div>
+                </div>
+              </div>
+              <div class="funnel-steps">
+                <div class="funnel-step">
+                  <span class="funnel-label">1. Clicks</span>
+                  <span class="funnel-value" id="funnel-clicks">0</span>
+                </div>
+                <div class="funnel-step">
+                  <span class="funnel-label">2. Installs</span>
+                  <span class="funnel-value" id="funnel-installs">0 (0%)</span>
+                </div>
+                <div class="funnel-step">
+                  <span class="funnel-label">3. Paying users</span>
+                  <span class="funnel-value" id="funnel-paying-users">0 (0%)</span>
+                </div>
+                <div class="funnel-step">
+                  <span class="funnel-label">4. Earned</span>
+                  <span class="funnel-value" id="funnel-earned">€0</span>
+                </div>
+              </div>
+              <p class="funnel-note" id="funnel-note">
+                Use this to decide: do I need more traffic, or do I need to improve my content and conversion?
+              </p>
+            </div>
+          </div>
+
+          <!-- 4. Transactions / installs list + 5. Hold-periode
+          <div class="transactions-card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Transactions & installs</h2>
+                <p>Transparent list of installs and subscriptions attributed to your link.</p>
+              </div>
+              <span class="badge badge-warning">60-day hold</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 0.75rem;">
+              Installs and subscriptions are approved after a 60-day hold period. This protects against refunds and chargebacks.
+            </p>
+            <div style="overflow-x: auto;">
+              <table class="transactions-table" id="transactions-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Subscription</th>
+                    <th>Status</th>
+                    <th>Commission</th>
+                    <th>Payout status</th>
+                    <th>Hold</th>
+                  </tr>
+                </thead>
+                <tbody id="transactions-body">
+                  <!-- Filled by JS -->
+                <!-- </tbody>
+              </table>
+            </div>
+            <div class="transactions-empty" id="transactions-empty" style="display: none;">
+              No installs or subscriptions yet. Once people start signing up from your link, they will appear here.
+            </div>
+          </div> -->
+
+          <!-- 6. Payout section -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Payouts</h2>
+                <p>See what is ready to be paid out and what has already been paid.</p>
+              </div>
+            </div>
+            <div class="payout-grid">
+              <div>
+                <p class="payout-meta-item-label">Minimum payout</p>
+                <p class="payout-meta-item-value">€50</p>
+
+                <div class="payout-meta-row">
+                  <div>
+                    <p class="payout-meta-item-label">Available payout</p>
+                    <p class="payout-meta-item-value" id="payout-available">€0</p>
+                  </div>
+                  <div>
+                    <p class="payout-meta-item-label">Next payout date</p>
+                    <p class="payout-meta-item-value" id="payout-next-date">1st of next month</p>
+                  </div>
+                </div>
+
+                <p class="payout-meta-item-label" style="margin-top: 0.75rem;">Payout method</p>
+                <p class="payout-meta-item-value" id="payout-method">Not set yet</p>
+                <span class="badge badge-muted" id="payout-verified-badge">Payment details not verified</span>
+              </div>
+              <div>
+                <p class="payout-meta-item-label">Payout history</p>
+                <ul class="payout-history-list" id="payout-history">
+                  <!-- Derived from paid transactions -->
+                </ul>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                  Payouts are processed manually. If you have reached the minimum payout threshold, we’ll contact you using your preferred method.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Commissiestructuur + 8. Targets / milestones -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Commission structure & targets</h2>
+                <p>Know exactly what you earn and what the next bonus is.</p>
+              </div>
+            </div>
+            <div class="targets-grid">
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Commission rules</h3>
+                <ul class="list-compact">
+                  <li>Monthly subscription: 94% commission on our net revenue.</li>
+                  <li>Yearly subscription: 39% commission on our net revenue.</li>
+                  <li>No commission is paid on refunded subscriptions.</li>
+                  <li>Installs and subscriptions are approved after 60 days.</li>
+                </ul>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Current tier</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
+                  <strong id="commission-tier">Base tier</strong>
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">
+                  As your performance grows, we may move you into a higher tier with extra bonuses.
+                </p>
+              </div>
+              <!-- <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Milestones</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
+                  <strong>10 sales → t.b.d.</strong>
+                </p>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" id="milestone-10-sales"></div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;">
+                  <span id="milestone-10-sales-text">0 / 10 sales completed.</span>
+                </p>
+                <p style="font-size: 0.9rem; margin-bottom: 0.4rem; margin-top: 0.8rem;">
+                  <strong>25 installs this month → t.b.d.</strong>
+                </p>
+              </div> -->
+            </div>
+          </div>
+
+          <!-- 9. Marketing assets
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Marketing assets</h2>
+                <p>Plug-and-play content so you can post more often with less effort.</p>
+              </div>
+            </div>
+            <div class="assets-grid">
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">App visuals</h3>
+                <ul class="list-compact">
+                  <li><a href="images/Screenshot-1.png" target="_blank" rel="noopener">App screenshots</a></li>
+                  <li>Before / after visuals</li>
+                  <li>Logo pack (light & dark)</li>
+                </ul>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Stories & short-form</h3>
+                <ul class="list-compact">
+                  <li>Story templates (progress, training, “what I use”)</li>
+                  <li>Reels / TikTok hooks</li>
+                  <li>Swipe-up / link-in-bio prompts</li>
+                </ul>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Copy & scripts</h3>
+                <ul class="list-compact">
+                  <li>Copy-paste captions for IG / TikTok / YouTube</li>
+                  <li>DM scripts to warm leads</li>
+                  <li>Email templates for your list</li>
+                </ul>
+              </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
+              Need something custom (language, format, brand colours)? Reach out via support and we’ll help you.
+            </p>
+          </div> -->
+
+          <!-- 10. Announcements / updates -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Announcements</h2>
+                <p>What’s new in the app and affiliate program.</p>
+              </div>
+            </div>
+            <div class="announcements-grid" id="announcements-list">
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Upcoming changes</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+                  2-03 App update: Video tutorials for exercises<br>
+                  2-03 App update: New store listing: <span style="color: var(--accent);">Improves clicks → installs</span><br>
+                  2-03 App update: Updated survey:  <span style="color: var(--accent);">Improves installs → subscriptions</span><br>
+                  9-03 App update: Workout statistics page<br>
+                  9-03 App update: Improved UI/UX<br>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11. Personal insights -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Personal insights</h2>
+                <p>High-level feedback based on your current numbers.</p>
+              </div>
+            </div>
+            <div class="insights-grid">
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Conversion vs average</h3>
+                <p id="insight-conversion" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+                  Once we have enough data from all affiliates, we’ll compare your conversion rate against the global average.
+                </p>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Channel performance</h3>
+                <p id="insight-channel" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+                  Use UTM parameters and sub-IDs (e.g. <code>?source=tiktok&amp;campaign=challenge1</code>) to compare TikTok vs Instagram vs YouTube.
+                </p>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Plan preference</h3>
+                <p id="insight-plan" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+                  We’ll highlight here whether your audience prefers monthly or yearly plans once you have more subscriptions.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 12–13. Account, settings & support -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Account, settings & support</h2>
+                <p>All the basics you need plus a fast way to reach us.</p>
+              </div>
+            </div>
+            <div class="support-grid">
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Account</h3>
+                <ul class="list-compact">
+                  <li>Affiliate ID: <span id="account-affiliate-id">—</span></li>
+                  <li>Affiliate code: <span id="account-affiliate-code">—</span></li>
+                  <li>Join date: <span id="account-join-date">—</span></li>
+                  <li>Commission tier: <span id="account-commission-tier">Base</span></li>
+                  <li>Tax info: <span id="account-tax-status">Not provided yet</span></li>
+                </ul>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">FAQ & terms</h3>
+                <ul class="list-compact">
+                  <li><a href="terms.html" target="_blank" rel="noopener">Affiliate terms &amp; conditions</a></li>
+                  <li><a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></li>
+                  <li>FAQ: payouts, refunds, tracking (we’ll keep expanding this).</li>
+                </ul>
+              </div>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Support</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+                  Got questions about your stats, payouts or how to promote the app better?
+                </p>
+                <ul class="list-compact">
+                  <li>Contact: <span id="support-contact">You’ll receive our direct contact after onboarding.</span></li>
+                  <li>Status: <span class="badge badge-success">Active</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -100,6 +491,7 @@
       var gate = document.getElementById("dashboard-gate");
       var content = document.getElementById("dashboard-content");
       var linkEl = document.getElementById("affiliate-link");
+      var copyBtn = document.getElementById("btn-copy-link");
       var originBaseUrl = (window.location && window.location.origin)
         ? window.location.origin.replace(/\/$/, "")
         : "https://liftbetter.cloud";
@@ -113,54 +505,468 @@
         content.style.display = "block";
       }
 
+      function formatCurrency(value) {
+        var num = Number(value || 0);
+        if (!isFinite(num)) num = 0;
+        try {
+          return new Intl.NumberFormat("nl-NL", {
+            style: "currency",
+            currency: "EUR",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }).format(num);
+        } catch (_) {
+          return "€" + num.toFixed(2);
+        }
+      }
+
+      function daysBetween(start, end) {
+        var diff = end.getTime() - start.getTime();
+        return Math.floor(diff / (1000 * 60 * 60 * 24));
+      }
+
+      function clampPercent(v) {
+        if (!isFinite(v) || v < 0) return 0;
+        if (v > 100) return 100;
+        return v;
+      }
+
+      function buildSparkline(containerId, primarySeries, secondarySeries) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (!primarySeries || !primarySeries.length) {
+          var empty = document.createElement("div");
+          empty.className = "sparkline-empty";
+          empty.textContent = "No data yet.";
+          container.appendChild(empty);
+          return;
+        }
+
+        var maxPrimary = primarySeries.reduce(function (max, p) {
+          return p.value > max ? p.value : max;
+        }, 0);
+        var maxSecondary = secondarySeries && secondarySeries.length
+          ? secondarySeries.reduce(function (max, p) { return p.value > max ? p.value : max; }, 0)
+          : 0;
+        var globalMax = Math.max(maxPrimary, maxSecondary, 1);
+
+        primarySeries.forEach(function (p, idx) {
+          var bar = document.createElement("div");
+          bar.className = "sparkline-bar";
+          bar.style.height = ((p.value / globalMax) * 100 || 0) + "%";
+          bar.title = p.label + ": " + p.value;
+          container.appendChild(bar);
+
+          if (secondarySeries && secondarySeries[idx]) {
+            var bar2 = document.createElement("div");
+            bar2.className = "sparkline-bar muted";
+            bar2.style.height = ((secondarySeries[idx].value / globalMax) * 100 || 0) + "%";
+            bar2.title = secondarySeries[idx].label + ": " + secondarySeries[idx].value;
+            container.appendChild(bar2);
+          }
+        });
+      }
+
+      function groupByDate(items, getDateKey) {
+        var map = {};
+        items.forEach(function (item) {
+          var d = getDateKey(item);
+          if (!d) return;
+          if (!map[d]) map[d] = 0;
+          map[d] += 1;
+        });
+        return map;
+      }
+
+      function buildDateRangeArray(from, to) {
+        var arr = [];
+        var current = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+        var end = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+        while (current <= end) {
+          var key = current.toISOString().slice(0, 10);
+          arr.push({ date: new Date(current.getTime()), key: key });
+          current.setDate(current.getDate() + 1);
+        }
+        return arr;
+      }
+
+      function updateOverviewAndKpis(aff, stats, transactions, clickEvents) {
+        stats = stats || {};
+        transactions = transactions || [];
+        clickEvents = clickEvents || [];
+
+        var paidTransactions = transactions.filter(function (t) {
+          return t.payout_status === "paid" && t.commission_amount > 0;
+        });
+        var pendingTransactions = transactions.filter(function (t) {
+          return t.payout_status !== "paid" && t.commission_amount > 0;
+        });
+
+        var totalPaid = paidTransactions.reduce(function (sum, t) {
+          return sum + (Number(t.commission_amount) || 0);
+        }, 0);
+        var totalExpected = pendingTransactions.reduce(function (sum, t) {
+          return sum + (Number(t.commission_amount) || 0);
+        }, 0);
+        var expectedTotal = totalPaid + totalExpected;
+
+        document.getElementById("earnings-expected-total").textContent = formatCurrency(expectedTotal);
+        document.getElementById("earnings-paid-out").textContent = formatCurrency(totalPaid);
+        document.getElementById("earnings-expected-payouts").textContent = formatCurrency(totalExpected);
+
+        var payoutsByMonth = {};
+        paidTransactions.forEach(function (t) {
+          var d = t.payout_date ? new Date(t.payout_date) : new Date(t.event_date || t.created_at || new Date());
+          var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+          if (!payoutsByMonth[key]) payoutsByMonth[key] = 0;
+          payoutsByMonth[key] += Number(t.commission_amount) || 0;
+        });
+
+        var payoutHistoryEl = document.getElementById("payout-history");
+        payoutHistoryEl.innerHTML = "";
+        Object.keys(payoutsByMonth).sort().forEach(function (k) {
+          var li = document.createElement("li");
+          var label = k.slice(0, 4) + "-" + k.slice(5);
+          li.innerHTML = "<span>" + label + "</span><span>" + formatCurrency(payoutsByMonth[k]) + "</span>";
+          payoutHistoryEl.appendChild(li);
+        });
+        if (!Object.keys(payoutsByMonth).length) {
+          var liEmpty = document.createElement("li");
+          liEmpty.innerHTML = "<span>No payouts yet</span><span>—</span>";
+          payoutHistoryEl.appendChild(liEmpty);
+        }
+
+        var clicksAllTime = Number(stats.clicks || 0);
+        // Installs komen uit affiliate_stats.downloads (+ per platform uit downloads_ios / downloads_android)
+        var installsAllTime = Number(stats.downloads || 0);
+        var installsIosAllTime = Number(stats.downloads_ios || 0);
+        var installsAndroidAllTime = Number(stats.downloads_android || 0);
+        // Betaalde gebruikers op twee manieren tellen:
+        // 1) Nieuwe event-tabel (affiliate_transactions)
+        // 2) Backwards compatible fallback via affiliate_stats (monthly_subs + yearly_subs)
+        var subsFromTransactions = transactions.filter(function (t) {
+          return t.event_type === "subscription" && t.status !== "refunded";
+        }).length;
+        var subsFromStats =
+          Number(stats.monthly_subs || 0) + Number(stats.yearly_subs || 0);
+        var subsAllTime = subsFromTransactions || subsFromStats;
+
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var start7d = new Date(startOfToday.getTime());
+        start7d.setDate(start7d.getDate() - 6);
+        var start30d = new Date(startOfToday.getTime());
+        start30d.setDate(start30d.getDate() - 29);
+
+        function inRange(dateStr, from) {
+          var d = new Date(dateStr);
+          return d >= from && d <= now;
+        }
+
+        var clicksToday = clickEvents.filter(function (e) { return inRange(e.occurred_at, startOfToday); }).length;
+        var clicks7d = clickEvents.filter(function (e) { return inRange(e.occurred_at, start7d); }).length;
+        var clicks30d = clickEvents.filter(function (e) { return inRange(e.occurred_at, start30d); }).length;
+
+        var payingUsersAll = subsAllTime;
+        var payingUsers30d = transactions.filter(function (t) {
+          return t.event_type === "subscription" && t.status !== "refunded" && inRange(t.event_date || t.created_at, start30d);
+        }).length;
+
+        var convClickToInstall = clicksAllTime ? (installsAllTime / clicksAllTime) * 100 : 0;
+        var convInstallToPaid = installsAllTime ? (subsAllTime / installsAllTime) * 100 : 0;
+
+        var totalCommission = transactions.reduce(function (sum, t) {
+          return sum + (Number(t.commission_amount) || 0);
+        }, 0);
+        var epu = payingUsersAll ? totalCommission / payingUsersAll : 0;
+
+        document.getElementById("kpi-clicks-all").textContent = (clicksAllTime || 0).toLocaleString("en-US");
+        var clicksBreakdownEl = document.getElementById("kpi-clicks-breakdown");
+        if (clicksBreakdownEl) {
+          clicksBreakdownEl.textContent =
+            "Today: " + clicksToday + " · 7d: " + clicks7d + " · 30d: " + clicks30d;
+        }
+
+        document.getElementById("kpi-installs-all").textContent = (installsAllTime || 0).toLocaleString("en-US");
+        var installsBreakdownEl = document.getElementById("kpi-installs-breakdown");
+        if (installsBreakdownEl) {
+          installsBreakdownEl.innerHTML =
+            "iOS: " + (installsIosAllTime || 0).toLocaleString("en-US") + "<br>" +
+            "Android: " + (installsAndroidAllTime || 0).toLocaleString("en-US");
+        }
+
+        document.getElementById("kpi-paying-users").textContent = (payingUsersAll || 0).toLocaleString("en-US");
+        var payingUsersBreakdownEl = document.getElementById("kpi-paying-users-breakdown");
+        if (payingUsersBreakdownEl) {
+          payingUsersBreakdownEl.textContent =
+            "New last 30d: " + payingUsers30d.toLocaleString("en-US");
+        }
+
+        var convClickToInstallClamped = clampPercent(convClickToInstall);
+        var convInstallToPaidClamped = clampPercent(convInstallToPaid);
+
+        document.getElementById("kpi-conv-click-install-main").textContent =
+          convClickToInstallClamped.toFixed(1) + "%";
+        document.getElementById("kpi-conv-click-install-sub").textContent =
+          "All-time: " + (installsAllTime || 0).toLocaleString("en-US") +
+          " installs / " + (clicksAllTime || 0).toLocaleString("en-US") +
+          " clicks = " + convClickToInstallClamped.toFixed(1) + "%.";
+
+        document.getElementById("kpi-conv-install-paid-main").textContent =
+          convInstallToPaidClamped.toFixed(1) + "%";
+        document.getElementById("kpi-conv-install-paid-sub").textContent =
+          "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
+          " paying users / " + (installsAllTime || 0).toLocaleString("en-US") +
+          " installs = " + convInstallToPaidClamped.toFixed(1) + "%.";
+
+        document.getElementById("kpi-epu-main").textContent = formatCurrency(epu);
+        document.getElementById("kpi-epu-breakdown").textContent =
+          "Based on all paying users so far.";
+
+        document.getElementById("funnel-clicks").textContent = clicksAllTime.toLocaleString("en-US");
+        document.getElementById("funnel-installs").textContent =
+          installsAllTime.toLocaleString("en-US") + " (" + clampPercent(convClickToInstall).toFixed(1) + "%)";
+        document.getElementById("funnel-paying-users").textContent =
+          subsAllTime.toLocaleString("en-US") + " (" + clampPercent(convInstallToPaid).toFixed(1) + "%)";
+        document.getElementById("funnel-earned").textContent = formatCurrency(totalCommission);
+
+        var available = pendingTransactions.reduce(function (sum, t) {
+          var d = t.hold_until ? new Date(t.hold_until) : new Date();
+          if (d <= now) {
+            return sum + (Number(t.commission_amount) || 0);
+          }
+          return sum;
+        }, 0);
+        document.getElementById("payout-available").textContent = formatCurrency(available);
+
+        var commissionTier = (aff.commission_tier || "Base tier");
+        document.getElementById("commission-tier").textContent = commissionTier;
+        document.getElementById("account-commission-tier").textContent = commissionTier;
+
+        var salesForMilestone = subsAllTime;
+        var pct10Sales = clampPercent((salesForMilestone / 10) * 100);
+        var milestone10El = document.getElementById("milestone-10-sales");
+        var milestone10TextEl = document.getElementById("milestone-10-sales-text");
+        if (milestone10El && milestone10TextEl) {
+          milestone10El.style.width = pct10Sales + "%";
+          milestone10TextEl.textContent =
+            salesForMilestone + " / 10 sales completed.";
+        }
+
+        // Zolang we geen aparte install-events met datum hebben, gebruiken we het totaal aantal installs
+        // als proxy voor de milestone-voortgang.
+        var installsThisMonth = installsAllTime;
+        var pct25Installs = clampPercent((installsThisMonth / 25) * 100);
+        var milestone25El = document.getElementById("milestone-25-installs");
+        var milestone25TextEl = document.getElementById("milestone-25-installs-text");
+        if (milestone25El && milestone25TextEl) {
+          milestone25El.style.width = pct25Installs + "%";
+          milestone25TextEl.textContent =
+            installsThisMonth + " / 25 installs (all-time).";
+        }
+
+        document.getElementById("account-affiliate-id").textContent = aff.id || "—";
+        document.getElementById("account-affiliate-code").textContent = aff.affiliate_code || "—";
+        if (aff.join_date) {
+          var jd = new Date(aff.join_date);
+          document.getElementById("account-join-date").textContent = jd.toISOString().slice(0, 10);
+        }
+        var taxStatus = aff.tax_info_status || "Not provided yet";
+        document.getElementById("account-tax-status").textContent = taxStatus;
+
+        var payoutMethodText = aff.payout_method || "Not set yet";
+        document.getElementById("payout-method").textContent = payoutMethodText;
+        var badge = document.getElementById("payout-verified-badge");
+        if (aff.tax_info_status === "verified" && aff.payout_details) {
+          badge.textContent = "Payment details verified";
+          badge.classList.remove("badge-muted");
+          badge.classList.add("badge-success");
+        } else {
+          badge.textContent = "Payment details not verified";
+          badge.classList.remove("badge-success");
+          badge.classList.add("badge-muted");
+        }
+      }
+
+      function updateTransactionsTable(transactions) {
+        var tbody = document.getElementById("transactions-body");
+        var empty = document.getElementById("transactions-empty");
+        tbody.innerHTML = "";
+
+        if (!transactions.length) {
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+
+        transactions.sort(function (a, b) {
+          var da = new Date(a.event_date || a.created_at);
+          var db = new Date(b.event_date || b.created_at);
+          return db.getTime() - da.getTime();
+        });
+
+        var now = new Date();
+
+        transactions.slice(0, 200).forEach(function (t) {
+          var tr = document.createElement("tr");
+          var date = new Date(t.event_date || t.created_at);
+          var typeLabel = t.event_type === "subscription" ? "Subscription"
+            : (t.event_type === "install" ? "Install" : t.event_type);
+          var subType = t.subscription_type ? (t.subscription_type.charAt(0).toUpperCase() + t.subscription_type.slice(1)) : "—";
+          var status = t.status || "pending";
+          var payoutStatus = t.payout_status || "pending";
+          var commission = t.commission_amount ? formatCurrency(t.commission_amount) : "€0";
+
+          var holdText = "—";
+          if (t.hold_until) {
+            var holdDate = new Date(t.hold_until);
+            if (holdDate > now) {
+              var remaining = daysBetween(now, holdDate);
+              holdText = remaining + " days remaining";
+            } else {
+              holdText = "Approved";
+            }
+          }
+
+          tr.innerHTML =
+            "<td>" + date.toISOString().slice(0, 10) + "</td>" +
+            "<td>" + typeLabel + "</td>" +
+            "<td>" + subType + "</td>" +
+            "<td>" + status + "</td>" +
+            "<td>" + commission + "</td>" +
+            "<td>" + payoutStatus + "</td>" +
+            "<td>" + holdText + "</td>";
+          tbody.appendChild(tr);
+        });
+      }
+
+      function updateCharts(transactions, clickEvents) {
+        var now = new Date();
+
+        function buildClicksSeries(days) {
+          var to = now;
+          var from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          from.setDate(from.getDate() - (days - 1));
+          var dateArray = buildDateRangeArray(from, to);
+          var clicksByDay = groupByDate(clickEvents, function (e) {
+            return (e.occurred_at || "").slice(0, 10);
+          });
+          return dateArray.map(function (d) {
+            var key = d.key;
+            return { label: key, value: clicksByDay[key] || 0 };
+          });
+        }
+
+        var clicks7 = buildClicksSeries(7);
+        var clicks30 = buildClicksSeries(30);
+        var clicks365 = buildClicksSeries(365);
+
+        buildSparkline("sparkline-clicks-7d", clicks7, null);
+        buildSparkline("sparkline-clicks-30d", clicks30, null);
+        buildSparkline("sparkline-clicks-365d", clicks365, null);
+
+        // Revenue: laat nog steeds de laatste 30 dagen aan subscriptions zien
+        var fromRevenue = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        fromRevenue.setDate(fromRevenue.getDate() - 29);
+        var revenueDates = buildDateRangeArray(fromRevenue, now);
+
+        var revenueByDay = {};
+        var convByDay = {};
+        transactions.forEach(function (t) {
+          if (t.event_type !== "subscription") return;
+          var key = (t.event_date || t.created_at || "").slice(0, 10);
+          if (!key) return;
+          if (!revenueByDay[key]) revenueByDay[key] = 0;
+          revenueByDay[key] += Number(t.commission_amount) || 0;
+          if (!convByDay[key]) convByDay[key] = 0;
+          convByDay[key] += 1;
+        });
+
+        var revenueSeries = revenueDates.map(function (d) {
+          var key = d.key;
+          return { label: key, value: revenueByDay[key] || 0 };
+        });
+        var convSeries = revenueDates.map(function (d) {
+          var key = d.key;
+          return { label: key, value: convByDay[key] || 0 };
+        });
+
+        buildSparkline("sparkline-revenue", revenueSeries, convSeries);
+        document.getElementById("chart-revenue-subtitle").textContent =
+          revenueDates[0].key + " → " + revenueDates[revenueDates.length - 1].key;
+      }
+
       function loadDashboard(user) {
         if (!window.__affiliateSupabase || !user) {
           showGate();
           return;
         }
+
         window.__affiliateSupabase
           .from("affiliates")
-          .select("id, affiliate_code, email")
+          .select("id, affiliate_code, email, commission_tier, join_date, payout_method, payout_details, tax_info_status")
           .eq("user_id", user.id)
           .single()
           .then(function (result) {
             if (result.error || !result.data) {
               showContent();
               linkEl.textContent = "Complete registration on the Become affiliate page to get your link.";
-              return;
+              return null;
             }
             var aff = result.data;
             linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
-            return window.__affiliateSupabase
-              .from("affiliate_stats")
-              .select("clicks, clicks_ios, clicks_android, downloads, downloads_ios, downloads_android, monthly_subs, yearly_subs")
-              .eq("affiliate_id", aff.id)
-              .single();
+
+            if (copyBtn && navigator.clipboard) {
+              copyBtn.onclick = function () {
+                navigator.clipboard.writeText(linkEl.textContent || "").then(function () {
+                  copyBtn.textContent = "Copied";
+                  setTimeout(function () { copyBtn.textContent = "Copy"; }, 1500);
+                }).catch(function () {});
+              };
+            }
+
+            return Promise.all([
+              Promise.resolve(aff),
+              window.__affiliateSupabase
+                .from("affiliate_stats")
+                .select("clicks, clicks_ios, clicks_android, downloads, downloads_ios, downloads_android, monthly_subs, yearly_subs")
+                .eq("affiliate_id", aff.id)
+                .single()
+                .then(function (r) { return r.error ? null : r.data; }),
+              window.__affiliateSupabase
+                .from("affiliate_transactions")
+                .select("*")
+                .eq("affiliate_id", aff.id)
+                .order("event_date", { ascending: false })
+                .limit(500)
+                .then(function (r) { return r.error ? [] : (r.data || []); }),
+              window.__affiliateSupabase
+                .from("affiliate_click_events")
+                .select("*")
+                .eq("affiliate_id", aff.id)
+                .order("occurred_at", { ascending: false })
+                .limit(2000)
+                .then(function (r) { return r.error ? [] : (r.data || []); }),
+            ]);
           })
-          .then(function (statsResult) {
-            if (!statsResult || statsResult.error) return;
-            var s = statsResult.data;
-            document.getElementById("stat-clicks").textContent = (s.clicks || 0).toLocaleString("en-US");
-            document.getElementById("stat-clicks-ios").textContent = (s.clicks_ios || 0).toLocaleString("en-US");
-            document.getElementById("stat-clicks-android").textContent = (s.clicks_android || 0).toLocaleString("en-US");
-            document.getElementById("stat-downloads").textContent = (s.downloads || 0).toLocaleString("en-US");
-            document.getElementById("stat-downloads-ios").textContent = (s.downloads_ios || 0).toLocaleString("en-US");
-            document.getElementById("stat-downloads-android").textContent = (s.downloads_android || 0).toLocaleString("en-US");
-            document.getElementById("stat-monthly").textContent = (s.monthly_subs || 0).toLocaleString("en-US");
-            document.getElementById("stat-yearly").textContent = (s.yearly_subs || 0).toLocaleString("en-US");
+          .then(function (bundle) {
+            if (!bundle) return;
+            var aff = bundle[0];
+            var stats = bundle[1] || {};
+            var transactions = bundle[2] || [];
+            var clickEvents = bundle[3] || [];
+
+            updateOverviewAndKpis(aff, stats, transactions, clickEvents);
+            updateTransactionsTable(transactions);
+            updateCharts(transactions, clickEvents);
+
+            showContent();
           });
-        showContent();
       }
 
       if (typeof window.affiliateAuth === "undefined") {
-        document.getElementById("stat-clicks").textContent = "—";
-        document.getElementById("stat-clicks-ios").textContent = "—";
-        document.getElementById("stat-clicks-android").textContent = "—";
-        document.getElementById("stat-downloads").textContent = "—";
-        document.getElementById("stat-downloads-ios").textContent = "—";
-        document.getElementById("stat-downloads-android").textContent = "—";
-        document.getElementById("stat-monthly").textContent = "—";
-        document.getElementById("stat-yearly").textContent = "—";
         linkEl.textContent = originBaseUrl + "/your-code";
         showContent();
         return;

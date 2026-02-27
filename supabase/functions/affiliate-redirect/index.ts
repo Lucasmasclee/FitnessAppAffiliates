@@ -121,6 +121,17 @@ Deno.serve(async (req) => {
         console.error("affiliate-redirect: stats update error:", updateError.message);
       }
     }
+
+    // Bewaar ook een event-row voor tijdsanalyses in het dashboard
+    try {
+      await supabase.from("affiliate_click_events").insert({
+        affiliate_id: affiliate.id,
+        platform,
+        occurred_at: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error("affiliate-redirect: click_events insert error:", e);
+    }
   } catch (e) {
     console.error("affiliate-redirect: unexpected error:", e);
   }

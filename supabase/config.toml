@@ -19,3 +19,9 @@ verify_jwt = false
 # it increments downloads (total + platform-specific).
 [functions.affiliate-download]
 verify_jwt = false
+
+# Affiliate subscriptions worden rechtstreeks vanuit de app / backend aangeroepen
+# met alleen affiliate_code/branch_link_alias; JWT-validatie gebeurt dus niet
+# via de Supabase-gateway.
+[functions.affiliate-subscription]
+verify_jwt = false
