@@ -5,17 +5,41 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_navigator_observer.dart';
 import 'functionaliteit/rest_timer_service.dart';
-import 'screens/start_screen.dart';
+import 'functionaliteit/subscription_service.dart';
+import 'functionaliteit/supabase_service.dart';
+import 'functionaliteit/workout_storage.dart';
+import 'screens/survey.dart';
 import 'screens/weekplanning.dart';
 import 'widgets/rest_timer_overlay.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initSupabase();
+  await SubscriptionService.instance.init();
   await AffiliateTracker.instance.init();
   runApp(const MyApp());
+}
+
+Future<void> _initSupabase() async {
+  const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+
+  if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
+    debugPrint(
+        'Supabase niet geïnitialiseerd: SUPABASE_URL of SUPABASE_ANON_KEY is leeg.');
+    return;
+  }
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  );
+
+  debugPrint('Supabase succesvol geïnitialiseerd.');
 }
 
 class AffiliateTracker {
@@ -146,6 +170,50 @@ class AffiliateTracker {
   }
 }
 
+/// Bepaalt bij het opstarten waar de gebruiker heen moet.
+/// - Nieuwe gebruikers (geen abonnement / geen workout) -> Survey
+/// - Gebruikers met abonnement én een geldige workout -> Weekplanning
+class RootScreen extends StatefulWidget {
+  const RootScreen({super.key});
+
+  @override
+  State<RootScreen> createState() => _RootScreenState();
+}
+
+class _RootScreenState extends State<RootScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _decideStartRoute();
+  }
+
+  Future<void> _decideStartRoute() async {
+    final hasSub = SubscriptionService.instance.hasActiveSubscription;
+    final hasWorkout = await hasValidWorkoutSaved();
+
+    if (!mounted) return;
+
+    if (hasSub && hasWorkout) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const WeekplanningScreen()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const SurveyScreen()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -159,6 +227,11 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     RestTimerService.instance.ensureInitialized();
     RestTimerService.instance.addListener(_onTimerUpdate);
+
+    // Voorbeeld: affiliate_code voor een specifieke gebruiker ophalen en printen.
+    // Pas het e‑mailadres en eventueel de tabelnaam aan.
+    SupabaseService.instance
+        .printAffiliateCodeForEmail('test@test.test', tableName: 'affiliates');
   }
 
   void _onTimerUpdate() {
@@ -180,7 +253,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       navigatorObservers: [appRouteObserver],
-      home: const StartScreen(),
+      home: const RootScreen(),
       routes: {
         '/weekplanning': (_) => const WeekplanningScreen(),
       },

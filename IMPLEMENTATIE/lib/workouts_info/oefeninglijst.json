@@ -1,0 +1,330 @@
+{
+  "exerciseList": [
+    {
+      "muscleGroup": "Biceps",
+      "category": "A",
+      "exercises": [
+        {
+          "name": "Dumbell Hammer Curls",
+          "trainedMuscles": ["Biceps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Cable reverse curl (cuffed)", "Cable rope curls"]
+        },
+        {
+          "name": "Recline Curls",
+          "trainedMuscles": ["Biceps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Standing bicep curls", "Preacher curls"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Triceps",
+      "category": "A",
+      "exercises": [
+        {
+          "name": "Tricep Extensions",
+          "trainedMuscles": ["Triceps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Straight bar pushdowns", "Cable rope pushdowns"]
+        },
+        {
+          "name": "Overhead Tricep Extensions",
+          "trainedMuscles": ["Triceps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["JM-Press", "Overhead rope extensions"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Mid Chest",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Chest Flies",
+          "trainedMuscles": ["Mid Chest"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Machine Chest press (Wide grip)", "Barbell bench press"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Upper Chest",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Low to High Flies",
+          "trainedMuscles": ["Upper Chest"],
+          "reps": "4-7",
+          "restTime": "2 minutes",
+          "timer": [2, 0],
+          "similarExercises": ["Incline smith machine bench press", "Incline dumbbell bench (tucked elbows)"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Side Delts",
+      "category": "C",
+      "exercises": [
+        {
+          "name": "Shoulder Press",
+          "trainedMuscles": ["Side Delts", "Front Delts"],
+          "reps": "4-7",
+          "restTime": "~3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Machine shoulder press", "Smith machine shoulder press"]
+        },
+        {
+          "name": "Cable Lateral Raises",
+          "trainedMuscles": ["Side Delts"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Machine lateral raises", "Dumbell lateral raises"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Front Delts",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Shoulder Press",
+          "trainedMuscles": ["Side Delts", "Front Delts"],
+          "reps": "4-7",
+          "restTime": "~3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Dumbbell front raises", "Cable front raises"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Lats",
+      "category": "A",
+      "exercises": [
+        {
+          "name": "Machine Pullovers",
+          "trainedMuscles": ["Lats"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Chest supported close grip row", "Seated cable row"]
+        },
+        {
+          "name": "Wide Grip Lat Pulldowns",
+          "trainedMuscles": ["Lats"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Wide grip weighted pull-ups", "Wide grip assisted pull-ups", "Keenan flaps"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Rear Delts",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Chest Supported Machine Row",
+          "trainedMuscles": ["Rear delts", "Mid Traps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Machine rear delt flies", "Cable rear delt flies"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Mid Traps",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Kelso Shrugs",
+          "trainedMuscles": ["Mid Traps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Dumbell kelso shrugs", "T bar kelso shrugs"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Upper Traps",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Smith Machine Shrugs",
+          "trainedMuscles": ["Upper Traps"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Dumbbell shrugs", "Bench supported dumbbell shrugs"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Spinal Erectors",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Chest Supported Spinal Flexes",
+          "trainedMuscles": ["Spinal Erectors"],
+          "reps": "4-7",
+          "restTime": "2 minutes",
+          "timer": [2, 0],
+          "similarExercises": ["Spinal extensions (Back extensions machine)", "Jefferson curls"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Abs",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Machine Crunches",
+          "trainedMuscles": ["Abs"],
+          "reps": "4-7",
+          "restTime": "2 minutes",
+          "timer": [2, 0],
+          "similarExercises": ["Reverse back extensions", "Cable crunches"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Obliques",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Machine Torso Rotations",
+          "trainedMuscles": ["Obliques"],
+          "reps": "4-7",
+          "restTime": "2 minutes",
+          "timer": [2, 0],
+          "similarExercises": ["Woodchoppers"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Forearms",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Dumbell Wrist Extensions & Dumbell Wrist Flexions",
+          "trainedMuscles": ["Forearms"],
+          "reps": "4-7",
+          "restTime": "90 seconds per set",
+          "timer": [0, 90],
+          "similarExercises": ["Cable Wrist extensions & Cable wrist flexions"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Rectus Femoris",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Leg Extensions",
+          "trainedMuscles": ["Rectus Femoris", "Vastus Muscles"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Sissy Squats", "Reverse nordic curls"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Vastus Muscles",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Leg Press",
+          "trainedMuscles": ["Vastus Muscles", "Gluteus Maximus"],
+          "reps": "4-7",
+          "restTime": "3-4 minutes",
+          "timer": [4, 0],
+          "similarExercises": ["Hack squat", "Barbell back squat", "V-squat"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Gluteus Maximus",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Smith Machine Hip Thrusts",
+          "trainedMuscles": ["Gluteus Maximus"],
+          "reps": "4-7",
+          "restTime": "~3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Barbell hip thrust", "Machine hip thrust"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Upper Glutes",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Hip Abductions",
+          "trainedMuscles": ["Upper Glutes"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Standing machine hip abductions", "Diagonal cable kickbacks"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Hamstrings",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Seated Leg Curl",
+          "trainedMuscles": ["Hamstrings"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Lying leg curl", "Standing leg curl"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Calves",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Straight Leg Calf Raises",
+          "trainedMuscles": ["Calves"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Straight leg calf raises (Leg press)"]
+        }
+      ]
+    },
+    {
+      "muscleGroup": "Adductors",
+      "category": "B",
+      "exercises": [
+        {
+          "name": "Hip Adductions",
+          "trainedMuscles": ["Adductors"],
+          "reps": "4-7",
+          "restTime": "2-3 minutes",
+          "timer": [3, 0],
+          "similarExercises": ["Isometric hip adductions"]
+        }
+      ]
+    }
+  ]
+}

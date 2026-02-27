@@ -1,0 +1,110 @@
+{
+    "spiergroepen": [
+      {
+        "naam": "Elbow Flexers",
+        "volume": 3,
+        "spieren": [
+          { "naam": "Biceps" },
+          { "naam": "Brachialis & Brachioradialis" }
+        ]
+      },
+      {
+        "naam": "Triceps",
+        "volume": 3,
+        "spieren": [
+          { "naam": "Lateral + Medial head" },
+          { "naam": "Long head" }
+        ]
+      },
+      {
+        "naam": "Chest",
+        "spieren": [
+          { "naam": "Mid chest", "volume": 2 },
+          { "naam": "Upper chest", "volume": 1 }
+        ]
+      },
+      {
+        "naam": "Shoulders",
+        "spieren": [
+          { "naam": "Side delts", "volume": 4 },
+          { "naam": "Front delts", "volume": 2 }
+        ]
+      },
+      {
+        "naam": "Lats",
+        "volume": 4,
+        "spieren": [
+          { "naam": "Lower lats" },
+          { "naam": "Upper lats" }
+        ]
+      },
+      {
+        "naam": "Upper Back",
+        "spieren": [
+          { "naam": "Rear delts", "volume": 2 },
+          { "naam": "Mid traps", "volume": 2 },
+          { "naam": "Upper traps", "volume": 2 }
+        ]
+      },
+      {
+        "naam": "Spinal Erectors",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Spinal Erectors" }
+        ]
+      },
+      {
+        "naam": "Abs",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Abs" }
+        ]
+      },
+      {
+        "naam": "Obliques",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Obliques" }
+        ]
+      },
+      {
+        "naam": "Forearms",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Wrist extensors" },
+          { "naam": "Wrist flexors" }
+        ]
+      },
+      {
+        "naam": "Quadriceps & Glutes",
+        "spieren": [
+          { "naam": "Rectus femoris", "volume": 2},
+          { "naam": "Vastus muscles", "volume": 3 },
+          { "naam": "Gluteus maximus", "volume": 3 },
+          { "naam": "Upper glutes", "volume": 2 }
+        ]
+      },
+      {
+        "naam": "Hamstrings",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Hamstrings" }
+        ]
+      },
+      {
+        "naam": "Adductors",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Adductors" }
+        ]
+      },
+      {
+        "naam": "Calves",
+        "volume": 2,
+        "spieren": [
+          { "naam": "Calves" }
+        ]
+      }
+    ]
+  }
+  
