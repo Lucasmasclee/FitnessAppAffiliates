@@ -100,35 +100,60 @@
               </div>
             </div>
             <div class="kpi-grid">
+              <!-- Clicks -->
               <div class="kpi-card">
                 <div class="kpi-label">Clicks</div>
                 <div class="kpi-value" id="kpi-clicks-all">0</div>
-                <!-- <div class="kpi-subtext" id="kpi-clicks-breakdown">Today: 0 · 7d: 0 · 30d: 0</div> -->
+                <div class="kpi-subtext" id="kpi-clicks-breakdown">iOS: 0<br>Android: 0</div>
               </div>
+
+              <!-- Installs -->
               <div class="kpi-card">
                 <div class="kpi-label">Installs (attributed)</div>
                 <div class="kpi-value" id="kpi-installs-all">0</div>
-                <div class="kpi-subtext" id="kpi-installs-breakdown">Today: 0 · 7d: 0 · 30d: 0</div>
+                <div class="kpi-subtext" id="kpi-installs-breakdown">iOS: 0<br>Android: 0</div>
               </div>
+
+              <!-- Monthly subscriptions -->
               <div class="kpi-card">
-                <div class="kpi-label">Paying users</div>
-                <div class="kpi-value" id="kpi-paying-users">0</div>
-                <div class="kpi-subtext" id="kpi-paying-users-breakdown">New last 30d: 0</div>
+                <div class="kpi-label">Monthly subscriptions</div>
+                <div class="kpi-value" id="kpi-monthly-subs">0</div>
+                <div class="kpi-subtext" id="kpi-monthly-subs-sub">All-time monthly subscriptions.</div>
               </div>
+
+              <!-- Yearly subscriptions -->
+              <div class="kpi-card">
+                <div class="kpi-label">Yearly subscriptions</div>
+                <div class="kpi-value" id="kpi-yearly-subs">0</div>
+                <div class="kpi-subtext" id="kpi-yearly-subs-sub">All-time yearly subscriptions.</div>
+              </div>
+
+              <!-- Conversion: Click → Install -->
               <div class="kpi-card">
                 <div class="kpi-label">Click → Install</div>
                 <div class="kpi-value" id="kpi-conv-click-install-main">0%</div>
                 <div class="kpi-subtext" id="kpi-conv-click-install-sub">All-time conversion from clicks to installs.</div>
               </div>
+
+              <!-- Conversion: Install → Subscription -->
               <div class="kpi-card">
-                <div class="kpi-label">Install → Paying user</div>
-                <div class="kpi-value" id="kpi-conv-install-paid-main">0%</div>
-                <div class="kpi-subtext" id="kpi-conv-install-paid-sub">All-time conversion from installs to paying users.</div>
+                <div class="kpi-label">Install → Subscription</div>
+                <div class="kpi-value" id="kpi-conv-install-sub-main">0%</div>
+                <div class="kpi-subtext" id="kpi-conv-install-sub-sub">All-time conversion from installs to subscriptions.</div>
               </div>
+
+              <!-- Conversion: Click → Subscription -->
+              <div class="kpi-card">
+                <div class="kpi-label">Click → Subscription</div>
+                <div class="kpi-value" id="kpi-conv-click-sub-main">0%</div>
+                <div class="kpi-subtext" id="kpi-conv-click-sub-sub">All-time conversion from clicks to subscriptions.</div>
+              </div>
+
+              <!-- Avg earnings per user -->
               <div class="kpi-card">
                 <div class="kpi-label">Avg earnings per user (EPU)</div>
                 <div class="kpi-value" id="kpi-epu-main">€0</div>
-                <div class="kpi-subtext" id="kpi-epu-breakdown">Based on all paid users.</div>
+                <div class="kpi-subtext" id="kpi-epu-breakdown">Based on all paying users.</div>
               </div>
             </div>
           </div>
@@ -607,9 +632,25 @@
         var totalPaid = paidTransactions.reduce(function (sum, t) {
           return sum + (Number(t.commission_amount) || 0);
         }, 0);
-        var totalExpected = pendingTransactions.reduce(function (sum, t) {
-          return sum + (Number(t.commission_amount) || 0);
-        }, 0);
+
+        // Monthly/yearly counts voor expected payouts-formule
+        var monthlyFromStats = Number(stats.monthly_subs || 0);
+        var yearlyFromStats = Number(stats.yearly_subs || 0);
+        var monthlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "monthly" &&
+            t.status !== "refunded";
+        }).length;
+        var yearlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "yearly" &&
+            t.status !== "refunded";
+        }).length;
+        var monthlySubsForPayout = monthlyFromTx || monthlyFromStats;
+        var yearlySubsForPayout = yearlyFromTx || yearlyFromStats;
+
+        // Expected payouts = Monthly subs × 20 × 0.75 + Yearly subs × 50 × 0.75
+        var totalExpected = (monthlySubsForPayout * 20 * 0.75) + (yearlySubsForPayout * 50 * 0.75);
         var expectedTotal = totalPaid + totalExpected;
 
         document.getElementById("earnings-expected-total").textContent = formatCurrency(expectedTotal);
@@ -639,6 +680,8 @@
         }
 
         var clicksAllTime = Number(stats.clicks || 0);
+        var clicksIosAllTime = Number(stats.clicks_ios || 0);
+        var clicksAndroidAllTime = Number(stats.clicks_android || 0);
         // Installs komen uit affiliate_stats.downloads (+ per platform uit downloads_ios / downloads_android)
         var installsAllTime = Number(stats.downloads || 0);
         var installsIosAllTime = Number(stats.downloads_ios || 0);
@@ -676,20 +719,26 @@
 
         var convClickToInstall = clicksAllTime ? (installsAllTime / clicksAllTime) * 100 : 0;
         var convInstallToPaid = installsAllTime ? (subsAllTime / installsAllTime) * 100 : 0;
+        var convClickToSub = clicksAllTime ? (subsAllTime / clicksAllTime) * 100 : 0;
 
         var totalCommission = transactions.reduce(function (sum, t) {
           return sum + (Number(t.commission_amount) || 0);
         }, 0);
         var epu = payingUsersAll ? totalCommission / payingUsersAll : 0;
 
-        document.getElementById("kpi-clicks-all").textContent = (clicksAllTime || 0).toLocaleString("en-US");
+        // Clicks + breakdown per platform
+        document.getElementById("kpi-clicks-all").textContent =
+          (clicksAllTime || 0).toLocaleString("en-US");
         var clicksBreakdownEl = document.getElementById("kpi-clicks-breakdown");
         if (clicksBreakdownEl) {
-          clicksBreakdownEl.textContent =
-            "Today: " + clicksToday + " · 7d: " + clicks7d + " · 30d: " + clicks30d;
+          clicksBreakdownEl.innerHTML =
+            "iOS: " + (clicksIosAllTime || 0).toLocaleString("en-US") + "<br>" +
+            "Android: " + (clicksAndroidAllTime || 0).toLocaleString("en-US");
         }
 
-        document.getElementById("kpi-installs-all").textContent = (installsAllTime || 0).toLocaleString("en-US");
+        // Installs + breakdown per platform
+        document.getElementById("kpi-installs-all").textContent =
+          (installsAllTime || 0).toLocaleString("en-US");
         var installsBreakdownEl = document.getElementById("kpi-installs-breakdown");
         if (installsBreakdownEl) {
           installsBreakdownEl.innerHTML =
@@ -697,7 +746,30 @@
             "Android: " + (installsAndroidAllTime || 0).toLocaleString("en-US");
         }
 
-        document.getElementById("kpi-paying-users").textContent = (payingUsersAll || 0).toLocaleString("en-US");
+        // Subscriptions (monthly / yearly)
+        var monthlyFromStats = Number(stats.monthly_subs || 0);
+        var yearlyFromStats = Number(stats.yearly_subs || 0);
+        var monthlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "monthly" &&
+            t.status !== "refunded";
+        }).length;
+        var yearlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "yearly" &&
+            t.status !== "refunded";
+        }).length;
+        var monthlySubs = monthlyFromTx || monthlyFromStats;
+        var yearlySubs = yearlyFromTx || yearlyFromStats;
+
+        document.getElementById("kpi-monthly-subs").textContent =
+          (monthlySubs || 0).toLocaleString("en-US");
+        document.getElementById("kpi-yearly-subs").textContent =
+          (yearlySubs || 0).toLocaleString("en-US");
+
+        // Paying users (alle subscriptions)
+        document.getElementById("kpi-paying-users").textContent =
+          (payingUsersAll || 0).toLocaleString("en-US");
         var payingUsersBreakdownEl = document.getElementById("kpi-paying-users-breakdown");
         if (payingUsersBreakdownEl) {
           payingUsersBreakdownEl.textContent =
@@ -706,7 +778,9 @@
 
         var convClickToInstallClamped = clampPercent(convClickToInstall);
         var convInstallToPaidClamped = clampPercent(convInstallToPaid);
+        var convClickToSubClamped = clampPercent(convClickToSub);
 
+        // Click → Install
         document.getElementById("kpi-conv-click-install-main").textContent =
           convClickToInstallClamped.toFixed(1) + "%";
         document.getElementById("kpi-conv-click-install-sub").textContent =
@@ -714,12 +788,21 @@
           " installs / " + (clicksAllTime || 0).toLocaleString("en-US") +
           " clicks = " + convClickToInstallClamped.toFixed(1) + "%.";
 
-        document.getElementById("kpi-conv-install-paid-main").textContent =
+        // Install → Subscription
+        document.getElementById("kpi-conv-install-sub-main").textContent =
           convInstallToPaidClamped.toFixed(1) + "%";
-        document.getElementById("kpi-conv-install-paid-sub").textContent =
+        document.getElementById("kpi-conv-install-sub-sub").textContent =
           "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
-          " paying users / " + (installsAllTime || 0).toLocaleString("en-US") +
+          " subscriptions / " + (installsAllTime || 0).toLocaleString("en-US") +
           " installs = " + convInstallToPaidClamped.toFixed(1) + "%.";
+
+        // Click → Subscription
+        document.getElementById("kpi-conv-click-sub-main").textContent =
+          convClickToSubClamped.toFixed(1) + "%";
+        document.getElementById("kpi-conv-click-sub-sub").textContent =
+          "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
+          " subscriptions / " + (clicksAllTime || 0).toLocaleString("en-US") +
+          " clicks = " + convClickToSubClamped.toFixed(1) + "%.";
 
         document.getElementById("kpi-epu-main").textContent = formatCurrency(epu);
         document.getElementById("kpi-epu-breakdown").textContent =
