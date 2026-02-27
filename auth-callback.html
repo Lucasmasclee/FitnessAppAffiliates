@@ -23,7 +23,8 @@
     (function () {
       var statusEl = document.getElementById("status");
       var continueLink = document.getElementById("continue-link");
-      var nextPage = "become-affiliate.html";
+      var params = new URLSearchParams(window.location.search);
+      var nextPage = params.get("next") || "become-affiliate.html";
 
       function goToForm() {
         window.location.href = nextPage;
@@ -75,7 +76,6 @@
         });
       }
 
-      var params = new URLSearchParams(window.location.search);
       var hashParams = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
       var code = params.get("code") || hashParams.get("code");
       if (code && typeof supabase.auth.exchangeCodeForSession === "function") {
@@ -95,6 +95,8 @@
       } else {
         setTimeout(function () { waitForSession(0); }, 300);
       }
+
+      continueLink.href = nextPage;
 
       continueLink.addEventListener("click", function (e) {
         e.preventDefault();

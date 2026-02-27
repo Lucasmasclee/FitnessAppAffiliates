@@ -36,7 +36,7 @@
       <p class="section-subtitle">See exactly what your link is doing – earnings, funnel, payouts and everything you need to grow.</p>
 
       <div id="dashboard-gate" class="card" style="max-width: 480px; display: none;">
-        <h2 style="margin-top: 0;">Sign in to view your dashboard</h2>
+        <h2 style="margin-top: 0;">Sign in to view your stats</h2>
         <p>You need to be signed in with the Google account you used to register as an affiliate.</p>
         <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
       </div>
@@ -1063,11 +1063,27 @@
         }
       });
 
-      document.getElementById("btn-google").addEventListener("click", function () {
-        window.affiliateAuth.signInWithGooglePopup().then(function () {
-          loadDashboard(window.affiliateAuth.user);
+      var btnGoogle = document.getElementById("btn-google");
+      if (btnGoogle) {
+        btnGoogle.addEventListener("click", function () {
+          if (typeof window.affiliateAuth === "undefined") return;
+          btnGoogle.disabled = true;
+          window.affiliateAuth
+            .signInWithGooglePopup()
+            .then(function () {
+              loadDashboard(window.affiliateAuth.user);
+            })
+            .catch(function (err) {
+              btnGoogle.disabled = false;
+              if (typeof alert === "function") {
+                alert(
+                  (err && (err.message || err.error_description || err.error)) ||
+                    "Sign-in failed. Try again."
+                );
+              }
+            });
         });
-      });
+      }
     })();
   </script>
 </body>

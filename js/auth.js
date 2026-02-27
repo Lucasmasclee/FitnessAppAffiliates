@@ -61,15 +61,29 @@
       if (window.__affiliateAuthReady) fn(window.__affiliateUser);
     },
     signInWithGoogle: function (redirectTo) {
+      var next =
+        redirectTo ||
+        (window.location.pathname + window.location.search + window.location.hash);
+      var callbackUrl =
+        window.location.origin +
+        "/auth-callback.html?next=" +
+        encodeURIComponent(next);
       return supabaseClient.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: redirectTo || window.location.origin + "/become-affiliate.html" },
+        options: { redirectTo: callbackUrl },
       });
     },
     signInWithGooglePopup: function () {
       var self = this;
       return new Promise(function (resolve, reject) {
-        var redirectTo = window.location.origin + "/auth-callback.html";
+        var next =
+          window.location.pathname +
+          window.location.search +
+          window.location.hash;
+        var redirectTo =
+          window.location.origin +
+          "/auth-callback.html?next=" +
+          encodeURIComponent(next);
         supabaseClient.auth.signInWithOAuth({
           provider: "google",
           options: { redirectTo: redirectTo },
