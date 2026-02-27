@@ -15,6 +15,7 @@ create index if not exists idx_affiliate_click_events_affiliate_id_occurred_at
 
 alter table public.affiliate_click_events enable row level security;
 
+drop policy if exists "Users can read own click events" on public.affiliate_click_events;
 create policy "Users can read own click events"
   on public.affiliate_click_events for select
   using (

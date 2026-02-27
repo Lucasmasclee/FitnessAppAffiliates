@@ -56,6 +56,7 @@ create index if not exists idx_affiliate_transactions_affiliate_id_event_date
 
 alter table public.affiliate_transactions enable row level security;
 
+drop policy if exists "Users can read own transactions" on public.affiliate_transactions;
 create policy "Users can read own transactions"
   on public.affiliate_transactions for select
   using (
