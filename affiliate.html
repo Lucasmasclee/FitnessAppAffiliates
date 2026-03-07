@@ -67,7 +67,7 @@
                     </div>
                   </div>
                   <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
-                    Next payout: 1st of the month · Minimum payout: €50
+                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: €50
                   </p>
                 </div>
               </div>
@@ -302,7 +302,7 @@
                   </div>
                   <div>
                     <p class="payout-meta-item-label">Next payout date</p>
-                    <p class="payout-meta-item-value" id="payout-next-date">1st of next month</p>
+                    <p class="payout-meta-item-value" id="payout-next-date">—</p>
                   </div>
                 </div>
 
@@ -556,6 +556,23 @@
         if (v > 100) return 100;
         return v;
       }
+
+      function getNextPayoutDateString() {
+        var now = new Date();
+        var next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        var monthName = next.toLocaleDateString("en-GB", { month: "long" });
+        return "1 " + monthName;
+      }
+
+      function setNextPayoutDate() {
+        var str = getNextPayoutDateString();
+        var el = document.getElementById("payout-next-date");
+        var subEl = document.getElementById("earnings-next-payout-date");
+        if (el) el.textContent = str;
+        if (subEl) subEl.textContent = str;
+      }
+
+      setNextPayoutDate();
 
       function buildSparkline(containerId, primarySeries, secondarySeries) {
         var container = document.getElementById(containerId);
@@ -824,6 +841,7 @@
           return sum;
         }, 0);
         document.getElementById("payout-available").textContent = formatCurrency(available);
+        setNextPayoutDate();
 
         var commissionTier = (aff.commission_tier || "Base tier");
         document.getElementById("commission-tier").textContent = commissionTier;
