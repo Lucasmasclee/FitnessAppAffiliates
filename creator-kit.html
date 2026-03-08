@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Creator Kit – Lift Better Affiliates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">Lift<span>Better</span></a>
+    <button type="button" class="nav-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
+      <span class="nav-menu-label">Menu</span>
+      <span class="nav-menu-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    <div class="nav-menu-panel" id="nav-menu" hidden>
+      <a href="index.html" class="nav-menu-link">Home</a>
+      <a href="become-affiliate.html" class="nav-menu-link">Become affiliate</a>
+      <a href="affiliate.html" class="nav-menu-link">Affiliate dashboard</a>
+      <a href="creator-kit.html" class="nav-menu-link active">Creator Kit</a>
+      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login style="display: none;">Log in</button>
+      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="section">
+      <!-- Auth gate – shown when not signed in -->
+      <div id="creator-kit-gate" class="card creator-kit-gate-card" style="display: none;">
+        <h2 class="creator-kit-gate-title">Sign in to view the Creator Kit</h2>
+        <p class="creator-kit-gate-text">Promo resources are for affiliates. Sign in with the Google account you use for your affiliate dashboard.</p>
+        <button type="button" id="creator-kit-btn-google" class="btn btn-primary">Sign in with Google</button>
+        <p class="creator-kit-gate-hint">Not an affiliate yet? <a href="become-affiliate.html">Apply here</a>.</p>
+      </div>
+
+      <!-- Creator Kit content – shown when signed in -->
+      <div id="creator-kit-content" style="display: none;">
+        <header class="creator-kit-header">
+          <h1 class="section-title">Creator Kit</h1>
+          <p class="section-subtitle">Hooks, angles, video ideas, and posting guidance so you can create gym content that actually performs. Built for TikTok, Reels, and Shorts.</p>
+          <nav class="creator-kit-toc" aria-label="On this page">
+            <span class="creator-kit-toc-label">On this page:</span>
+            <a href="#start-here">Start here</a>
+            <a href="#content-angles">Content angles</a>
+            <a href="#viral-hooks">Viral hooks</a>
+            <a href="#video-ideas">Video ideas</a>
+            <a href="#caption-ideas">Captions</a>
+            <a href="#how-to-show-app">How to show the app</a>
+            <a href="#posting-guidelines">Posting guidelines</a>
+            <a href="#what-works-best">What works best</a>
+            <a href="#common-mistakes">Mistakes to avoid</a>
+          </nav>
+        </header>
+
+        <!-- 1. START HERE -->
+        <div id="start-here" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">1. Start here</h2>
+          <p><strong>What Lift Better is:</strong> A fitness app for people who take the gym seriously. It gives you a structured workout plan, tracks sets/reps/RIR, follows a weekly split, and shows progression over time. It’s not a casual fitness app—it’s for lifters who want to stop guessing and start progressing.</p>
+          <p><strong>What works best:</strong> Short-form, value-first content. Problem/solution videos, educational tips, relatable gym moments, and beginner-friendly advice. Your audience is people who train (or want to), don’t have a solid plan, or want to track progress properly.</p>
+          <p><strong>Your goal as a creator:</strong> Help your audience train better. Share real insights, mistakes, and solutions. When the app fits naturally—e.g. “this is how I plan my week” or “I track my sets here”—mention it or show it. Don’t make the whole video an ad; make it useful, then let the app support the story.</p>
+          <p><strong>How to approach posting:</strong> Post like you normally would. Use the hooks and angles below as inspiration. Film in the gym, talk to camera, show your phone or your workout when it makes sense. The best posts feel like your content, not like a promo.</p>
+        </div>
+
+        <!-- 2. CONTENT ANGLES -->
+        <div id="content-angles" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">2. Content angles</h2>
+          <p class="creator-kit-lead">Strong angles you can build whole videos around. Pick one, open with a hook, then deliver value.</p>
+          <ul class="creator-kit-angle-list">
+            <li>
+              <strong>People who go to the gym without a plan.</strong> Core idea: Most people show up and do random exercises. In the video: “I used to do this too—here’s why having a plan changed everything” and show how you structure the week.
+            </li>
+            <li>
+              <strong>Why tracking workouts matters.</strong> Core idea: If you don’t track, you don’t know if you’re progressing. In the video: Show yourself logging sets/reps or RIR, and explain why that habit made a difference for you.
+            </li>
+            <li>
+              <strong>Serious training vs random workouts.</strong> Core idea: There’s a difference between “going to the gym” and “following a program.” In the video: Contrast the two—maybe “before I had structure” vs “now”—without sounding preachy.
+            </li>
+            <li>
+              <strong>Why most lifters never progress.</strong> Core idea: No plan, no progression, no consistency. In the video: List 2–3 reasons (no structure, not tracking, changing programs every week) and offer a simple fix: get a plan and stick to it.
+            </li>
+            <li>
+              <strong>Why structure matters in the gym.</strong> Core idea: Random workouts feel busy but don’t build progress. In the video: Explain what a weekly split is, or show your screen—“this is how my week is laid out”—so it’s educational first.
+            </li>
+            <li>
+              <strong>How beginners can start training properly.</strong> Core idea: Beginners don’t need the most advanced program—they need something clear and consistent. In the video: “If you’re new to the gym, do this” and walk through one simple concept (e.g. following a plan, tracking sets).
+            </li>
+            <li>
+              <strong>Stop guessing your workouts.</strong> Core idea: A lot of people guess what to do each day. In the video: “I used to guess too. Now I open the app and know exactly what I’m doing” and briefly show the plan screen.
+            </li>
+            <li>
+              <strong>What actually happens when you track your lifts.</strong> Core idea: Tracking reveals progress (or lack of it). In the video: Show your progress screen or a before/after of “no tracking” vs “tracking for a few weeks”—keep it real and relatable.
+            </li>
+            <li>
+              <strong>Why I stopped doing random push/pull/legs.</strong> Core idea: Generic splits don’t fit everyone. In the video: Share your experience—what didn’t work, what you do now—and show how your current plan is built (app can appear as the tool you use).
+            </li>
+          </ul>
+        </div>
+
+        <!-- 3. VIRAL HOOKS -->
+        <div id="viral-hooks" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">3. Viral hooks</h2>
+          <p class="creator-kit-lead">Use these at the start of your videos. Short, punchy, attention-grabbing. Mix and match to fit your style.</p>
+          <div class="creator-kit-hook-groups">
+            <div class="creator-kit-hook-group">
+              <h3 class="creator-kit-h3">Problem hooks</h3>
+              <ul class="creator-kit-hook-list">
+                <li>Most people in the gym are doing this wrong.</li>
+                <li>The biggest mistake I see every day at the gym.</li>
+                <li>If you’re not tracking this, you’re wasting your time.</li>
+                <li>Why you’re not progressing in the gym (and it’s not your genetics).</li>
+                <li>Stop going to the gym without a plan.</li>
+                <li>Nobody talks about this but it’s why most people quit.</li>
+              </ul>
+            </div>
+            <div class="creator-kit-hook-group">
+              <h3 class="creator-kit-h3">POV / relatable hooks</h3>
+              <ul class="creator-kit-hook-list">
+                <li>POV: you finally start training properly.</li>
+                <li>POV: you stopped guessing your workouts.</li>
+                <li>When you realize you’ve been training wrong this whole time.</li>
+                <li>That moment you get a real workout plan for the first time.</li>
+                <li>Me before vs after I had a structured program.</li>
+              </ul>
+            </div>
+            <div class="creator-kit-hook-group">
+              <h3 class="creator-kit-h3">Contrarian / direct hooks</h3>
+              <ul class="creator-kit-hook-list">
+                <li>Stop doing random workouts in the gym.</li>
+                <li>You don’t need a personal trainer. You need a plan.</li>
+                <li>Random workouts don’t build muscle. Structure does.</li>
+                <li>I’m not saying you need an app—but you need a system.</li>
+                <li>Unpopular opinion: most gym advice is overcomplicated.</li>
+              </ul>
+            </div>
+            <div class="creator-kit-hook-group">
+              <h3 class="creator-kit-h3">Beginner / “watch this” hooks</h3>
+              <ul class="creator-kit-hook-list">
+                <li>If you just started going to the gym, watch this.</li>
+                <li>Beginner lifters: do this before you do anything else.</li>
+                <li>First time in the gym? Here’s what actually matters.</li>
+                <li>What I wish I knew when I started lifting.</li>
+                <li>If you don’t have a workout plan yet, this is for you.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. VIDEO IDEAS -->
+        <div id="video-ideas" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">4. Video ideas</h2>
+          <p class="creator-kit-lead">Concrete concepts you can film with minimal setup. Hook → value → natural app mention.</p>
+          <ul class="creator-kit-video-ideas">
+            <li class="creator-kit-video-idea">
+              <strong>“Why I stopped guessing my workouts.”</strong> Hook: “Stop doing random workouts in the gym.” Structure: 1) Problem (guessing every day), 2) What changed (following a plan), 3) Quick screen of your week in the app. Lift Better fits as the tool you use to see your plan.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“How I track every set (and why it matters).”</strong> Hook: “If you’re not tracking this, you’re wasting your time.” Structure: Film yourself logging a set in the gym—phone in hand, quick tap. Explain RIR or reps in 10 seconds. Lift Better is the app you’re using to log.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“What my gym week actually looks like.”</strong> Hook: “POV: you finally have a real split.” Structure: Walk through each day (push, pull, legs or whatever you run). Show the app’s week view briefly. No hard sell—just “this is how I know what to do.”
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“The biggest mistake beginners make.”</strong> Hook: “If you just started going to the gym, watch this.” Structure: One mistake (e.g. no plan, no consistency). Solution: get a simple plan and stick to it. Show the app as “this is what I use” in one clip.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“Before I had a plan vs now.”</strong> Hook: “Me before vs after I had a structured program.” Structure: Short before/after of your approach (chaotic vs clear). Show your phone with the plan or progress screen. Keeps it story-led, app as proof.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“Why most people don’t progress.”</strong> Hook: “Why you’re not progressing (and it’s not your genetics).” Structure: 2–3 reasons (no plan, not tracking, switching programs). End with “get a plan and track your lifts.” App can appear when you say “I use this to do both.”
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“How I know exactly what to do every session.”</strong> Hook: “Stop going to the gym without a plan.” Structure: Show opening the app, seeing today’s workout, then doing one exercise. Very simple “day in the life” angle.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“What I log after every set.”</strong> Hook: “If you’re not tracking this, you’re wasting your time.” Structure: Film yourself post-set: log reps, RIR, or weight. Explain in one sentence why you do it. App is naturally in frame.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“My honest take on workout apps.”</strong> Hook: “You don’t need a personal trainer. You need a plan.” Structure: Quick take—what helps (structure, tracking) vs what doesn’t (random workouts). “I use an app to get my plan and log my sets—here’s what that looks like” and show the screen briefly.
+            </li>
+            <li class="creator-kit-video-idea">
+              <strong>“A realistic gym week for someone who takes it seriously.”</strong> Hook: “POV: you finally start training properly.” Structure: Day-by-day in 15–30 seconds each. Show the app’s plan or progress when you say “this is how I stay on track.” Relatable, not salesy.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 5. CAPTION IDEAS -->
+        <div id="caption-ideas" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">5. Caption ideas</h2>
+          <p class="creator-kit-lead">Use these under your posts. Simple, conversational, gym-culture friendly. Add your link in bio or in the caption where it fits.</p>
+          <ul class="creator-kit-caption-list">
+            <li>No more guessing what to do at the gym. Having a plan changed everything for me.</li>
+            <li>If you’re not tracking your sets, you’re leaving progress on the table. Start this week.</li>
+            <li>Random workouts feel busy but don’t build. Structure does. This is how I plan my week.</li>
+            <li>Beginner or not—get a program and stick to it. Everything else is noise.</li>
+            <li>I used to show up and do whatever. Now I open my app and know exactly what I’m doing. Game changer.</li>
+            <li>Your future self will thank you for tracking your lifts today.</li>
+            <li>Stop changing your program every two weeks. Pick a plan, run it, track it.</li>
+            <li>This is how I know I’m actually progressing. (Spoiler: it’s not by memory.)</li>
+            <li>Gym tip: have a plan before you walk in. Link in bio if you want to see what I use.</li>
+            <li>Real talk—most people train hard but don’t have a system. Get a system.</li>
+          </ul>
+        </div>
+
+        <!-- 6. HOW TO SHOW THE APP -->
+        <div id="how-to-show-app" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">6. How to show the app</h2>
+          <p>The app should feel like a helpful tool in your content, not the entire focus. Simple ways to include it:</p>
+          <ul class="creator-kit-bullet-list">
+            <li><strong>Workout plan screen.</strong> When you’re talking about “what I do this week” or “my split,” show the app’s week or day view. A few seconds is enough.</li>
+            <li><strong>Logging a set in the gym.</strong> Film yourself logging reps, weight, or RIR after a set. No need to explain the whole app—just “I log every set so I know I’m progressing.”</li>
+            <li><strong>Progress or stats.</strong> If you’re talking about progression, show the progress screen. “This is how I see I’m getting stronger” is enough.</li>
+            <li><strong>Explaining structure.</strong> When you say “I follow a program” or “I have a plan,” pull up the app and show the plan. One clear shot does the job.</li>
+          </ul>
+          <p><strong>Keep it natural.</strong> The best moments are when the app appears because it’s part of your routine—you’re checking your plan, logging a set, or showing your progress. It shouldn’t feel like a demo; it should feel like your gym life.</p>
+        </div>
+
+        <!-- 7. POSTING GUIDELINES -->
+        <div id="posting-guidelines" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">7. Posting guidelines</h2>
+          <ul class="creator-kit-bullet-list">
+            <li><strong>Show real workouts.</strong> Film in the gym when you can. Real sets, real logging, real you. It’s more relatable and performs better.</li>
+            <li><strong>Keep videos short and clear.</strong> One idea per video. Hook in the first 1–2 seconds, value in the middle, end with a takeaway or CTA.</li>
+            <li><strong>Focus on value first.</strong> Give a tip, fix a mistake, or share a relatable moment. The app supports the story; it doesn’t replace it.</li>
+            <li><strong>Avoid sounding like an ad.</strong> Don’t list features or do a scripted pitch. Talk like you’re telling a friend what you use and why.</li>
+            <li><strong>Talk like you normally would.</strong> Use your own voice and humor. If you’d say it in the gym, you can say it on camera.</li>
+            <li><strong>Disclosure.</strong> Follow platform rules and your affiliate terms. Use #ad or #affiliate when required so your audience knows when you’re promoting.</li>
+          </ul>
+        </div>
+
+        <!-- 8. WHAT WORKS BEST -->
+        <div id="what-works-best" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">8. What works best</h2>
+          <p>Content that tends to perform well for gym creators:</p>
+          <ul class="creator-kit-bullet-list">
+            <li><strong>Problem/solution videos.</strong> “Here’s the mistake… here’s the fix.” Clear, scroll-stopping, and easy to apply.</li>
+            <li><strong>Educational fitness tips.</strong> One tip per video. How to track, why structure matters, how to plan the week. Short and actionable.</li>
+            <li><strong>Relatable gym moments.</strong> “POV when…”, “That moment you…”. People love seeing themselves in your content.</li>
+            <li><strong>Beginner advice.</strong> “If you’re new to the gym…” or “What I wish I knew when I started.” Huge audience and high intent.</li>
+            <li><strong>Training structure tips.</strong> Splits, frequency, how to know what to do. Practical and shareable.</li>
+          </ul>
+        </div>
+
+        <!-- 9. COMMON MISTAKES TO AVOID -->
+        <div id="common-mistakes" class="card creator-kit-block creator-kit-section">
+          <h2 class="creator-kit-section-title">9. Common mistakes to avoid</h2>
+          <ul class="creator-kit-bullet-list">
+            <li><strong>Making the video feel like an ad.</strong> Feature lists, “download now” in the first 3 seconds, or a scripted sales tone. Viewers scroll away. Lead with value, mention the app when it fits.</li>
+            <li><strong>Over-explaining the app.</strong> You don’t need to show every screen. One clear moment (plan, logging, or progress) is enough.</li>
+            <li><strong>Using generic gym content.</strong> Random clips with no angle or hook. Make each video about one idea your audience cares about.</li>
+            <li><strong>Forcing the promotion.</strong> If the app doesn’t fit the story, don’t squeeze it in. Save it for videos where structure, tracking, or planning is the topic.</li>
+            <li><strong>Ignoring your usual style.</strong> If you’re funny or no-nonsense, stay that way. The best affiliate content still sounds like you.</li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="card creator-kit-support-block">
+          <h2 class="creator-kit-block-title">Need something specific?</h2>
+          <p>If you need a resource we don’t have yet—or want support with how to promote Lift Better—reach out through your dashboard. You’ll find our contact details under <strong>Account, settings & support</strong> after onboarding.</p>
+          <a href="affiliate.html" class="btn btn-secondary">Go to dashboard</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Lift Better Affiliates – Together for a fitness app that actually works.
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/nav-auth.js?v=1"></script>
+  <script src="js/nav-menu.js?v=1"></script>
+  <script>
+    (function () {
+      var gate = document.getElementById("creator-kit-gate");
+      var content = document.getElementById("creator-kit-content");
+      var btnGoogle = document.getElementById("creator-kit-btn-google");
+
+      function showGate() {
+        if (gate) gate.style.display = "block";
+        if (content) content.style.display = "none";
+      }
+      function showContent() {
+        if (gate) gate.style.display = "none";
+        if (content) content.style.display = "block";
+      }
+
+      function updateUI(user) {
+        if (user) {
+          showContent();
+        } else {
+          showGate();
+        }
+      }
+
+      if (typeof window.affiliateAuth === "undefined") {
+        showContent();
+        return;
+      }
+
+      window.affiliateAuth.onReady(function (user) {
+        updateUI(user || null);
+      });
+      window.affiliateAuth.onAuthChange(function (user) {
+        updateUI(user || null);
+      });
+
+      if (btnGoogle) {
+        btnGoogle.addEventListener("click", function () {
+          if (typeof window.affiliateAuth === "undefined") {
+            showContent();
+            return;
+          }
+          btnGoogle.disabled = true;
+          window.affiliateAuth.signInWithGooglePopup()
+            .then(function () {
+              window.affiliateAuth.getSession().then(function (r) {
+                var u = r.data.session && r.data.session.user ? r.data.session.user : null;
+                updateUI(u);
+              });
+            })
+            .catch(function (err) {
+              if (typeof alert === "function") {
+                alert((err && (err.message || err.error_description || err.error)) || "Sign-in failed. Try again.");
+              }
+            })
+            .finally(function () {
+              btnGoogle.disabled = false;
+            });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

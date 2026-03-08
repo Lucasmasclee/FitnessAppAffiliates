@@ -25,6 +25,7 @@
       <a href="index.html" class="nav-menu-link">Home</a>
       <a href="become-affiliate.html" class="nav-menu-link">Become affiliate</a>
       <a href="affiliate.html" class="nav-menu-link active">Affiliate dashboard</a>
+      <a href="creator-kit.html" class="nav-menu-link">Creator Kit</a>
       <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login style="display: none;">Log in</button>
       <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
     </div>
@@ -51,8 +52,16 @@
               <li><strong>Copy your link</strong> above and share it wherever you promote (bio, posts, stories). Every click and install from that link is tracked here.</li>
               <li><strong>Stats</strong> (clicks, installs, subscriptions) will appear in this dashboard as people use your link. Data can take a short time to sync.</li>
               <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is €50. We’ll contact you when you reach the threshold.</li>
-              <li><strong>Support</strong> and <strong>Creator Kit</strong> (promo resources, scripts, visuals) are linked below. Creator Kit content is coming soon.</li>
+              <li><strong>Support</strong> and the <strong>Creator Kit</strong> (promo resources, scripts, visuals) are below. Open the Creator Kit to see where resources will live.</li>
             </ul>
+            <div class="dashboard-next-steps">
+              <span class="dashboard-next-steps-label">Next steps:</span>
+              <span>Copy your affiliate link</span>
+              <span class="dashboard-next-steps-sep">·</span>
+              <span>Review how <a href="#payouts-section">payouts work</a></span>
+              <span class="dashboard-next-steps-sep">·</span>
+              <a href="creator-kit.html" class="btn btn-primary btn-sm">Open Creator Kit</a>
+            </div>
           </div>
 
           <!-- 1. Overview -->
@@ -101,6 +110,18 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Creator Kit – prominent entry (top half) -->
+          <div class="card creator-kit-card creator-kit-card-prominent">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Creator Kit</h2>
+                <p>Find promo resources in one place. App visuals, posting ideas, and guidance to help you start faster and promote more effectively.</p>
+              </div>
+              <a href="creator-kit.html" class="btn btn-primary">Open Creator Kit</a>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0.5rem 0 0;">Scripts, hooks, app visuals, and posting guidance will live here. Resources are being added—bookmark the Creator Kit and check back.</p>
           </div>
 
           <!-- KPI cards -->
@@ -295,7 +316,7 @@
           </div> -->
 
           <!-- 6. Payout section -->
-          <div class="card">
+          <div id="payouts-section" class="card">
             <div class="dashboard-section-header">
               <div>
                 <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Payouts</h2>
@@ -419,18 +440,12 @@
             </p>
           </div> -->
 
-          <!-- Creator Kit placeholder -->
-          <div class="card creator-kit-card">
-            <div class="dashboard-section-header">
-              <div>
-                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Creator Kit</h2>
-                <p>Promo resources for approved affiliates.</p>
-              </div>
-              <span class="badge badge-muted">Coming soon</span>
-            </div>
-            <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
-              Scripts, hooks, app visuals, and posting guidance will live here. When the Creator Kit is ready, you’ll find everything you need to promote Lift Better with less effort.
+          <!-- Creator Kit link (lower on page) -->
+          <div class="card creator-kit-card creator-kit-card-secondary">
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted);">
+              Need promo resources? The <strong>Creator Kit</strong> is your hub for app visuals, scripts, and posting guidance.
             </p>
+            <a href="creator-kit.html" class="btn btn-secondary btn-ghost" style="margin-top: 0.75rem;">Open Creator Kit</a>
           </div>
 
           <!-- 10. Announcements / updates -->
