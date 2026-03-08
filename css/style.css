@@ -600,6 +600,180 @@ label {
   flex-shrink: 0;
 }
 
+/* Become affiliate – intro & auth gate */
+.become-intro {
+  margin-bottom: 2rem;
+}
+.auth-gate-card {
+  max-width: 420px;
+  padding: 2rem;
+}
+.auth-gate-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+.auth-gate-text {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 1.25rem;
+}
+
+/* Become affiliate – onboarding cards */
+.onboarding-card {
+  margin-bottom: 1.5rem;
+}
+.onboarding-card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+.onboarding-card p {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.onboarding-card p:last-of-type {
+  margin-bottom: 0.75rem;
+}
+.earnings-grid {
+  display: grid;
+  gap: 1rem;
+}
+.earnings-main {
+  margin-bottom: 0.25rem;
+}
+.earnings-highlight {
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 0.35rem !important;
+}
+.earnings-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.earnings-list li {
+  margin-bottom: 0.25rem;
+}
+.attribution-note {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+.onboarding-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.onboarding-steps li {
+  margin-bottom: 0.5rem;
+}
+.onboarding-card-legal p {
+  margin-bottom: 0.75rem;
+}
+.legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.legal-links a {
+  font-weight: 500;
+}
+.btn-link-style {
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  padding-left: 0;
+}
+.btn-link-style:hover {
+  color: var(--accent-hover);
+  background: transparent;
+}
+
+/* Become affiliate – form */
+.form-intro {
+  margin: 2.5rem 0 1.5rem;
+}
+.form-card {
+  max-width: 600px;
+  padding: 2rem;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+.form-group .required {
+  color: var(--accent);
+}
+.form-group .optional {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+.form-consent {
+  margin-top: 0.5rem;
+}
+.btn-submit {
+  margin-top: 0.5rem;
+}
+.form-feedback {
+  margin-top: 1rem;
+  max-width: 600px;
+}
+.form-feedback-success {
+  color: var(--success);
+}
+.form-feedback-error {
+  color: #ef4444;
+}
+
+/* Become affiliate – success state */
+.success-state-card {
+  max-width: 560px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.success-state-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--success);
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.success-state-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+}
+.success-state-lead {
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+}
+.success-state-next {
+  text-align: left;
+  margin: 0 0 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.success-state-next li {
+  margin-bottom: 0.75rem;
+}
+.success-state-next a {
+  font-weight: 500;
+}
+
 /* Stats grid (affiliate dashboard) */
 .stats-grid {
   display: grid;
@@ -1050,8 +1224,212 @@ label {
   font-size: 0.9rem;
 }
 
+/* Dashboard – gate card */
+.dashboard-gate-card {
+  max-width: 420px;
+  padding: 2rem;
+}
+.dashboard-gate-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+.dashboard-gate-text {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 1.25rem;
+}
 
-/* More details CTA */
+/* Dashboard – onboarding strip (new affiliates) */
+.dashboard-onboarding-card {
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.25);
+  padding: 1.5rem 2rem;
+}
+.dashboard-onboarding-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.2rem;
+}
+.dashboard-onboarding-lead {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 1rem;
+}
+.dashboard-onboarding-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.dashboard-onboarding-steps li {
+  margin-bottom: 0.5rem;
+}
+
+/* Dashboard – Creator Kit card */
+.creator-kit-card {
+  border-style: dashed;
+}
+.creator-kit-card .dashboard-section-header {
+  align-items: center;
+}
+
+
+/* Home – hero block (landing) */
+.hero-block {
+  margin-bottom: 3rem;
+}
+.hero-block .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem;
+}
+.hero-block .hero-title {
+  font-size: clamp(2rem, 4.2vw, 2.8rem);
+  margin: 0 0 1rem;
+  max-width: 20ch;
+}
+.hero-block .hero-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 42rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+}
+.hero-block .hero-who {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0 0 1.75rem;
+}
+.hero-block .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.hero-block .hero-actions .btn {
+  text-decoration: none;
+}
+
+/* Home – steps (how it works) */
+.steps-section {
+  margin: 3rem 0;
+}
+.steps-heading {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 1.5rem;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.step-card {
+  padding: 1.5rem;
+  margin-bottom: 0;
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+.step-title {
+  font-size: 1.05rem;
+  margin: 0 0 0.35rem;
+}
+.step-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Home – benefits section */
+.benefits-section {
+  margin: 3rem 0;
+  padding: 2rem 1.5rem;
+}
+.benefits-heading {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 1.5rem;
+}
+.benefits-section .benefit-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 0;
+}
+.benefits-section .benefit-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+}
+.benefits-section .benefit-tagline {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Home – app section title/lead */
+.app-section-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 0.5rem;
+}
+.app-section-lead {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+.app-section .app-copy h2 {
+  display: none;
+}
+
+/* Home – primary CTA block */
+.cta-block {
+  margin-top: 3.5rem;
+  margin-bottom: 2rem;
+  padding: 2.5rem 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.cta-heading {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  margin: 0 0 0.5rem;
+}
+.cta-text {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-cta {
+  text-decoration: none;
+}
+
+/* More details CTA (legacy) */
 .more-details-cta {
   margin-top: 3rem;
   margin-bottom: 2rem;

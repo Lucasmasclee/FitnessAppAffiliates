@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <title>Become an affiliate – Fitness App Affiliates</title>
+  <title>Become an affiliate – Lift Better</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -32,120 +32,149 @@
 
   <main>
     <section class="section">
-      <h1 class="section-title">Become an affiliate</h1>
-      <p class="section-subtitle">All the details about the affiliate program and how to join.</p>
+      <!-- INTRO BLOCK – always visible -->
+      <header class="become-intro">
+        <h1 class="section-title">Become an affiliate</h1>
+        <p class="section-subtitle">This page explains how the program works, what you earn, and how to apply. After you submit the form, we’ll contact you within 48 hours and you’ll get access to your dashboard and your unique link.</p>
+      </header>
 
-      <div id="auth-gate" class="card" style="max-width: 480px; display: none;">
-        <h2 style="margin-top: 0;">Sign in to become an affiliate</h2>
-        <button type="button" id="btn-google" class="btn btn-primary">Sign in to become an affiliate</button>
+      <!-- AUTH GATE – when sign-in required -->
+      <div id="auth-gate" class="card auth-gate-card" style="display: none;">
+        <h2 class="auth-gate-title">Sign in to continue</h2>
+        <p class="auth-gate-text">We use Google sign-in so you have one account for your dashboard and your affiliate link. No extra password to remember.</p>
+        <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
       </div>
 
+      <!-- MAIN CONTENT – after sign-in or when no auth -->
       <div id="form-block" style="display: none;">
-        <div class="card" style="margin-bottom: 1.5rem;">
-          <h2 style="margin-top: 0;">How much will you earn?</h2>
-          <ul style="margin-bottom: 0;">
-            <li>Note: our prices are subject to change.</li>
-            <li>Note: The appstore and playstore take 15% of the revenue. Commission is paid on the net revenue.</li>
-            <li>For every monthly subscription from your link, we pay out 90% of the net revenue of the first month.</li>
-            <li>For every yearly subscription from your link, we pay out 50% of the net revenue of the first year.</li>
-            <li>You can track your subscriptions in your dashboard, and we will pay you out every 1st of the month.</li>
-            <li>Custom offers and partnerships are allowed, but not guaranteed.</li>
-          </ul>
+        <!-- EARNINGS BLOCK -->
+        <div class="card onboarding-card">
+          <h2 class="onboarding-card-title">How much you earn</h2>
+          <div class="earnings-grid">
+            <div class="earnings-main">
+              <p class="earnings-highlight">90% of net revenue for the first month on every monthly subscription from your link. 50% of net revenue for the first year on every yearly subscription from your link.</p>
+              <p class="form-note">Commission is paid on net revenue. The App Store and Play Store take 15% of revenue; we pay you on what we receive after that. Our prices are subject to change.</p>
+            </div>
+            <ul class="earnings-list">
+              <li>You can track your subscriptions in your dashboard.</li>
+              <li>We pay out every 1st of the month.</li>
+              <li>Custom offers and partnerships are allowed, but not guaranteed.</li>
+            </ul>
+          </div>
         </div>
 
-        <div class="card" style="margin-bottom: 1.5rem;">
-          <h2 style="margin-top: 0;">How does the sign-up process work?</h2>
-          <ul style="margin-bottom: 0;">
-            <li>1. Fill out the form below, and we will contact you within 48 hours. </li>
-            <li>2. You will get access to your dashboard, where you can find your unique link too.</li>
-            <li>3. That's it, you can start sharing the link.</li>
-          </ul>
+        <!-- SIGN-UP PROCESS BLOCK -->
+        <div class="card onboarding-card">
+          <h2 class="onboarding-card-title">How sign-up works</h2>
+          <ol class="onboarding-steps">
+            <li><strong>Submit the form below.</strong> We’ll contact you within 48 hours.</li>
+            <li><strong>Get access to your dashboard</strong> and your unique affiliate link.</li>
+            <li><strong>Start sharing.</strong> That’s it—you can begin promoting as soon as you have your link.</li>
+          </ol>
         </div>
 
-        <div class="card" style="margin-bottom: 2rem;">
-          <h2 style="margin-top: 0;">Track all of your stats</h2>
-          <p>After we've created your personal link, you will get access to your dashboard. In your dashboard you can see all the stats of your link, such as clicks, downloads, and subscriptions.</p>
-          <p>All link data is retrieved directly from AppsFlyer.</p>
-          <p class="form-note">Affiliate attribution is determined by AppsFlyer. When multiple affiliate links are clicked, the most recent eligible click will receive attribution. Attribution windows may vary depending on platform policies and privacy settings.</p>
-          <a href="privacy.html" class="btn btn-secondary" target="_blank" rel="noopener" style="color: var(--accent);">Privacy policy</a>
+        <!-- TRACKING / DASHBOARD / ATTRIBUTION BLOCK -->
+        <div class="card onboarding-card">
+          <h2 class="onboarding-card-title">Tracking & dashboard</h2>
+          <p>After we create your personal link, you get access to your dashboard. There you’ll see clicks, downloads, and subscriptions for your link. All link data is retrieved directly from AppsFlyer.</p>
+          <p class="form-note attribution-note">Affiliate attribution is determined by AppsFlyer. When multiple affiliate links are clicked, the most recent eligible click will receive attribution. Attribution windows may vary depending on platform policies and privacy settings.</p>
+          <a href="privacy.html" class="btn btn-secondary btn-link-style" target="_blank" rel="noopener">Privacy policy</a>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-          <h2 style="margin-top: 0;">Affiliate terms &amp; conditions</h2>
-          <p>By becoming an affiliate, you agree to our terms and conditions.</p>
-          <a href="terms.html" class="btn btn-secondary" target="_blank" rel="noopener" style="color: var(--accent);">Affiliate terms &amp; conditions</a>
+        <!-- TERMS & PRIVACY REASSURANCE BLOCK -->
+        <div class="card onboarding-card onboarding-card-legal">
+          <h2 class="onboarding-card-title">Terms & privacy</h2>
+          <p>By becoming an affiliate you agree to our terms and conditions. We take privacy seriously—please review both documents before you submit.</p>
+          <div class="legal-links">
+            <a href="terms.html" target="_blank" rel="noopener">Affiliate terms & conditions</a>
+            <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a>
+          </div>
         </div>
 
-        <h2 class="section-title">Registration form</h2>
-        <p class="section-subtitle">After registering you can start already, but we contact you to make you an amazing affiliate.</p>
+        <!-- REGISTRATION FORM BLOCK -->
+        <div class="form-intro">
+          <h2 class="section-title">Registration</h2>
+          <p class="section-subtitle">Fill in your details below. After you submit, we’ll reach out to get you set up. You can already use your dashboard once your link is ready.</p>
+        </div>
 
-        
-
-        <form id="affiliate-form" class="card" style="max-width: 600px;">
-          <div class="form-group">
-            <label for="email">Email address *</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <form id="affiliate-form" class="card form-card">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email address <span class="required">*</span></label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone number <span class="optional">(optional)</span></label>
+              <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+            </div>
           </div>
-          <div class="form-group">
-            <label for="phone">Phone number (optional)</label>
-            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="social">Social media <span class="optional">(optional)</span></label>
+              <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
+            </div>
+            <div class="form-group">
+              <label for="preferred-method">Preferred contact method <span class="optional">(optional)</span></label>
+              <select id="preferred-method" name="preferred_method">
+                <option value="">No preference</option>
+                <option value="email">Email</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="messages">Messages</option>
+                <option value="phone">Phone call</option>
+                <option value="instagram">Instagram</option>
+                <option value="tiktok">TikTok</option>
+                <option value="other_social">Other social media</option>
+              </select>
+              <span class="form-note">We’ll try to contact you using this channel first.</span>
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label for="social">Social media (optional)</label>
-            <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
-            <!-- <span class="form-note">e.g. @username or link to profile</span> -->
-          </div>
-          <div class="form-group">
-            <label for="preferred-method">Preferred contact method (optional)</label>
-            <select id="preferred-method" name="preferred_method">
-              <option value="">No preference</option>
-              <option value="email">Email</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="messages">Messages</option>
-              <option value="phone">Phone call</option>
-              <option value="instagram">Instagram</option>
-              <option value="tiktok">TikTok</option>
-              <option value="other_social">Other social media</option>
-            </select>
-            <span class="form-note">We’ll try to contact you using this channel first.</span>
-          </div>
-          <div class="form-group">
+          <div class="form-group form-consent">
             <label class="form-checkbox-row">
               <input type="checkbox" id="terms-consent" required style="width: auto;">
               <span class="form-note form-note-inline">
-                By clicking &quot;Contact me&quot;, I agree with the
-                <a href="terms.html" target="_blank" rel="noopener">terms and conditions</a>.
+                By clicking &quot;Submit&quot;, I agree to the <a href="terms.html" target="_blank" rel="noopener">terms and conditions</a>.
               </span>
             </label>
           </div>
-          <div class="form-group">
+          <div class="form-group form-consent">
             <label class="form-checkbox-row">
               <input type="checkbox" id="privacy-consent" required style="width: auto;">
               <span class="form-note form-note-inline">
-                I have read and agree with the
-                <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.
+                I have read and agree to the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.
               </span>
             </label>
           </div>
-          <button type="submit" class="btn btn-primary" id="btn-submit">Contact me</button>
+          <button type="submit" class="btn btn-primary btn-submit" id="btn-submit">Submit</button>
         </form>
 
-        <p id="form-message" style="margin-top: 1rem; color: var(--success); display: none;"></p>
-        <p id="form-error" style="margin-top: 1rem; color: #ef4444; display: none;"></p>
+        <p id="form-message" class="form-feedback form-feedback-success" style="display: none;"></p>
+        <p id="form-error" class="form-feedback form-feedback-error" style="display: none;"></p>
+
+        <!-- SUCCESS STATE – shown after successful submit -->
+        <div id="success-state" class="card success-state-card" style="display: none;">
+          <div class="success-state-icon" aria-hidden="true">✓</div>
+          <h2 class="success-state-title">Registration received</h2>
+          <p class="success-state-lead">We’ve got your details and will contact you within 48 hours.</p>
+          <ul class="success-state-next">
+            <li><strong>Dashboard:</strong> Once your link is set up, you can log in to your <a href="affiliate.html">Affiliate dashboard</a> to copy your link and see your stats.</li>
+            <li><strong>Creator Kit:</strong> Promo resources—scripts, hooks, app visuals, and posting guidance—will live in your dashboard under <strong>Creator Kit</strong> when they’re available.</li>
+            <li><strong>Support:</strong> Questions about payouts, tracking, or how to promote? You’ll get our direct contact after onboarding.</li>
+          </ul>
+          <a href="affiliate.html" class="btn btn-primary">Go to dashboard</a>
+        </div>
       </div>
 
       <div id="debug-panel" style="display: none; margin-top: 2rem; padding: 1rem; background: #1a1d21; border: 1px solid #333; border-radius: 8px; font-family: monospace; font-size: 0.85rem; max-height: 280px; overflow: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <strong style="color: #f59e0b;">Debug: laatste fouten</strong>
-          <button type="button" id="debug-copy" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Kopieer</button>
+          <strong style="color: #f59e0b;">Debug: latest errors</strong>
+          <button type="button" id="debug-copy" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Copy</button>
         </div>
         <pre id="debug-log" style="margin: 0; color: #e6edf3; white-space: pre-wrap; word-break: break-all;"></pre>
       </div>
     </section>
 
     <footer>
-      Fitness App Affiliates – Together for a fitness app that actually works.
+      Lift Better Affiliates – Together for a fitness app that actually works.
     </footer>
   </main>
 
@@ -178,13 +207,14 @@
       var formMessage = document.getElementById("form-message");
       var formError = document.getElementById("form-error");
       var btnSubmit = document.getElementById("btn-submit");
+      var successState = document.getElementById("success-state");
 
       var debugPanel = document.getElementById("debug-panel");
       var debugLog = document.getElementById("debug-log");
       var showDebug = typeof URLSearchParams !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
       if (showDebug && debugPanel && debugLog) {
         debugPanel.style.display = "block";
-        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "Geen fouten nog. Log in met Google om events te zien.";
+        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "No errors yet. Sign in with Google to see events.";
         window.addEventListener("error", function (e) {
           affiliateDebugLog("error", e.message + " " + (e.filename || "") + ":" + (e.lineno || ""));
         });
@@ -193,7 +223,7 @@
         });
         document.getElementById("debug-copy").addEventListener("click", function () {
           var t = (window.__affiliateErrors || []).join("\n\n");
-          navigator.clipboard.writeText(t).then(function () { alert("Gekopieerd naar klembord."); });
+          navigator.clipboard.writeText(t).then(function () { alert("Copied to clipboard."); });
         });
       }
 
@@ -204,6 +234,13 @@
       function showForm() {
         authGate.style.display = "none";
         formBlock.style.display = "block";
+      }
+
+      function showSuccess() {
+        if (form) form.style.display = "none";
+        if (formMessage) formMessage.style.display = "none";
+        if (formError) formError.style.display = "none";
+        if (successState) successState.style.display = "block";
       }
 
       function updateUI(user) {
@@ -313,9 +350,10 @@
         }
 
         if (typeof window.affiliateAuth === "undefined" || !window.AFFILIATE_CONFIG) {
-          formMessage.textContent = "Thanks! We’ve received your details and will get in touch as soon as possible.";
+          formMessage.textContent = "Thanks! We've received your details and will get in touch as soon as possible.";
           formMessage.style.display = "block";
           form.reset();
+          showSuccess();
           return;
         }
 
@@ -357,12 +395,8 @@
             .then(function (result) {
               btnSubmit.disabled = false;
               if (result.ok && result.data.success) {
-                formMessage.textContent = "Thanks! We’ve received your details and will get in touch as soon as possible. You can view your dashboard once we’ve set up your link.";
-                formMessage.style.display = "block";
+                showSuccess();
                 form.reset();
-                if (result.data.affiliate_code) {
-                  formMessage.innerHTML += " <a href=\"affiliate.html\">Go to dashboard</a>";
-                }
               } else {
                 var errMsg = result.data && result.data.error ? result.data.error : "Something went wrong. Please try again.";
                 if (errMsg === "Email and phone are required") {
@@ -373,7 +407,7 @@
                   }
                 }
                 if (result.status === 401) {
-                  errMsg = "Session expired or invalid. Please sign out and sign in again, then try Contact me again.";
+                  errMsg = "Session expired or invalid. Please sign out and sign in again, then try Submit again.";
                 }
                 formError.textContent = errMsg;
                 formError.style.display = "block";

@@ -35,14 +35,26 @@
       <h1 class="section-title">Affiliate dashboard</h1>
       <p class="section-subtitle">See exactly what your link is doing – earnings, funnel, payouts and everything you need to grow.</p>
 
-      <div id="dashboard-gate" class="card" style="max-width: 480px; display: none;">
-        <h2 style="margin-top: 0;">Sign in to view your stats</h2>
-        <p>You need to be signed in with the Google account you used to register as an affiliate.</p>
+      <div id="dashboard-gate" class="card dashboard-gate-card" style="display: none;">
+        <h2 class="dashboard-gate-title">Sign in to your dashboard</h2>
+        <p class="dashboard-gate-text">Use the same Google account you used when you registered as an affiliate. Your dashboard and link are tied to that account.</p>
         <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
       </div>
 
       <div id="dashboard-content">
         <div class="dashboard-layout">
+          <!-- Onboarding strip – shown for new affiliates with no traffic yet -->
+          <div id="dashboard-onboarding" class="card dashboard-onboarding-card" style="display: none;">
+            <h2 class="dashboard-onboarding-title">Get started</h2>
+            <p class="dashboard-onboarding-lead">Here’s what to do first.</p>
+            <ul class="dashboard-onboarding-steps">
+              <li><strong>Copy your link</strong> above and share it wherever you promote (bio, posts, stories). Every click and install from that link is tracked here.</li>
+              <li><strong>Stats</strong> (clicks, installs, subscriptions) will appear in this dashboard as people use your link. Data can take a short time to sync.</li>
+              <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is €50. We’ll contact you when you reach the threshold.</li>
+              <li><strong>Support</strong> and <strong>Creator Kit</strong> (promo resources, scripts, visuals) are linked below. Creator Kit content is coming soon.</li>
+            </ul>
+          </div>
+
           <!-- 1. Overview -->
           <div class="dashboard-top-row">
             <div class="card">
@@ -77,7 +89,7 @@
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate link</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                Share this link so every click, install and subscription is tracked.
+                Share this link so every click, install and subscription is tracked. Use it in your bio, posts, or stories.
               </p>
               <div class="affiliate-link-row">
                 <div class="affiliate-link-chip">
@@ -406,6 +418,20 @@
               Need something custom (language, format, brand colours)? Reach out via support and we’ll help you.
             </p>
           </div> -->
+
+          <!-- Creator Kit placeholder -->
+          <div class="card creator-kit-card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Creator Kit</h2>
+                <p>Promo resources for approved affiliates.</p>
+              </div>
+              <span class="badge badge-muted">Coming soon</span>
+            </div>
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
+              Scripts, hooks, app visuals, and posting guidance will live here. When the Creator Kit is ready, you’ll find everything you need to promote Lift Better with less effort.
+            </p>
+          </div>
 
           <!-- 10. Announcements / updates -->
           <div class="card">
@@ -755,9 +781,11 @@
         document.getElementById("kpi-yearly-subs").textContent =
           (yearlySubs || 0).toLocaleString("en-US");
 
-        // Paying users (alle subscriptions)
-        document.getElementById("kpi-paying-users").textContent =
-          (payingUsersAll || 0).toLocaleString("en-US");
+        // Paying users (optional KPI element if present)
+        var payingUsersEl = document.getElementById("kpi-paying-users");
+        if (payingUsersEl) {
+          payingUsersEl.textContent = (payingUsersAll || 0).toLocaleString("en-US");
+        }
         var payingUsersBreakdownEl = document.getElementById("kpi-paying-users-breakdown");
         if (payingUsersBreakdownEl) {
           payingUsersBreakdownEl.textContent =
@@ -865,13 +893,14 @@
       function updateTransactionsTable(transactions) {
         var tbody = document.getElementById("transactions-body");
         var empty = document.getElementById("transactions-empty");
+        if (!tbody) return;
         tbody.innerHTML = "";
 
         if (!transactions.length) {
-          empty.style.display = "block";
+          if (empty) empty.style.display = "block";
           return;
         }
-        empty.style.display = "none";
+        if (empty) empty.style.display = "none";
 
         transactions.sort(function (a, b) {
           var da = new Date(a.event_date || a.created_at);
@@ -1033,6 +1062,13 @@
             updateOverviewAndKpis(aff, stats, transactions, clickEvents);
             updateTransactionsTable(transactions);
             updateCharts(transactions, clickEvents);
+
+            // Show onboarding strip for new affiliates (no traffic yet)
+            var onboardingEl = document.getElementById("dashboard-onboarding");
+            if (onboardingEl) {
+              var hasTraffic = (Number(stats.clicks || 0) + Number(stats.downloads || 0) + (transactions && transactions.length)) > 0;
+              onboardingEl.style.display = hasTraffic ? "none" : "block";
+            }
 
             showContent();
           });

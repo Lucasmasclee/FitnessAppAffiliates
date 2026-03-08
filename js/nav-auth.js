@@ -51,7 +51,7 @@
             if (typeof alert === "function") {
               alert(
                 (err && (err.message || err.error_description || err.error)) ||
-                  "Inloggen mislukt. Probeer het opnieuw."
+                  "Sign-in failed. Try again."
               );
             }
           })
