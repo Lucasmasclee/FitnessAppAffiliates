@@ -34,7 +34,7 @@
   <main>
     <section class="section">
       <h1 class="section-title">Affiliate dashboard</h1>
-      <p class="section-subtitle">See exactly what your link is doing – earnings, funnel, payouts and everything you need to grow.</p>
+      <p class="section-subtitle">See exactly what your link is doing.</p>
 
       <div id="dashboard-gate" class="card dashboard-gate-card" style="display: none;">
         <h2 class="dashboard-gate-title">Sign in to your dashboard</h2>
@@ -98,7 +98,7 @@
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate link</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                Share this link so every click, install and subscription is tracked. Use it in your bio, posts, or stories.
+                Share this link so every click, install and subscription is tracked.
               </p>
               <div class="affiliate-link-row">
                 <div class="affiliate-link-chip">
@@ -110,18 +110,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Creator Kit – prominent entry (top half) -->
-          <div class="card creator-kit-card creator-kit-card-prominent">
-            <div class="dashboard-section-header">
-              <div>
-                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Creator Kit</h2>
-                <p>Find promo resources in one place. App visuals, posting ideas, and guidance to help you start faster and promote more effectively.</p>
-              </div>
-              <a href="creator-kit.html" class="btn btn-primary">Open Creator Kit</a>
-            </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0.5rem 0 0;">Scripts, hooks, app visuals, and posting guidance will live here. Resources are being added—bookmark the Creator Kit and check back.</p>
           </div>
 
           <!-- KPI cards -->
@@ -194,20 +182,20 @@
           <!-- 2. Performance analytics -->
           <div class="card">
             <div class="dashboard-section-header">
-              <div>
+              <!-- <div>
                 <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Performance analytics</h2>
                 <p>See how your traffic turns into installs, paying users and revenue.</p>
-              </div>
-              <div class="date-range-row">
+              </div> -->
+              <!-- <div class="date-range-row">
                 <label for="date-from" style="font-size: 0.8rem; color: var(--text-muted);">Range</label>
                 <input type="date" id="date-from">
                 <input type="date" id="date-to">
                 <button type="button" class="btn btn-secondary btn-ghost" id="btn-range-apply">Apply</button>
                 <button type="button" class="btn btn-secondary btn-ghost" id="btn-range-30d">Last 30 days</button>
-              </div>
+              </div> -->
             </div>
 
-            <div class="analytics-grid">
+            <!-- <div class="analytics-grid">
               <div class="chart-card">
                 <div class="chart-header">
                   <div>
@@ -246,7 +234,7 @@
                   <div class="sparkline-empty">Waiting for data…</div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Funnel insight -->
             <div class="funnel-card" style="margin-top: 1.5rem;">
@@ -274,9 +262,6 @@
                   <span class="funnel-value" id="funnel-earned">€0</span>
                 </div>
               </div>
-              <p class="funnel-note" id="funnel-note">
-                Use this to decide: do I need more traffic, or do I need to improve my content and conversion?
-              </p>
             </div>
           </div>
 
@@ -374,7 +359,7 @@
                   <li>Affiliate attribution is determined by AppsFlyer. When multiple affiliate links are clicked, the most recent eligible click will receive attribution. Attribution windows may vary depending on platform policies and privacy settings.</li>
                 </ul>
               </div>
-              <div class="card" style="margin-bottom: 0;">
+              <!-- <div class="card" style="margin-bottom: 0;">
                 <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Current tier</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
                   <strong id="commission-tier">Base tier</strong>
@@ -382,7 +367,7 @@
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">
                   As your performance grows, we may move you into a higher tier with extra bonuses.
                 </p>
-              </div>
+              </div> -->
               <!-- <div class="card" style="margin-bottom: 0;">
                 <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Milestones</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
@@ -439,14 +424,6 @@
               Need something custom (language, format, brand colours)? Reach out via support and we’ll help you.
             </p>
           </div> -->
-
-          <!-- Creator Kit link (lower on page) -->
-          <div class="card creator-kit-card creator-kit-card-secondary">
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted);">
-              Need promo resources? The <strong>Creator Kit</strong> is your hub for app visuals, scripts, and posting guidance.
-            </p>
-            <a href="creator-kit.html" class="btn btn-secondary btn-ghost" style="margin-top: 0.75rem;">Open Creator Kit</a>
-          </div>
 
           <!-- 10. Announcements / updates -->
           <div class="card">
@@ -508,6 +485,18 @@
                 </ul>
               </div>
             </div>
+          </div>
+
+          <!-- Creator Kit – at bottom of dashboard -->
+          <div class="card creator-kit-card creator-kit-card-secondary">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Creator Kit</h2>
+                <p style="margin: 0;">Find promo resources in one place. App visuals, posting ideas, and guidance to help you start faster and promote more effectively.</p>
+              </div>
+              <a href="creator-kit.html" class="btn btn-primary">Open Creator Kit</a>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0.5rem 0 0;">Scripts, hooks, app visuals, and posting guidance will live here. Resources are being added—bookmark the Creator Kit and check back.</p>
           </div>
         </div>
       </div>
