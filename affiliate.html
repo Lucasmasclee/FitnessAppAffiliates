@@ -1106,9 +1106,9 @@
           } catch (_) {}
 
           window.affiliateAuth
-            .signInWithGooglePopup()
+            .signInWithGoogle()
             .then(function () {
-              loadDashboard(window.affiliateAuth.user);
+              // Redirect-based sign-in; dashboard will load after returning from Google.
             })
             .catch(function (err) {
               btnGoogle.disabled = false;
