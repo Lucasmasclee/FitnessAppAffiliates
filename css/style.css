@@ -5,9 +5,10 @@
   --bg-elevated: #1c2128;
   --text: #e6edf3;
   --text-muted: #8b949e;
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --border: #30363d;
+  --accent: #2A83FF;
+  --accent-hover: #4D9AFF;
+  --accent-rgb: 42, 131, 255;
+  --border: #2d3548;
   --success: #22c55e;
   --font-sans: 'DM Sans', system-ui, sans-serif;
   --font-display: 'Outfit', system-ui, sans-serif;
@@ -167,7 +168,7 @@ nav .logo span { color: var(--accent); }
 
 .nav-menu-link.active {
   color: var(--accent);
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(var(--accent-rgb), 0.12);
 }
 
 .nav-menu-link-button {
@@ -242,7 +243,7 @@ main {
 
 .btn-primary {
   background: var(--accent);
-  color: var(--bg);
+  color: #fff;
 }
 .btn-primary:hover {
   background: var(--accent-hover);
@@ -315,7 +316,7 @@ main {
   gap: 0.4rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
   color: var(--accent);
   font-size: 0.85rem;
   font-weight: 600;
@@ -575,7 +576,7 @@ input::placeholder, textarea::placeholder {
 input:focus, textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
 label {
   display: block;
@@ -959,7 +960,7 @@ label {
 }
 
 .badge-warning {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(var(--accent-rgb), 0.15);
   color: var(--accent);
 }
 
@@ -1048,7 +1049,7 @@ label {
   flex: 1;
   min-width: 2px;
   border-radius: 999px 999px 0 0;
-  background: linear-gradient(to top, rgba(245, 158, 11, 0.9), rgba(245, 158, 11, 0.15));
+  background: linear-gradient(to top, rgba(var(--accent-rgb), 0.9), rgba(var(--accent-rgb), 0.15));
 }
 
 .sparkline-bar.muted {
@@ -1241,8 +1242,8 @@ label {
 
 /* Dashboard – onboarding strip (new affiliates) */
 .dashboard-onboarding-card {
-  background: rgba(245, 158, 11, 0.06);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(var(--accent-rgb), 0.06);
+  border-color: rgba(var(--accent-rgb), 0.25);
   padding: 1.5rem 2rem;
 }
 .dashboard-onboarding-title {
@@ -1273,8 +1274,8 @@ label {
   align-items: center;
 }
 .creator-kit-card-prominent {
-  background: rgba(245, 158, 11, 0.04);
-  border-color: rgba(245, 158, 11, 0.2);
+  background: rgba(var(--accent-rgb), 0.04);
+  border-color: rgba(var(--accent-rgb), 0.2);
   border-style: solid;
 }
 .creator-kit-card-prominent .dashboard-section-header {
@@ -1297,7 +1298,7 @@ label {
   gap: 0.5rem;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(245, 158, 11, 0.2);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.2);
   font-size: 0.9rem;
   color: var(--text-muted);
 }
@@ -1411,8 +1412,8 @@ label {
 
 .creator-kit-coming-soon {
   margin-bottom: 1.5rem;
-  background: rgba(245, 158, 11, 0.04);
-  border-color: rgba(245, 158, 11, 0.15);
+  background: rgba(var(--accent-rgb), 0.04);
+  border-color: rgba(var(--accent-rgb), 0.15);
 }
 .creator-kit-coming-soon-lead {
   font-weight: 600;
@@ -1564,7 +1565,7 @@ label {
   gap: 0.4rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
   color: var(--accent);
   font-size: 0.85rem;
   font-weight: 600;
@@ -1622,7 +1623,7 @@ label {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(var(--accent-rgb), 0.2);
   color: var(--accent);
   font-family: var(--font-display);
   font-weight: 700;

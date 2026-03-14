@@ -10,7 +10,7 @@ Dit document beschrijft elk scherm van de website in detail: alle teksten, knopp
 - **Footer:** Onderaan elke pagina.
 - **Fonts:** Google Fonts – DM Sans (body), Outfit (headings).
 - **Stylesheet:** `css/style.css`.
-- **Favicon:** `favicon.svg`.
+- **Favicon:** `favicon.png`.
 
 ---
 
