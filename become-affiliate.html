@@ -46,22 +46,22 @@
           Use Google, Apple or email to create your affiliate account. You’ll use the same login for your dashboard.
         </p>
 
-        <div id="auth-inapp-note" class="form-note" style="display:none; margin-bottom:0.75rem;">
+        <div id="auth-inapp-note" class="form-note" style="display:none; margin-top:0.5rem;">
           Google sign-in doesn’t work inside in-app browsers like TikTok, Instagram or Facebook.
           Use Apple or email here, or open this page in your normal browser for Google.
         </div>
 
-        <div class="auth-provider-buttons">
-          <button type="button" id="btn-auth-google" class="btn btn-secondary">Continue with Google</button>
-          <button type="button" id="btn-auth-apple" class="btn btn-secondary">Continue with Apple</button>
+        <div class="auth-provider-buttons" style="margin-top:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
+          <button type="button" id="btn-auth-google" class="btn btn-secondary" style="width:100%;">Continue with Google</button>
+          <button type="button" id="btn-auth-apple" class="btn btn-secondary" style="width:100%;">Continue with Apple</button>
         </div>
 
-        <div class="auth-divider">
+        <div class="auth-divider" style="margin:1.5rem 0;">
           <span>or use email</span>
         </div>
 
-        <form id="auth-email-form" class="auth-email-form">
-          <div class="form-group">
+        <form id="auth-email-form" class="auth-email-form" style="display:flex; flex-direction:column; gap:0.35rem;">
+          <div class="form-group" style="margin-bottom:0.15rem;">
             <label for="auth-email">Email address</label>
             <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com" required>
           </div>
@@ -69,16 +69,13 @@
             <label for="auth-password">Password</label>
             <input type="password" id="auth-password" autocomplete="new-password" placeholder="Minimum 6 characters" required>
           </div>
-          <div class="form-row" style="align-items:center; gap:0.75rem;">
+          <div class="form-row" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:0.25rem;">
             <button type="submit" id="btn-auth-email-signup" class="btn btn-primary">Sign up with email</button>
             <button type="button" id="btn-auth-email-signin" class="btn btn-secondary">I already have an account</button>
           </div>
-          <button type="button" id="btn-auth-magic" class="btn btn-secondary btn-ghost" style="margin-top:0.5rem;">
-            Send me a magic link instead
-          </button>
         </form>
 
-        <p id="auth-error" class="form-feedback form-feedback-error" style="display:none; margin-top:0.75rem;"></p>
+        <p id="auth-error" class="form-feedback form-feedback-error" style="display:none; margin-top:1rem;"></p>
         <p id="auth-success" class="form-feedback form-feedback-success" style="display:none; margin-top:0.75rem;"></p>
       </div>
 
@@ -251,7 +248,6 @@
       var btnAuthGoogle = document.getElementById("btn-auth-google");
       var btnAuthApple = document.getElementById("btn-auth-apple");
       var btnAuthEmailSignIn = document.getElementById("btn-auth-email-signin");
-      var btnAuthMagic = document.getElementById("btn-auth-magic");
       var authError = document.getElementById("auth-error");
       var authSuccess = document.getElementById("auth-success");
       var authInappNote = document.getElementById("auth-inapp-note");
@@ -278,7 +274,6 @@
         if (btnAuthGoogle) btnAuthGoogle.disabled = isLoading;
         if (btnAuthApple) btnAuthApple.disabled = isLoading;
         if (btnAuthEmailSignIn) btnAuthEmailSignIn.disabled = isLoading;
-        if (btnAuthMagic) btnAuthMagic.disabled = isLoading;
         if (authEmailForm) {
           var btn = document.getElementById("btn-auth-email-signup");
           if (btn) btn.disabled = isLoading;
@@ -410,11 +405,29 @@
                   showAuthError(msg);
                   return;
                 }
-                if (authSuccess) {
-                  authSuccess.textContent =
-                    "Check your email to confirm your account. After confirming, return to this page and continue.";
-                  authSuccess.style.display = "block";
-                }
+
+                // After successful sign-up, immediately sign the user in with the same credentials
+                // so the auth listener can open the form on this page.
+                window.affiliateAuth
+                  .signInWithEmail(email, password)
+                  .then(function (signInResult) {
+                    var signInErr = signInResult.error;
+                    if (signInErr) {
+                      var msg2 =
+                        signInErr.message ||
+                        signInErr.error_description ||
+                        "Sign-in after sign-up failed. Please try signing in with your email and password.";
+                      showAuthError(msg2);
+                      return;
+                    }
+                    // Auth state change will call updateUI(user) and show the form.
+                  })
+                  .catch(function (signInErr) {
+                    var msg2 =
+                      (signInErr && (signInErr.message || signInErr.error_description || signInErr.error)) ||
+                      "Sign-in after sign-up failed. Please try signing in with your email and password.";
+                    showAuthError(msg2);
+                  });
               })
               .catch(function (err) {
                 var msg =
@@ -460,48 +473,6 @@
                 var msg =
                   (err && (err.message || err.error_description || err.error)) ||
                   "Sign-in failed. Please check your details and try again.";
-                showAuthError(msg);
-              })
-              .finally(function () {
-                setAuthLoading(false);
-              });
-          });
-        }
-
-        if (btnAuthMagic) {
-          btnAuthMagic.addEventListener("click", function () {
-            clearAuthMessages();
-            if (!window.affiliateAuth || !window.affiliateAuth.signInWithMagicLink) {
-              showAuthError("Magic link sign-in is not available right now.");
-              return;
-            }
-            var email = (authEmailInput && authEmailInput.value.trim()) || "";
-            if (!email) {
-              showAuthError("Please enter your email to receive a magic link.");
-              return;
-            }
-            setAuthLoading(true);
-            window.affiliateAuth
-              .signInWithMagicLink(email)
-              .then(function (result) {
-                var err = result.error;
-                if (err) {
-                  var msg =
-                    err.message ||
-                    err.error_description ||
-                    "Could not send magic link. Please try again.";
-                  showAuthError(msg);
-                  return;
-                }
-                if (authSuccess) {
-                  authSuccess.textContent = "We’ve sent you a magic link. Check your email and follow the link to continue.";
-                  authSuccess.style.display = "block";
-                }
-              })
-              .catch(function (err) {
-                var msg =
-                  (err && (err.message || err.error_description || err.error)) ||
-                  "Could not send magic link. Please try again.";
                 showAuthError(msg);
               })
               .finally(function () {

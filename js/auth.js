@@ -141,17 +141,6 @@
       });
     },
 
-    // Optional magic-link fallback (e.g. for embedded browsers)
-    signInWithMagicLink: function (email, redirectTo) {
-      var callbackUrl = buildCallbackUrl(redirectTo);
-      return supabaseClient.auth.signInWithOtp({
-        email: email,
-        options: {
-          emailRedirectTo: callbackUrl,
-        },
-      });
-    },
-
     // --- Session helpers / logout ---
 
     signOut: function () {
