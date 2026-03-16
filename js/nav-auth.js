@@ -43,21 +43,12 @@
     if (loginBtn) {
       loginBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        if (!window.affiliateAuth || !window.affiliateAuth.signInWithGooglePopup) return;
-        loginBtn.disabled = true;
-        window.affiliateAuth
-          .signInWithGooglePopup()
-          .catch(function (err) {
-            if (typeof alert === "function") {
-              alert(
-                (err && (err.message || err.error_description || err.error)) ||
-                  "Sign-in failed. Try again."
-              );
-            }
-          })
-          .finally(function () {
-            loginBtn.disabled = false;
-          });
+        // Send users to the affiliate dashboard gate where they can choose Google, Apple or email.
+        if (typeof location !== "undefined" && location.assign) {
+          location.assign("affiliate.html");
+        } else {
+          window.location.href = "affiliate.html";
+        }
       });
     }
 

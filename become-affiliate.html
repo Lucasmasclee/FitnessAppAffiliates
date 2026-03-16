@@ -42,8 +42,44 @@
       <!-- AUTH GATE – when sign-in required -->
       <div id="auth-gate" class="card auth-gate-card" style="display: none;">
         <h2 class="auth-gate-title">Sign in to continue</h2>
-        <p class="auth-gate-text">We use Google sign-in so you have one account for your dashboard and your affiliate link. No extra password to remember.</p>
-        <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
+        <p class="auth-gate-text">
+          Use Google, Apple or email to create your affiliate account. You’ll use the same login for your dashboard.
+        </p>
+
+        <div id="auth-inapp-note" class="form-note" style="display:none; margin-bottom:0.75rem;">
+          Google sign-in doesn’t work inside in-app browsers like TikTok, Instagram or Facebook.
+          Use Apple or email here, or open this page in your normal browser for Google.
+        </div>
+
+        <div class="auth-provider-buttons">
+          <button type="button" id="btn-auth-google" class="btn btn-secondary">Continue with Google</button>
+          <button type="button" id="btn-auth-apple" class="btn btn-secondary">Continue with Apple</button>
+        </div>
+
+        <div class="auth-divider">
+          <span>or use email</span>
+        </div>
+
+        <form id="auth-email-form" class="auth-email-form">
+          <div class="form-group">
+            <label for="auth-email">Email address</label>
+            <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" autocomplete="new-password" placeholder="Minimum 6 characters" required>
+          </div>
+          <div class="form-row" style="align-items:center; gap:0.75rem;">
+            <button type="submit" id="btn-auth-email-signup" class="btn btn-primary">Sign up with email</button>
+            <button type="button" id="btn-auth-email-signin" class="btn btn-secondary">I already have an account</button>
+          </div>
+          <button type="button" id="btn-auth-magic" class="btn btn-secondary btn-ghost" style="margin-top:0.5rem;">
+            Send me a magic link instead
+          </button>
+        </form>
+
+        <p id="auth-error" class="form-feedback form-feedback-error" style="display:none; margin-top:0.75rem;"></p>
+        <p id="auth-success" class="form-feedback form-feedback-success" style="display:none; margin-top:0.75rem;"></p>
       </div>
 
       <!-- MAIN CONTENT – after sign-in or when no auth -->
@@ -203,19 +239,29 @@
     (function () {
       var authGate = document.getElementById("auth-gate");
       var formBlock = document.getElementById("form-block");
-      var btnGoogle = document.getElementById("btn-google");
       var form = document.getElementById("affiliate-form");
       var formMessage = document.getElementById("form-message");
       var formError = document.getElementById("form-error");
       var btnSubmit = document.getElementById("btn-submit");
       var successState = document.getElementById("success-state");
 
+      var authEmailForm = document.getElementById("auth-email-form");
+      var authEmailInput = document.getElementById("auth-email");
+      var authPasswordInput = document.getElementById("auth-password");
+      var btnAuthGoogle = document.getElementById("btn-auth-google");
+      var btnAuthApple = document.getElementById("btn-auth-apple");
+      var btnAuthEmailSignIn = document.getElementById("btn-auth-email-signin");
+      var btnAuthMagic = document.getElementById("btn-auth-magic");
+      var authError = document.getElementById("auth-error");
+      var authSuccess = document.getElementById("auth-success");
+      var authInappNote = document.getElementById("auth-inapp-note");
+
       var debugPanel = document.getElementById("debug-panel");
       var debugLog = document.getElementById("debug-log");
       var showDebug = typeof URLSearchParams !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
       if (showDebug && debugPanel && debugLog) {
         debugPanel.style.display = "block";
-        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "No errors yet. Sign in with Google to see events.";
+        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "No errors yet. Sign in to see events.";
         window.addEventListener("error", function (e) {
           affiliateDebugLog("error", e.message + " " + (e.filename || "") + ":" + (e.lineno || ""));
         });
@@ -226,6 +272,34 @@
           var t = (window.__affiliateErrors || []).join("\n\n");
           navigator.clipboard.writeText(t).then(function () { alert("Copied to clipboard."); });
         });
+      }
+
+      function setAuthLoading(isLoading) {
+        if (btnAuthGoogle) btnAuthGoogle.disabled = isLoading;
+        if (btnAuthApple) btnAuthApple.disabled = isLoading;
+        if (btnAuthEmailSignIn) btnAuthEmailSignIn.disabled = isLoading;
+        if (btnAuthMagic) btnAuthMagic.disabled = isLoading;
+        if (authEmailForm) {
+          var btn = document.getElementById("btn-auth-email-signup");
+          if (btn) btn.disabled = isLoading;
+        }
+      }
+
+      function clearAuthMessages() {
+        if (authError) {
+          authError.style.display = "none";
+          authError.textContent = "";
+        }
+        if (authSuccess) {
+          authSuccess.style.display = "none";
+          authSuccess.textContent = "";
+        }
+      }
+
+      function showAuthError(msg) {
+        if (!authError) return;
+        authError.textContent = msg;
+        authError.style.display = "block";
       }
 
       function showGate() {
@@ -248,9 +322,192 @@
         if (user) {
           showForm();
           var emailEl = document.getElementById("email");
-          if (user.email && !emailEl.value) emailEl.value = user.email;
+          if (user.email && emailEl && !emailEl.value) emailEl.value = user.email;
         } else {
           showGate();
+        }
+      }
+
+      function initAuthGateUi() {
+        if (window.affiliateAuth && window.affiliateAuth.isInAppBrowser && authInappNote) {
+          authInappNote.style.display = "block";
+        }
+
+        if (btnAuthGoogle) {
+          btnAuthGoogle.addEventListener("click", function () {
+            clearAuthMessages();
+            if (!window.affiliateAuth || !window.affiliateAuth.signInWithGoogle) {
+              showAuthError("Sign-in is not configured. Please try again later.");
+              return;
+            }
+            setAuthLoading(true);
+            window.affiliateAuth
+              .signInWithGoogle()
+              .catch(function (err) {
+                if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Google sign-in", err);
+                var msg =
+                  (err && (err.message || err.error_description || err.error)) ||
+                  "Google sign-in failed. Try another method or open this page in your normal browser.";
+                showAuthError(msg);
+              })
+              .finally(function () {
+                setAuthLoading(false);
+              });
+          });
+        }
+
+        if (btnAuthApple) {
+          btnAuthApple.addEventListener("click", function () {
+            clearAuthMessages();
+            if (!window.affiliateAuth || !window.affiliateAuth.signInWithApple) {
+              showAuthError("Apple sign-in is not available right now.");
+              return;
+            }
+            setAuthLoading(true);
+            window.affiliateAuth
+              .signInWithApple()
+              .catch(function (err) {
+                if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Apple sign-in", err);
+                var msg =
+                  (err && (err.message || err.error_description || err.error)) ||
+                  "Apple sign-in failed. Please try again or use email.";
+                showAuthError(msg);
+              })
+              .finally(function () {
+                setAuthLoading(false);
+              });
+          });
+        }
+
+        if (authEmailForm) {
+          authEmailForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            clearAuthMessages();
+            if (!window.affiliateAuth || !window.affiliateAuth.signUpWithEmail) {
+              showAuthError("Email sign-up is not available right now.");
+              return;
+            }
+            var email = (authEmailInput && authEmailInput.value.trim()) || "";
+            var password = (authPasswordInput && authPasswordInput.value) || "";
+            if (!email) {
+              showAuthError("Please enter your email.");
+              return;
+            }
+            if (!password || password.length < 6) {
+              showAuthError("Password must be at least 6 characters.");
+              return;
+            }
+            setAuthLoading(true);
+            window.affiliateAuth
+              .signUpWithEmail(email, password)
+              .then(function (result) {
+                var err = result.error;
+                if (err) {
+                  var msg =
+                    err.message ||
+                    err.error_description ||
+                    "Sign-up failed. Please try again.";
+                  showAuthError(msg);
+                  return;
+                }
+                if (authSuccess) {
+                  authSuccess.textContent =
+                    "Check your email to confirm your account. After confirming, return to this page and continue.";
+                  authSuccess.style.display = "block";
+                }
+              })
+              .catch(function (err) {
+                var msg =
+                  (err && (err.message || err.error_description || err.error)) ||
+                  "Sign-up failed. Please try again.";
+                showAuthError(msg);
+              })
+              .finally(function () {
+                setAuthLoading(false);
+              });
+          });
+        }
+
+        if (btnAuthEmailSignIn) {
+          btnAuthEmailSignIn.addEventListener("click", function () {
+            clearAuthMessages();
+            if (!window.affiliateAuth || !window.affiliateAuth.signInWithEmail) {
+              showAuthError("Email sign-in is not available right now.");
+              return;
+            }
+            var email = (authEmailInput && authEmailInput.value.trim()) || "";
+            var password = (authPasswordInput && authPasswordInput.value) || "";
+            if (!email || !password) {
+              showAuthError("Please enter both email and password.");
+              return;
+            }
+            setAuthLoading(true);
+            window.affiliateAuth
+              .signInWithEmail(email, password)
+              .then(function (result) {
+                var err = result.error;
+                if (err) {
+                  var msg =
+                    err.message ||
+                    err.error_description ||
+                    "Sign-in failed. Please check your details and try again.";
+                  showAuthError(msg);
+                  return;
+                }
+                // Supabase auth state listener will show the form.
+              })
+              .catch(function (err) {
+                var msg =
+                  (err && (err.message || err.error_description || err.error)) ||
+                  "Sign-in failed. Please check your details and try again.";
+                showAuthError(msg);
+              })
+              .finally(function () {
+                setAuthLoading(false);
+              });
+          });
+        }
+
+        if (btnAuthMagic) {
+          btnAuthMagic.addEventListener("click", function () {
+            clearAuthMessages();
+            if (!window.affiliateAuth || !window.affiliateAuth.signInWithMagicLink) {
+              showAuthError("Magic link sign-in is not available right now.");
+              return;
+            }
+            var email = (authEmailInput && authEmailInput.value.trim()) || "";
+            if (!email) {
+              showAuthError("Please enter your email to receive a magic link.");
+              return;
+            }
+            setAuthLoading(true);
+            window.affiliateAuth
+              .signInWithMagicLink(email)
+              .then(function (result) {
+                var err = result.error;
+                if (err) {
+                  var msg =
+                    err.message ||
+                    err.error_description ||
+                    "Could not send magic link. Please try again.";
+                  showAuthError(msg);
+                  return;
+                }
+                if (authSuccess) {
+                  authSuccess.textContent = "We’ve sent you a magic link. Check your email and follow the link to continue.";
+                  authSuccess.style.display = "block";
+                }
+              })
+              .catch(function (err) {
+                var msg =
+                  (err && (err.message || err.error_description || err.error)) ||
+                  "Could not send magic link. Please try again.";
+                showAuthError(msg);
+              })
+              .finally(function () {
+                setAuthLoading(false);
+              });
+          });
         }
       }
 
@@ -260,6 +517,7 @@
           showForm();
           return;
         }
+        initAuthGateUi();
         window.affiliateAuth.onReady(function (user) {
           if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Auth ready, user:", user ? (user.email || user.id) : "none");
           updateUI(user);
@@ -267,58 +525,6 @@
         window.affiliateAuth.onAuthChange(function (user) {
           if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Auth change, user:", user ? (user.email || user.id) : "none");
           updateUI(user);
-        });
-      }
-
-      if (btnGoogle) {
-        btnGoogle.addEventListener("click", function () {
-          if (typeof window.affiliateAuth === "undefined") {
-            showForm();
-            return;
-          }
-          formError.style.display = "none";
-          btnGoogle.disabled = true;
-          if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Opening Google sign-in popup…");
-          window.affiliateAuth.signInWithGooglePopup()
-            .then(function (user) {
-              if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Popup finished, user:", user ? (user.email || user.id) : "none");
-              function tryUpdate() {
-                window.affiliateAuth.getSession().then(function (r) {
-                  var u = r.data.session && r.data.session.user ? r.data.session.user : user;
-                  if (typeof console !== "undefined" && console.log) console.log("[BecomeAffiliate] Session after refresh:", u ? (u.email || u.id) : "none");
-                  updateUI(u);
-                  if (!u) {
-                    try {
-                      var errStored = sessionStorage.getItem("affiliate-auth-callback-error");
-                      if (errStored && typeof window.affiliateDebugLog === "function") {
-                        var parsed = JSON.parse(errStored);
-                        window.affiliateDebugLog("Callback error (popup)", parsed.message || errStored);
-                        sessionStorage.removeItem("affiliate-auth-callback-error");
-                      } else if (typeof window.affiliateDebugLog === "function") {
-                        window.affiliateDebugLog("No session after popup", "getSession returned no user");
-                      }
-                    } catch (e) {}
-                    setTimeout(function () {
-                      window.affiliateAuth.getSession().then(function (r2) {
-                        var u2 = r2.data.session && r2.data.session.user ? r2.data.session.user : null;
-                        if (u2) updateUI(u2);
-                        else window.location.reload();
-                      });
-                    }, 300);
-                  }
-                });
-              }
-              tryUpdate();
-            })
-            .catch(function (err) {
-              if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Sign-in error", err);
-              var msg = (err && (err.message || err.error_description || err.error)) || "Sign-in failed. Try again.";
-              formError.textContent = msg;
-              formError.style.display = "block";
-            })
-            .finally(function () {
-              btnGoogle.disabled = false;
-            });
         });
       }
 

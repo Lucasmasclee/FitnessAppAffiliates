@@ -1086,24 +1086,8 @@
       var btnGoogle = document.getElementById("btn-google");
       if (btnGoogle) {
         btnGoogle.addEventListener("click", function () {
-          if (typeof window.affiliateAuth === "undefined") return;
+          if (typeof window.affiliateAuth === "undefined" || !window.affiliateAuth.signInWithGoogle) return;
           btnGoogle.disabled = true;
-
-          // Detect in-app browsers (Instagram, Facebook, TikTok, etc.) where Google blocks OAuth
-          try {
-            var ua = (navigator && navigator.userAgent) || "";
-            var isInAppBrowser = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Messenger|WhatsApp|TikTok/i.test(ua);
-            if (isInAppBrowser) {
-              btnGoogle.disabled = false;
-              if (typeof alert === "function") {
-                alert(
-                  "Google sign-in does not work from this in-app browser (for example Instagram, Facebook or TikTok). " +
-                  "Open this page in your normal browser (Safari, Chrome, etc.) and try signing in again."
-                );
-              }
-              return;
-            }
-          } catch (_) {}
 
           window.affiliateAuth
             .signInWithGoogle()
@@ -1115,7 +1099,7 @@
               if (typeof alert === "function") {
                 alert(
                   (err && (err.message || err.error_description || err.error)) ||
-                    "Sign-in failed. Try again."
+                    "Sign-in failed. Try another method or open this page in your normal browser."
                 );
               }
             });

@@ -27,13 +27,29 @@
     }
   }
 
+  function buildCallbackUrl(redirectTo) {
+    var next =
+      redirectTo ||
+      (window.location.pathname + window.location.search + window.location.hash);
+    return (
+      window.location.origin +
+      "/auth-callback.html?next=" +
+      encodeURIComponent(next)
+    );
+  }
+
   supabaseClient.auth.getSession().then(function (result) {
     window.__affiliateUser = result.data.session?.user ?? null;
     window.__affiliateAuthReady = true;
     if (window.__affiliateAuthListener) window.__affiliateAuthListener(window.__affiliateUser);
   });
 
-  if (typeof window !== "undefined" && window.location && window.location.hash && window.location.hash.indexOf("access_token") !== -1) {
+  if (
+    typeof window !== "undefined" &&
+    window.location &&
+    window.location.hash &&
+    window.location.hash.indexOf("access_token") !== -1
+  ) {
     setTimeout(function () {
       supabaseClient.auth.getSession().then(function (result) {
         var user = result.data.session?.user ?? null;
@@ -57,6 +73,9 @@
     get ready() {
       return window.__affiliateAuthReady;
     },
+    get isInAppBrowser() {
+      return isInAppBrowserBlockedForGoogle();
+    },
     onReady: function (fn) {
       if (window.__affiliateAuthReady) {
         fn(window.__affiliateUser);
@@ -73,43 +92,68 @@
       window.__affiliateAuthListener = fn;
       if (window.__affiliateAuthReady) fn(window.__affiliateUser);
     },
+
+    // --- OAuth providers ---
+
     signInWithGoogle: function (redirectTo) {
       if (isInAppBrowserBlockedForGoogle()) {
-        if (typeof alert === "function") {
-          alert(
-            "Google sign-in does not work from this in-app browser (for example Instagram, Facebook or TikTok). " +
-              "Open this page in your normal browser (Safari, Chrome, etc.) and try signing in again."
-          );
-        }
-        try {
-          // Try to open the same page in the system browser.
-          var href =
-            (window && window.location && window.location.href) || undefined;
-          if (href) {
-            window.open(href, "_blank");
-          }
-        } catch (e) {}
+        // Google blijft geblokkeerd in in-app browsers; UI vangt dit op.
         return Promise.reject(
-          new Error("Google sign-in blocked in this in-app browser.")
+          new Error(
+            "Google sign-in is not available inside this in-app browser. Please use email, Apple, or open this page in your normal browser."
+          )
         );
       }
 
-      var next =
-        redirectTo ||
-        (window.location.pathname + window.location.search + window.location.hash);
-      var callbackUrl =
-        window.location.origin +
-        "/auth-callback.html?next=" +
-        encodeURIComponent(next);
+      var callbackUrl = buildCallbackUrl(redirectTo);
       return supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: callbackUrl },
       });
     },
+
     // Backwards-compatible alias: previously opened a popup; now just uses redirect-based flow.
-    signInWithGooglePopup: function () {
-      return this.signInWithGoogle();
+    signInWithGooglePopup: function (redirectTo) {
+      return this.signInWithGoogle(redirectTo);
     },
+
+    signInWithApple: function (redirectTo) {
+      var callbackUrl = buildCallbackUrl(redirectTo);
+      return supabaseClient.auth.signInWithOAuth({
+        provider: "apple",
+        options: { redirectTo: callbackUrl },
+      });
+    },
+
+    // --- Email flows ---
+
+    signUpWithEmail: function (email, password) {
+      return supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+      });
+    },
+
+    signInWithEmail: function (email, password) {
+      return supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+    },
+
+    // Optional magic-link fallback (e.g. for embedded browsers)
+    signInWithMagicLink: function (email, redirectTo) {
+      var callbackUrl = buildCallbackUrl(redirectTo);
+      return supabaseClient.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: callbackUrl,
+        },
+      });
+    },
+
+    // --- Session helpers / logout ---
+
     signOut: function () {
       return supabaseClient.auth.signOut();
     },
