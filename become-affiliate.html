@@ -420,7 +420,11 @@
                       showAuthError(msg2);
                       return;
                     }
-                    // Auth state change will call updateUI(user) and show the form.
+                    // Force a reload so the page comes back with an authenticated session
+                    // and the auth gate automatically switches to the form.
+                    if (typeof window !== "undefined" && window.location && window.location.reload) {
+                      window.location.reload();
+                    }
                   })
                   .catch(function (signInErr) {
                     var msg2 =
@@ -467,7 +471,10 @@
                   showAuthError(msg);
                   return;
                 }
-                // Supabase auth state listener will show the form.
+                // Reload so the page is rendered in an authenticated state and the form is visible.
+                if (typeof window !== "undefined" && window.location && window.location.reload) {
+                  window.location.reload();
+                }
               })
               .catch(function (err) {
                 var msg =
