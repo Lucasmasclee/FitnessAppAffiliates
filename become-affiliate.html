@@ -71,7 +71,7 @@
           </div>
           <div class="form-row" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:0.25rem;">
             <button type="submit" id="btn-auth-email-signup" class="btn btn-primary">Sign up with email</button>
-            <button type="button" id="btn-auth-email-signin" class="btn btn-secondary">I already have an account</button>
+            <!-- <button type="button" id="btn-auth-email-signin" class="btn btn-secondary">I already have an account</button> -->
           </div>
         </form>
 
@@ -324,31 +324,39 @@
       }
 
       function initAuthGateUi() {
-        if (window.affiliateAuth && window.affiliateAuth.isInAppBrowser && authInappNote) {
+        var isInApp = !!(window.affiliateAuth && window.affiliateAuth.isInAppBrowser);
+
+        if (isInApp && authInappNote) {
           authInappNote.style.display = "block";
         }
 
         if (btnAuthGoogle) {
-          btnAuthGoogle.addEventListener("click", function () {
-            clearAuthMessages();
-            if (!window.affiliateAuth || !window.affiliateAuth.signInWithGoogle) {
-              showAuthError("Sign-in is not configured. Please try again later.");
-              return;
-            }
-            setAuthLoading(true);
-            window.affiliateAuth
-              .signInWithGoogle()
-              .catch(function (err) {
-                if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Google sign-in", err);
-                var msg =
-                  (err && (err.message || err.error_description || err.error)) ||
-                  "Google sign-in failed. Try another method or open this page in your normal browser.";
-                showAuthError(msg);
-              })
-              .finally(function () {
-                setAuthLoading(false);
-              });
-          });
+          if (isInApp) {
+            // In embedded browsers, clearly show that Google is unavailable and disable the button.
+            btnAuthGoogle.disabled = true;
+            btnAuthGoogle.textContent = "Google unavailable in this browser";
+          } else {
+            btnAuthGoogle.addEventListener("click", function () {
+              clearAuthMessages();
+              if (!window.affiliateAuth || !window.affiliateAuth.signInWithGoogle) {
+                showAuthError("Sign-in is not configured. Please try again later.");
+                return;
+              }
+              setAuthLoading(true);
+              window.affiliateAuth
+                .signInWithGoogle()
+                .catch(function (err) {
+                  if (typeof window.affiliateDebugLog === "function") window.affiliateDebugLog("Google sign-in", err);
+                  var msg =
+                    (err && (err.message || err.error_description || err.error)) ||
+                    "Google sign-in failed. Try another method or open this page in your normal browser.";
+                  showAuthError(msg);
+                })
+                .finally(function () {
+                  setAuthLoading(false);
+                });
+            });
+          }
         }
 
         if (btnAuthApple) {
@@ -392,6 +400,10 @@
               showAuthError("Password must be at least 6 characters.");
               return;
             }
+
+            // Hint to the browser that this is a sign-up flow.
+            if (authPasswordInput) authPasswordInput.setAttribute("autocomplete", "new-password");
+            if (authEmailInput) authEmailInput.setAttribute("autocomplete", "email");
             setAuthLoading(true);
             window.affiliateAuth
               .signUpWithEmail(email, password)
@@ -458,6 +470,10 @@
               showAuthError("Please enter both email and password.");
               return;
             }
+
+            // Hint to the browser that this is a sign-in flow.
+            if (authPasswordInput) authPasswordInput.setAttribute("autocomplete", "current-password");
+            if (authEmailInput) authEmailInput.setAttribute("autocomplete", "email");
             setAuthLoading(true);
             window.affiliateAuth
               .signInWithEmail(email, password)
