@@ -14,6 +14,19 @@
   window.__affiliateUser = null;
   window.__affiliateAuthReady = false;
 
+  function isInAppBrowserBlockedForGoogle() {
+    try {
+      if (typeof navigator === "undefined") return false;
+      var ua = navigator.userAgent || "";
+      // Common in-app browsers (Instagram, Facebook, TikTok, etc.) where Google blocks OAuth in embedded webviews
+      return /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Messenger|WhatsApp|TikTok|Twitter|Snapchat/i.test(
+        ua
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
   supabaseClient.auth.getSession().then(function (result) {
     window.__affiliateUser = result.data.session?.user ?? null;
     window.__affiliateAuthReady = true;
@@ -61,6 +74,26 @@
       if (window.__affiliateAuthReady) fn(window.__affiliateUser);
     },
     signInWithGoogle: function (redirectTo) {
+      if (isInAppBrowserBlockedForGoogle()) {
+        if (typeof alert === "function") {
+          alert(
+            "Google sign-in does not work from this in-app browser (for example Instagram, Facebook or TikTok). " +
+              "Open this page in your normal browser (Safari, Chrome, etc.) and try signing in again."
+          );
+        }
+        try {
+          // Try to open the same page in the system browser.
+          var href =
+            (window && window.location && window.location.href) || undefined;
+          if (href) {
+            window.open(href, "_blank");
+          }
+        } catch (e) {}
+        return Promise.reject(
+          new Error("Google sign-in blocked in this in-app browser.")
+        );
+      }
+
       var next =
         redirectTo ||
         (window.location.pathname + window.location.search + window.location.hash);
