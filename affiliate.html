@@ -110,6 +110,37 @@
                 </div>
               </div>
             </div>
+
+            <!-- Affiliate code (editable) -->
+            <div class="card">
+              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Affiliate code</h2>
+              <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
+                This code is used in your referral link and can also be entered manually in the app.
+              </p>
+
+              <div class="form-group" style="margin-bottom: 0.75rem;">
+                <label for="affiliate-code-input" style="display:block; margin-bottom: 0.35rem;">Current code</label>
+                <input id="affiliate-code-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" style="width: 100%; max-width: 360px;">
+                <div id="affiliate-code-error" style="display:none; margin-top: 0.5rem; color: var(--danger); font-size: 0.9rem;"></div>
+              </div>
+
+              <div style="margin-top: 0.75rem;">
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Referral link preview</div>
+                <div class="affiliate-link-chip" style="max-width: 100%;">
+                  <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
+                  <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-preview">Copy</button>
+                </div>
+              </div>
+
+              <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
+                Changing your code will update your public referral link.
+              </p>
+
+              <div style="margin-top: 0.75rem; display:flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary" id="btn-save-affiliate-code">Save code</button>
+                <span id="affiliate-code-save-status" style="display:none; font-size: 0.9rem; color: var(--text-muted); align-self:center;"></span>
+              </div>
+            </div>
           </div>
 
           <!-- KPI cards -->
@@ -509,9 +540,74 @@
       var content = document.getElementById("dashboard-content");
       var linkEl = document.getElementById("affiliate-link");
       var copyBtn = document.getElementById("btn-copy-link");
+      var affiliateCodeInput = document.getElementById("affiliate-code-input");
+      var affiliateCodeError = document.getElementById("affiliate-code-error");
+      var affiliateLinkPreview = document.getElementById("affiliate-link-preview");
+      var copyPreviewBtn = document.getElementById("btn-copy-preview");
+      var saveCodeBtn = document.getElementById("btn-save-affiliate-code");
+      var saveStatusEl = document.getElementById("affiliate-code-save-status");
+      var currentAffiliate = null;
       var originBaseUrl = (window.location && window.location.origin)
         ? window.location.origin.replace(/\/$/, "")
         : "https://liftbetter.cloud";
+
+      var RESERVED_CODES = {
+        admin: true,
+        support: true,
+        help: true,
+        api: true,
+        www: true,
+        app: true,
+        dashboard: true,
+        login: true,
+        signup: true,
+        subscribe: true,
+        pricing: true,
+        terms: true,
+        privacy: true,
+        liftbetter: true,
+        null: true,
+        undefined: true
+      };
+
+      function normalizeAffiliateCode(v) {
+        return String(v || "").trim().toLowerCase();
+      }
+
+      function validateAffiliateCode(code) {
+        if (!code) return "Affiliate code is required";
+        if (code.length < 4 || code.length > 10) return "Code must be 4–10 characters";
+        if (!/^[a-z0-9]+$/.test(code)) return "Only letters and numbers allowed";
+        if (RESERVED_CODES[code]) return "This code is not allowed";
+        return null;
+      }
+
+      function setAffiliateCodeError(msg) {
+        if (!affiliateCodeError) return;
+        if (!msg) {
+          affiliateCodeError.textContent = "";
+          affiliateCodeError.style.display = "none";
+          return;
+        }
+        affiliateCodeError.textContent = msg;
+        affiliateCodeError.style.display = "block";
+      }
+
+      function setSaveStatus(msg) {
+        if (!saveStatusEl) return;
+        if (!msg) {
+          saveStatusEl.textContent = "";
+          saveStatusEl.style.display = "none";
+          return;
+        }
+        saveStatusEl.textContent = msg;
+        saveStatusEl.style.display = "inline";
+      }
+
+      function updateAffiliateLinkPreviews(code) {
+        if (affiliateLinkPreview) affiliateLinkPreview.textContent = "https://liftbetter.cloud/" + (code || "yourcode");
+        if (linkEl) linkEl.textContent = originBaseUrl + "/" + (code || "your-code");
+      }
 
       function showGate() {
         gate.style.display = "block";
@@ -1012,7 +1108,13 @@
               return null;
             }
             var aff = result.data;
+            currentAffiliate = aff;
             linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
+
+            if (affiliateCodeInput) affiliateCodeInput.value = aff.affiliate_code || "";
+            setAffiliateCodeError("");
+            setSaveStatus("");
+            updateAffiliateLinkPreviews(aff.affiliate_code || "");
 
             if (copyBtn && navigator.clipboard) {
               copyBtn.onclick = function () {
@@ -1020,6 +1122,80 @@
                   copyBtn.textContent = "Copied";
                   setTimeout(function () { copyBtn.textContent = "Copy"; }, 1500);
                 }).catch(function () {});
+              };
+            }
+
+            if (copyPreviewBtn && navigator.clipboard) {
+              copyPreviewBtn.onclick = function () {
+                var txt = (affiliateLinkPreview && affiliateLinkPreview.textContent) || "";
+                navigator.clipboard.writeText(txt).then(function () {
+                  copyPreviewBtn.textContent = "Copied";
+                  setTimeout(function () { copyPreviewBtn.textContent = "Copy"; }, 1500);
+                }).catch(function () {});
+              };
+            }
+
+            if (affiliateCodeInput) {
+              affiliateCodeInput.oninput = function () {
+                setSaveStatus("");
+                var code = normalizeAffiliateCode(affiliateCodeInput.value).replace(/[^a-z0-9]/g, "");
+                if (affiliateCodeInput.value !== code) affiliateCodeInput.value = code;
+                var err = validateAffiliateCode(code);
+                if (err) setAffiliateCodeError(err);
+                else setAffiliateCodeError("");
+                updateAffiliateLinkPreviews(code);
+              };
+            }
+
+            if (saveCodeBtn) {
+              saveCodeBtn.onclick = function () {
+                if (!window.__affiliateSupabase || !user) return;
+                var desired = normalizeAffiliateCode(affiliateCodeInput ? affiliateCodeInput.value : "");
+                var err = validateAffiliateCode(desired);
+                if (err) {
+                  setAffiliateCodeError(err);
+                  if (affiliateCodeInput && affiliateCodeInput.focus) affiliateCodeInput.focus();
+                  return;
+                }
+                if (currentAffiliate && desired === String(currentAffiliate.affiliate_code || "")) {
+                  setAffiliateCodeError("");
+                  setSaveStatus("No changes to save.");
+                  return;
+                }
+
+                setAffiliateCodeError("");
+                setSaveStatus("Saving…");
+                saveCodeBtn.disabled = true;
+                window.__affiliateSupabase
+                  .from("affiliates")
+                  .update({ affiliate_code: desired, updated_at: new Date().toISOString() })
+                  .eq("user_id", user.id)
+                  .select("affiliate_code")
+                  .single()
+                  .then(function (r) {
+                    if (r.error) {
+                      var msg = (r.error && (r.error.message || r.error.details)) || "Failed to update code";
+                      // Supabase/Postgres unique violation often includes 'duplicate key value' wording.
+                      if (/duplicate key|unique/i.test(msg)) msg = "Code is already taken";
+                      setAffiliateCodeError(msg);
+                      setSaveStatus("");
+                      return;
+                    }
+                    var newCode = (r.data && r.data.affiliate_code) ? String(r.data.affiliate_code) : desired;
+                    if (currentAffiliate) currentAffiliate.affiliate_code = newCode;
+                    if (affiliateCodeInput) affiliateCodeInput.value = newCode;
+                    updateAffiliateLinkPreviews(newCode);
+                    setAffiliateCodeError("");
+                    setSaveStatus("Saved.");
+                    setTimeout(function () { setSaveStatus(""); }, 2000);
+                  })
+                  .catch(function () {
+                    setAffiliateCodeError("Network error. Please try again.");
+                    setSaveStatus("");
+                  })
+                  .finally(function () {
+                    saveCodeBtn.disabled = false;
+                  });
               };
             }
 
