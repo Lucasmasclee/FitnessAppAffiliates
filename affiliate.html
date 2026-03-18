@@ -604,6 +604,12 @@
         }
         saveStatusEl.textContent = msg;
         saveStatusEl.style.display = "inline";
+        // Green status text for successful saves.
+        if (/saved/i.test(String(msg))) {
+          saveStatusEl.style.color = "var(--success, #28a745)";
+        } else {
+          saveStatusEl.style.color = "var(--text-muted)";
+        }
       }
 
       function updateAffiliateLinkPreviews(code) {
