@@ -144,7 +144,7 @@
 
           <div class="form-group">
             <label for="affiliate-code">Affiliate code <span class="required">*</span></label>
-            <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. liftactor" required autocomplete="off" autocapitalize="none" spellcheck="false">
+            <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. heavylifter" required autocomplete="off" autocapitalize="none" spellcheck="false">
             <span class="form-note">
               Choose a short code people can remember and type easily. This will be used in your referral link and can also be entered manually in the app.
             </span>
@@ -230,7 +230,7 @@
       var pre = document.getElementById("debug-log");
       var panel = document.getElementById("debug-panel");
       if (pre && panel && panel.style.display !== "none") {
-        pre.textContent = window.__affiliateErrors.slice(-10).join("\n\n");
+        pre.textContent = window.__affiliateErrors.slice(-16).join("\n\n");
       }
     }
   </script>
@@ -264,7 +264,7 @@
       var showDebug = typeof URLSearchParams !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
       if (showDebug && debugPanel && debugLog) {
         debugPanel.style.display = "block";
-        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-10).join("\n\n") : "No errors yet. Sign in to see events.";
+        debugLog.textContent = window.__affiliateErrors.length ? window.__affiliateErrors.slice(-16).join("\n\n") : "No errors yet. Sign in to see events.";
         window.addEventListener("error", function (e) {
           affiliateDebugLog("error", e.message + " " + (e.filename || "") + ":" + (e.lineno || ""));
         });
@@ -345,7 +345,7 @@
 
       function validateAffiliateCode(code) {
         if (!code) return "Affiliate code is required";
-        if (code.length < 4 || code.length > 10) return "Code must be 4–10 characters";
+        if (code.length < 4 || code.length > 16) return "Code must be 4–16 characters";
         if (!/^[a-z0-9]+$/.test(code)) return "Only letters and numbers allowed";
         if (RESERVED_CODES[code]) return "This code is not allowed";
         return null;
