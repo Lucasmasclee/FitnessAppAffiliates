@@ -25,3 +25,7 @@ verify_jwt = false
 # via de Supabase-gateway.
 [functions.affiliate-subscription]
 verify_jwt = false
+
+# Public availability check for affiliate codes (no JWT).
+[functions.check-affiliate-code]
+verify_jwt = false

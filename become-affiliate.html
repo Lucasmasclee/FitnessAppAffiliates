@@ -139,15 +139,16 @@
 
           <div class="form-group">
             <label for="social">Social media <span class="required">*</span></label>
-            <input type="text" id="social" name="social" placeholder="i.e. Tiktok: Liftactor" required>
+            <input type="text" id="social" name="social" placeholder="i.e. Tiktok: heavy_lifter" required>
           </div>
 
           <div class="form-group">
-            <label for="affiliate-code">Affiliate code <span class="required">*</span></label>
-            <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. heavylifter" required autocomplete="off" autocapitalize="none" spellcheck="false">
             <span class="form-note">
               Choose a short code people can remember and type easily. This will be used in your referral link and can also be entered manually in the app.
             </span>
+            <label for="affiliate-code">Affiliate code <span class="required">*</span></label>
+            <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. heavylifter" required autocomplete="off" autocapitalize="none" spellcheck="false">
+            
             <div class="form-note" style="margin-top: 0.5rem;">
               <strong>Your link:</strong> <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
             </div>
@@ -357,11 +358,80 @@
         affiliateLinkPreview.textContent = "https://liftbetter.cloud/" + (code || "yourcode");
       }
 
+      var lastCodeCheck = { code: "", ts: 0, pending: null, available: null };
+
+      function checkAffiliateCodeAvailability(code) {
+        code = normalizeAffiliateCode(code);
+        var vErr = validateAffiliateCode(code);
+        if (vErr) return Promise.resolve({ ok: false, available: false, error: vErr });
+        if (!window.AFFILIATE_CONFIG || !window.AFFILIATE_CONFIG.supabaseUrl) {
+          // If config is missing, we can't check availability from the client.
+          // Registration will still be blocked server-side if taken.
+          return Promise.resolve({ ok: true, available: true });
+        }
+        if (lastCodeCheck.code === code && lastCodeCheck.pending) return lastCodeCheck.pending;
+        if (lastCodeCheck.code === code && lastCodeCheck.available !== null && (Date.now() - lastCodeCheck.ts) < 15000) {
+          return Promise.resolve({ ok: true, available: lastCodeCheck.available, error: lastCodeCheck.available ? null : "Code is already taken" });
+        }
+        var url = window.AFFILIATE_CONFIG.supabaseUrl + "/functions/v1/check-affiliate-code";
+        var p = fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ affiliate_code: code }),
+        })
+          .then(function (res) { return res.json().catch(function () { return {}; }).then(function (j) { return { status: res.status, body: j }; }); })
+          .then(function (r) {
+            if (r.status >= 200 && r.status < 300) {
+              var available = !!(r.body && r.body.available);
+              lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: available };
+              return { ok: true, available: available, error: available ? null : (r.body && r.body.error) || "Code is already taken" };
+            }
+            // If the check endpoint fails, don't block registration; server will validate again.
+            lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: null };
+            return { ok: true, available: true };
+          })
+          .catch(function () {
+            lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: null };
+            return { ok: true, available: true };
+          });
+        lastCodeCheck = { code: code, ts: Date.now(), pending: p, available: null };
+        return p;
+      }
+
       if (affiliateCodeInput) {
+        var availabilityTimer = null;
         affiliateCodeInput.addEventListener("input", function () {
           var normalized = normalizeAffiliateCode(affiliateCodeInput.value).replace(/[^a-z0-9]/g, "");
           if (affiliateCodeInput.value !== normalized) affiliateCodeInput.value = normalized;
           updateAffiliateLinkPreview();
+          if (availabilityTimer) clearTimeout(availabilityTimer);
+          availabilityTimer = setTimeout(function () {
+            var code = normalizeAffiliateCode(affiliateCodeInput.value);
+            // Only show "taken" error after basic validation passes.
+            var err = validateAffiliateCode(code);
+            if (err) return;
+            checkAffiliateCodeAvailability(code).then(function (r) {
+              if (!r.available) {
+                formError.textContent = r.error || "Code is already taken";
+                formError.style.display = "block";
+              } else if (formError && formError.style.display === "block" && (formError.textContent || "").indexOf("Code is already taken") >= 0) {
+                // Clear only the "taken" message automatically.
+                formError.style.display = "none";
+                formError.textContent = "";
+              }
+            });
+          }, 350);
+        });
+        affiliateCodeInput.addEventListener("blur", function () {
+          var code = normalizeAffiliateCode(affiliateCodeInput.value);
+          var err = validateAffiliateCode(code);
+          if (err) return;
+          checkAffiliateCodeAvailability(code).then(function (r) {
+            if (!r.available) {
+              formError.textContent = r.error || "Code is already taken";
+              formError.style.display = "block";
+            }
+          });
         });
         updateAffiliateLinkPreview();
       }
@@ -617,15 +687,23 @@
           return;
         }
 
-        if (typeof window.affiliateAuth === "undefined" || !window.AFFILIATE_CONFIG) {
+        // Also block submit if the code is already taken (checked via Edge Function).
+        checkAffiliateCodeAvailability(affiliateCode).then(function (availability) {
+          if (availability && availability.available === false) {
+            formError.textContent = availability.error || "Code is already taken";
+            formError.style.display = "block";
+            return;
+          }
+
+          if (typeof window.affiliateAuth === "undefined" || !window.AFFILIATE_CONFIG) {
           formMessage.textContent = "Thanks! We've received your details and will get in touch as soon as possible.";
           formMessage.style.display = "block";
           form.reset();
           showSuccess();
           return;
-        }
+          }
 
-        function doSubmit(session) {
+          function doSubmit(session) {
           if (!session || !session.access_token) {
             formError.textContent = "Please sign in again.";
             formError.style.display = "block";
@@ -671,6 +749,9 @@
                 if (errMsg === "Email and phone are required") {
                   errMsg = "Please fill in your required fields (email and social media) and try again.";
                 }
+                if (errMsg === "Code is already taken") {
+                  errMsg = "Code is already taken";
+                }
                 if (result.status === 401) {
                   errMsg = "Session expired or invalid. Please sign out and sign in again, then try Submit again.";
                 }
@@ -683,9 +764,9 @@
               formError.textContent = "Network error. Please try again.";
               formError.style.display = "block";
             });
-        }
+          }
 
-        window.affiliateAuth.refreshSession().then(function (refreshResult) {
+          window.affiliateAuth.refreshSession().then(function (refreshResult) {
           var session = refreshResult.data.session;
           if (session) {
             doSubmit(session);
@@ -694,9 +775,10 @@
           window.affiliateAuth.getSession().then(function (result) {
             doSubmit(result.data.session);
           });
-        }).catch(function () {
+          }).catch(function () {
           window.affiliateAuth.getSession().then(function (result) {
             doSubmit(result.data.session);
+          });
           });
         });
       });
