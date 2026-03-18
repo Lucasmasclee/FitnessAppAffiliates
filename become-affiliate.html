@@ -365,9 +365,12 @@
         var vErr = validateAffiliateCode(code);
         if (vErr) return Promise.resolve({ ok: false, available: false, error: vErr });
         if (!window.AFFILIATE_CONFIG || !window.AFFILIATE_CONFIG.supabaseUrl) {
-          // If config is missing, we can't check availability from the client.
-          // Registration will still be blocked server-side if taken.
-          return Promise.resolve({ ok: true, available: true });
+          // If config is missing, we can't safely verify uniqueness.
+          return Promise.resolve({
+            ok: false,
+            available: false,
+            error: "We couldn’t verify if this code is available. Please try again later.",
+          });
         }
         if (lastCodeCheck.code === code && lastCodeCheck.pending) return lastCodeCheck.pending;
         if (lastCodeCheck.code === code && lastCodeCheck.available !== null && (Date.now() - lastCodeCheck.ts) < 15000) {
@@ -386,13 +389,20 @@
               lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: available };
               return { ok: true, available: available, error: available ? null : (r.body && r.body.error) || "Code is already taken" };
             }
-            // If the check endpoint fails, don't block registration; server will validate again.
             lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: null };
-            return { ok: true, available: true };
+            return {
+              ok: false,
+              available: false,
+              error: "We couldn’t verify if this code is available. Please try again.",
+            };
           })
           .catch(function () {
             lastCodeCheck = { code: code, ts: Date.now(), pending: null, available: null };
-            return { ok: true, available: true };
+            return {
+              ok: false,
+              available: false,
+              error: "We couldn’t verify if this code is available. Please try again.",
+            };
           });
         lastCodeCheck = { code: code, ts: Date.now(), pending: p, available: null };
         return p;
@@ -689,7 +699,12 @@
 
         // Also block submit if the code is already taken (checked via Edge Function).
         checkAffiliateCodeAvailability(affiliateCode).then(function (availability) {
-          if (availability && availability.available === false) {
+          if (!availability || availability.ok === false) {
+            formError.textContent = (availability && availability.error) || "We couldn’t verify if this code is available. Please try again.";
+            formError.style.display = "block";
+            return;
+          }
+          if (availability.available === false) {
             formError.textContent = availability.error || "Code is already taken";
             formError.style.display = "block";
             return;
