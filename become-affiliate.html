@@ -132,35 +132,29 @@
         </div>
 
         <form id="affiliate-form" class="card form-card">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="email">Email address <span class="required">*</span></label>
-              <input type="email" id="email" name="email" placeholder="you@example.com" required>
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone number <span class="optional">(optional)</span></label>
-              <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
-            </div>
+          <div class="form-group">
+            <label for="email">Email address <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="social">Social media <span class="optional">(optional)</span></label>
-              <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc.">
-            </div>
-            <div class="form-group">
-              <label for="preferred-method">Preferred contact method <span class="optional">(optional)</span></label>
-              <select id="preferred-method" name="preferred_method">
-                <option value="">No preference</option>
-                <option value="email">Email</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="messages">Messages</option>
-                <option value="phone">Phone call</option>
-                <option value="instagram">Instagram</option>
-                <option value="tiktok">TikTok</option>
-                <option value="other_social">Other social media</option>
-              </select>
-              <span class="form-note">We’ll try to contact you using this channel first.</span>
-            </div>
+
+          <div class="form-group">
+            <label for="social">Social media <span class="required">*</span></label>
+            <input type="text" id="social" name="social" placeholder="Instagram, TikTok, YouTube, etc." required>
+          </div>
+
+          <div class="form-group">
+            <label for="preferred-method">Preferred contact method <span class="optional">(optional)</span></label>
+            <select id="preferred-method" name="preferred_method">
+              <option value="">No preference</option>
+              <option value="email">Email</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="messages">Messages</option>
+              <option value="phone">Phone call</option>
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="other_social">Other social media</option>
+            </select>
+            <span class="form-note">We’ll try to contact you using this channel first.</span>
           </div>
           <div class="form-group form-consent">
             <label class="form-checkbox-row">
@@ -527,8 +521,8 @@
         formError.style.display = "none";
         formMessage.style.display = "none";
         var email = document.getElementById("email").value.trim();
-        var phone = document.getElementById("phone").value.trim();
         var social = document.getElementById("social").value.trim();
+        var phone = "";
         var preferredMethod = document.getElementById("preferred-method").value;
         var termsConsent = document.getElementById("terms-consent");
         var privacyConsent = document.getElementById("privacy-consent");
@@ -546,6 +540,12 @@
 
         if (!email) {
           formError.textContent = "Please fill in your email address.";
+          formError.style.display = "block";
+          return;
+        }
+
+        if (!social) {
+          formError.textContent = "Please fill in your social media handle or profile.";
           formError.style.display = "block";
           return;
         }
@@ -577,7 +577,7 @@
           var body = {
             email: email,
             phone: phone,
-            social_media: social || null,
+            social_media: social,
             preferred_contact_method: preferredMethod || null
           };
           if (token) body.access_token = token;
@@ -601,11 +601,7 @@
               } else {
                 var errMsg = result.data && result.data.error ? result.data.error : "Something went wrong. Please try again.";
                 if (errMsg === "Email and phone are required") {
-                  if (!email) {
-                    errMsg = "Please fill in your email address.";
-                  } else if (!phone) {
-                    errMsg = "Right now this environment still requires a phone number as well. Please also fill in your phone number, or redeploy the updated backend where phone is optional.";
-                  }
+                  errMsg = "Please fill in your required fields (email and social media) and try again.";
                 }
                 if (result.status === 401) {
                   errMsg = "Session expired or invalid. Please sign out and sign in again, then try Submit again.";
