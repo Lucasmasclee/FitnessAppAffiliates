@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const code = (body.affiliate_code || "").trim();
+  const code = (body.affiliate_code || "").trim().toLowerCase();
   if (!code) {
     return new Response(JSON.stringify({ error: "affiliate_code is required" }), {
       status: 400,

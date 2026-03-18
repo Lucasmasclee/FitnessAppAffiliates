@@ -143,6 +143,17 @@
           </div>
 
           <div class="form-group">
+            <label for="affiliate-code">Affiliate code <span class="required">*</span></label>
+            <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. liftactor" required autocomplete="off" autocapitalize="none" spellcheck="false">
+            <span class="form-note">
+              Choose a short code people can remember and type easily. This will be used in your referral link and can also be entered manually in the app.
+            </span>
+            <div class="form-note" style="margin-top: 0.5rem;">
+              <strong>Your link:</strong> <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label for="preferred-method">Preferred contact method <span class="optional">(optional)</span></label>
             <select id="preferred-method" name="preferred_method">
               <option value="">No preference</option>
@@ -235,6 +246,8 @@
       var formError = document.getElementById("form-error");
       var btnSubmit = document.getElementById("btn-submit");
       var successState = document.getElementById("success-state");
+      var affiliateCodeInput = document.getElementById("affiliate-code");
+      var affiliateLinkPreview = document.getElementById("affiliate-link-preview");
 
       var authEmailForm = document.getElementById("auth-email-form");
       var authEmailInput = document.getElementById("auth-email");
@@ -305,6 +318,52 @@
         if (formMessage) formMessage.style.display = "none";
         if (formError) formError.style.display = "none";
         if (successState) successState.style.display = "block";
+      }
+
+      var RESERVED_CODES = {
+        admin: true,
+        support: true,
+        help: true,
+        api: true,
+        www: true,
+        app: true,
+        dashboard: true,
+        login: true,
+        signup: true,
+        subscribe: true,
+        pricing: true,
+        terms: true,
+        privacy: true,
+        liftbetter: true,
+        null: true,
+        undefined: true
+      };
+
+      function normalizeAffiliateCode(v) {
+        return String(v || "").trim().toLowerCase();
+      }
+
+      function validateAffiliateCode(code) {
+        if (!code) return "Affiliate code is required";
+        if (code.length < 4 || code.length > 10) return "Code must be 4–10 characters";
+        if (!/^[a-z0-9]+$/.test(code)) return "Only letters and numbers allowed";
+        if (RESERVED_CODES[code]) return "This code is not allowed";
+        return null;
+      }
+
+      function updateAffiliateLinkPreview() {
+        if (!affiliateLinkPreview) return;
+        var code = normalizeAffiliateCode(affiliateCodeInput ? affiliateCodeInput.value : "");
+        affiliateLinkPreview.textContent = "https://liftbetter.cloud/" + (code || "yourcode");
+      }
+
+      if (affiliateCodeInput) {
+        affiliateCodeInput.addEventListener("input", function () {
+          var normalized = normalizeAffiliateCode(affiliateCodeInput.value).replace(/[^a-z0-9]/g, "");
+          if (affiliateCodeInput.value !== normalized) affiliateCodeInput.value = normalized;
+          updateAffiliateLinkPreview();
+        });
+        updateAffiliateLinkPreview();
       }
 
       function updateUI(user) {
@@ -522,6 +581,7 @@
         formMessage.style.display = "none";
         var email = document.getElementById("email").value.trim();
         var social = document.getElementById("social").value.trim();
+        var affiliateCode = normalizeAffiliateCode(affiliateCodeInput ? affiliateCodeInput.value : "");
         var phone = "";
         var preferredMethod = document.getElementById("preferred-method").value;
         var termsConsent = document.getElementById("terms-consent");
@@ -546,6 +606,13 @@
 
         if (!social) {
           formError.textContent = "Please fill in your social media handle or profile.";
+          formError.style.display = "block";
+          return;
+        }
+
+        var codeErr = validateAffiliateCode(affiliateCode);
+        if (codeErr) {
+          formError.textContent = codeErr;
           formError.style.display = "block";
           return;
         }
@@ -578,7 +645,8 @@
             email: email,
             phone: phone,
             social_media: social,
-            preferred_contact_method: preferredMethod || null
+            preferred_contact_method: preferredMethod || null,
+            affiliate_code: affiliateCode
           };
           if (token) body.access_token = token;
           fetch(url, {

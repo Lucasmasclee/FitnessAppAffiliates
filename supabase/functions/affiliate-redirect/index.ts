@@ -46,7 +46,12 @@ Deno.serve(async (req) => {
   }
 
   const url = new URL(req.url);
-  const code = (url.searchParams.get("code") || "").trim();
+  const codeFromQuery = (url.searchParams.get("code") || "").trim();
+  // Optional support for path-style links (e.g. https://liftbetter.cloud/{affiliate_code})
+  // This only extracts a single slug segment and validates it loosely to avoid matching real routes.
+  const pathSlug = url.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "";
+  const codeFromPath = /^[a-z0-9]{4,10}$/i.test(pathSlug) ? pathSlug : "";
+  const code = (codeFromQuery || codeFromPath || "").trim().toLowerCase();
   const platform = detectPlatform(req);
   const targetUrl = pickTargetUrl(platform, code || "");
 

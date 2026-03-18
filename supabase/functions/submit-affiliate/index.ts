@@ -7,13 +7,35 @@ const corsHeaders: Record<string, string> = {
   "Access-Control-Max-Age": "86400",
 };
 
-function randomCode(): string {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let code = "";
-  for (let i = 0; i < 10; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return code;
+const RESERVED_CODES = new Set([
+  "admin",
+  "support",
+  "help",
+  "api",
+  "www",
+  "app",
+  "dashboard",
+  "login",
+  "signup",
+  "subscribe",
+  "pricing",
+  "terms",
+  "privacy",
+  "liftbetter",
+  "null",
+  "undefined",
+]);
+
+function normalizeAffiliateCode(input: unknown): string {
+  return String(input ?? "").trim().toLowerCase();
+}
+
+function validateAffiliateCode(code: string): { ok: true } | { ok: false; error: string } {
+  if (!code) return { ok: false, error: "Affiliate code is required" };
+  if (code.length < 4 || code.length > 10) return { ok: false, error: "Code must be 4–10 characters" };
+  if (!/^[a-z0-9]+$/.test(code)) return { ok: false, error: "Only letters and numbers allowed" };
+  if (RESERVED_CODES.has(code)) return { ok: false, error: "This code is not allowed" };
+  return { ok: true };
 }
 
 Deno.serve(async (req) => {
@@ -27,6 +49,7 @@ Deno.serve(async (req) => {
       phone?: string;
       social_media?: string;
       preferred_contact_method?: string;
+      affiliate_code?: string;
       access_token?: string;
     };
     try {
@@ -94,52 +117,109 @@ Deno.serve(async (req) => {
       );
     }
 
-    let affiliateCode = randomCode();
-    const maxAttempts = 5;
-    for (let i = 0; i < maxAttempts; i++) {
-      const { data: existing } = await supabase
-        .from("affiliates")
-        .select("id")
-        .eq("affiliate_code", affiliateCode)
-        .single();
-      if (!existing) break;
-      affiliateCode = randomCode();
+    // Backwards-compat: if the user already has an affiliate row, DO NOT change their code here.
+    const { data: existingAffiliate, error: existingError } = await supabase
+      .from("affiliates")
+      .select("id, affiliate_code")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (existingError) {
+      console.error("Lookup affiliate error:", existingError);
+      return new Response(
+        JSON.stringify({ error: "Failed to load affiliate" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const { data: affiliate, error: insertError } = await supabase
-      .from("affiliates")
-      .upsert(
-        {
-          user_id: userId,
+    let affiliateId: string;
+    let affiliateCode: string;
+
+    if (existingAffiliate?.id) {
+      affiliateId = existingAffiliate.id as string;
+      affiliateCode = String(existingAffiliate.affiliate_code || "");
+
+      const { error: updateError } = await supabase
+        .from("affiliates")
+        .update({
           email: email ? String(email).trim() : null,
-          // Keep phone column non-null even if optional in the UI
           phone: phone ? String(phone).trim() : "",
           social_media: social_media ? String(social_media).trim() : null,
-          affiliate_code: affiliateCode,
           updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" }
-      )
-      .select("id")
-      .single();
+        })
+        .eq("id", affiliateId);
 
-    if (insertError) {
-      console.error("Insert affiliate error:", insertError);
-      return new Response(
-        JSON.stringify({ error: "Failed to save affiliate" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    if (!affiliate?.id) {
-      console.error("Upsert succeeded but no affiliate id returned");
-      return new Response(
-        JSON.stringify({ error: "Failed to save affiliate" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (updateError) {
+        console.error("Update affiliate error:", updateError);
+        return new Response(
+          JSON.stringify({ error: "Failed to save affiliate" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } else {
+      const desiredCode = normalizeAffiliateCode(body?.affiliate_code);
+      const validation = validateAffiliateCode(desiredCode);
+      if (!validation.ok) {
+        return new Response(
+          JSON.stringify({ error: validation.error }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const { data: taken } = await supabase
+        .from("affiliates")
+        .select("id")
+        .eq("affiliate_code", desiredCode)
+        .maybeSingle();
+      if (taken?.id) {
+        return new Response(
+          JSON.stringify({ error: "Code is already taken" }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const { data: inserted, error: insertError } = await supabase
+        .from("affiliates")
+        .insert({
+          user_id: userId,
+          email: email ? String(email).trim() : null,
+          phone: phone ? String(phone).trim() : "",
+          social_media: social_media ? String(social_media).trim() : null,
+          affiliate_code: desiredCode,
+          updated_at: new Date().toISOString(),
+        })
+        .select("id, affiliate_code")
+        .single();
+
+      if (insertError) {
+        const isUniqueViolation =
+          typeof (insertError as any)?.code === "string" && (insertError as any).code === "23505";
+        if (isUniqueViolation) {
+          return new Response(
+            JSON.stringify({ error: "Code is already taken" }),
+            { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.error("Insert affiliate error:", insertError);
+        return new Response(
+          JSON.stringify({ error: "Failed to save affiliate" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!inserted?.id) {
+        console.error("Insert succeeded but no affiliate id returned");
+        return new Response(
+          JSON.stringify({ error: "Failed to save affiliate" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      affiliateId = inserted.id as string;
+      affiliateCode = String(inserted.affiliate_code || desiredCode);
     }
 
     const { error: statsError } = await supabase.from("affiliate_stats").upsert(
-      { affiliate_id: affiliate.id, updated_at: new Date().toISOString() },
+      { affiliate_id: affiliateId, updated_at: new Date().toISOString() },
       { onConflict: "affiliate_id" }
     );
     if (statsError) console.error("Stats insert error:", statsError);

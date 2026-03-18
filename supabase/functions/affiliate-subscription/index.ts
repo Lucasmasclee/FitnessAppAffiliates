@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const affiliateCode = (body.affiliate_code || "").trim();
+  const affiliateCode = (body.affiliate_code || "").trim().toLowerCase();
   const branchAlias = (body.branch_link_alias || "").trim();
   const subscriptionType = body.subscription_type;
 
