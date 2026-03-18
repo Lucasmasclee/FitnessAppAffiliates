@@ -1112,12 +1112,12 @@
           .then(function (result) {
             if (result.error || !result.data) {
               showContent();
-              linkEl.textContent = "Complete registration on the Become affiliate page to get your link.";
+              if (linkEl) linkEl.textContent = "Complete registration on the Become affiliate page to get your link.";
               return null;
             }
             var aff = result.data;
             currentAffiliate = aff;
-            linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
+            if (linkEl) linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
 
             if (affiliateCodeInput) affiliateCodeInput.value = aff.affiliate_code || "";
             setAffiliateCodeError("");
@@ -1254,7 +1254,7 @@
       }
 
       if (typeof window.affiliateAuth === "undefined") {
-        linkEl.textContent = originBaseUrl + "/your-code";
+        if (linkEl) linkEl.textContent = originBaseUrl + "/your-code";
         showContent();
         return;
       }
