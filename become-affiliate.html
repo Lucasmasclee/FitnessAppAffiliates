@@ -148,6 +148,7 @@
             </span>
             <label for="affiliate-code">Affiliate code <span class="required">*</span></label>
             <input type="text" id="affiliate-code" name="affiliate_code" placeholder="i.e. heavylifter" required autocomplete="off" autocapitalize="none" spellcheck="false">
+            <div id="affiliate-code-error" class="form-feedback form-feedback-error" style="display: none; margin-top: 0.5rem;"></div>
             
             <div class="form-note" style="margin-top: 0.5rem;">
               <strong>Your link:</strong> <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
@@ -249,6 +250,7 @@
       var successState = document.getElementById("success-state");
       var affiliateCodeInput = document.getElementById("affiliate-code");
       var affiliateLinkPreview = document.getElementById("affiliate-link-preview");
+      var affiliateCodeError = document.getElementById("affiliate-code-error");
 
       var authEmailForm = document.getElementById("auth-email-form");
       var authEmailInput = document.getElementById("auth-email");
@@ -319,6 +321,17 @@
         if (formMessage) formMessage.style.display = "none";
         if (formError) formError.style.display = "none";
         if (successState) successState.style.display = "block";
+      }
+
+      function setAffiliateCodeError(msg) {
+        if (!affiliateCodeError) return;
+        if (!msg) {
+          affiliateCodeError.textContent = "";
+          affiliateCodeError.style.display = "none";
+          return;
+        }
+        affiliateCodeError.textContent = msg;
+        affiliateCodeError.style.display = "block";
       }
 
       var RESERVED_CODES = {
@@ -411,6 +424,7 @@
       if (affiliateCodeInput) {
         var availabilityTimer = null;
         affiliateCodeInput.addEventListener("input", function () {
+          setAffiliateCodeError("");
           var normalized = normalizeAffiliateCode(affiliateCodeInput.value).replace(/[^a-z0-9]/g, "");
           if (affiliateCodeInput.value !== normalized) affiliateCodeInput.value = normalized;
           updateAffiliateLinkPreview();
@@ -419,15 +433,15 @@
             var code = normalizeAffiliateCode(affiliateCodeInput.value);
             // Only show "taken" error after basic validation passes.
             var err = validateAffiliateCode(code);
-            if (err) return;
+            if (err) {
+              setAffiliateCodeError(err);
+              return;
+            }
             checkAffiliateCodeAvailability(code).then(function (r) {
               if (!r.available) {
-                formError.textContent = r.error || "Code is already taken";
-                formError.style.display = "block";
-              } else if (formError && formError.style.display === "block" && (formError.textContent || "").indexOf("Code is already taken") >= 0) {
-                // Clear only the "taken" message automatically.
-                formError.style.display = "none";
-                formError.textContent = "";
+                setAffiliateCodeError(r.error || "Code is already taken");
+              } else {
+                setAffiliateCodeError("");
               }
             });
           }, 350);
@@ -435,11 +449,15 @@
         affiliateCodeInput.addEventListener("blur", function () {
           var code = normalizeAffiliateCode(affiliateCodeInput.value);
           var err = validateAffiliateCode(code);
-          if (err) return;
+          if (err) {
+            setAffiliateCodeError(err);
+            return;
+          }
           checkAffiliateCodeAvailability(code).then(function (r) {
             if (!r.available) {
-              formError.textContent = r.error || "Code is already taken";
-              formError.style.display = "block";
+              setAffiliateCodeError(r.error || "Code is already taken");
+            } else {
+              setAffiliateCodeError("");
             }
           });
         });
@@ -692,23 +710,24 @@
 
         var codeErr = validateAffiliateCode(affiliateCode);
         if (codeErr) {
-          formError.textContent = codeErr;
-          formError.style.display = "block";
+          setAffiliateCodeError(codeErr);
+          if (affiliateCodeInput && affiliateCodeInput.focus) affiliateCodeInput.focus();
           return;
         }
 
         // Also block submit if the code is already taken (checked via Edge Function).
         checkAffiliateCodeAvailability(affiliateCode).then(function (availability) {
           if (!availability || availability.ok === false) {
-            formError.textContent = (availability && availability.error) || "We couldn’t verify if this code is available. Please try again.";
-            formError.style.display = "block";
+            setAffiliateCodeError((availability && availability.error) || "We couldn’t verify if this code is available. Please try again.");
+            if (affiliateCodeInput && affiliateCodeInput.focus) affiliateCodeInput.focus();
             return;
           }
           if (availability.available === false) {
-            formError.textContent = availability.error || "Code is already taken";
-            formError.style.display = "block";
+            setAffiliateCodeError(availability.error || "Code is already taken");
+            if (affiliateCodeInput && affiliateCodeInput.focus) affiliateCodeInput.focus();
             return;
           }
+          setAffiliateCodeError("");
 
           if (typeof window.affiliateAuth === "undefined" || !window.AFFILIATE_CONFIG) {
           formMessage.textContent = "Thanks! We've received your details and will get in touch as soon as possible.";
