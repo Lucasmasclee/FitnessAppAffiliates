@@ -94,7 +94,7 @@
               </div>
             </div>
 
-            <!-- 3. Affiliate links & tracking -->
+            <!-- 3. Affiliate links & tracking
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate link</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
@@ -109,13 +109,13 @@
                   <span id="affiliate-qr-note">Want different links for different channels? Message us.</span>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Affiliate code (editable) -->
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Affiliate code</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                This code is used in your referral link and can also be entered manually in the app.
+                This code is used in your referral link and can also be entered manually in the app. Make the code as short and simple as possible.
               </p>
 
               <div class="form-group" style="margin-bottom: 0.75rem;">
@@ -133,7 +133,7 @@
               </div>
 
               <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
-                Changing your code will update your public referral link.
+                Changing your code will update your public referral link. Tracking history will not be affected.
               </p>
 
               <div style="margin-top: 0.75rem; display:flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -576,7 +576,7 @@
 
       function validateAffiliateCode(code) {
         if (!code) return "Affiliate code is required";
-        if (code.length < 4 || code.length > 10) return "Code must be 4–10 characters";
+        if (code.length < 4 || code.length > 16) return "Code must be 4–16 characters";
         if (!/^[a-z0-9]+$/.test(code)) return "Only letters and numbers allowed";
         if (RESERVED_CODES[code]) return "This code is not allowed";
         return null;
@@ -590,6 +590,8 @@
           return;
         }
         affiliateCodeError.textContent = msg;
+        // Ensure error text is visible/obviously red, independent of theme variables.
+        affiliateCodeError.style.color = "var(--danger, #dc3545)";
         affiliateCodeError.style.display = "block";
       }
 
