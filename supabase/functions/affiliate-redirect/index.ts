@@ -18,11 +18,6 @@ function detectPlatform(req: Request): Platform {
 }
 
 function pickTargetUrl(platform: Platform, code: string): string {
-  const appsflyerBase = (Deno.env.get("APPSFLYER_ONELINK_URL") || "").replace(/\?.*$/, "").replace(/\/$/, "");
-  if (appsflyerBase && code) {
-    return `${appsflyerBase}?af_sub1=${encodeURIComponent(code)}`;
-  }
-
   const appStoreUrl = Deno.env.get("APPSTORE_URL") || "";
   const playStoreUrl = Deno.env.get("PLAYSTORE_URL") || "";
   const fallback =

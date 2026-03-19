@@ -6,7 +6,7 @@
 [functions.submit-affiliate]
 verify_jwt = false
 
-# Branch sends webhooks without a Supabase JWT; we verify x-webhook-secret instead.
+# Legacy: Branch webhook (only if you still use Branch).
 [functions.branch-webhook]
 verify_jwt = false
 
@@ -21,8 +21,7 @@ verify_jwt = false
 verify_jwt = false
 
 # Affiliate subscriptions worden rechtstreeks vanuit de app / backend aangeroepen
-# met alleen affiliate_code/branch_link_alias; JWT-validatie gebeurt dus niet
-# via de Supabase-gateway.
+# (affiliate_code). JWT-validatie gebeurt dus niet via de Supabase-gateway.
 [functions.affiliate-subscription]
 verify_jwt = false
 

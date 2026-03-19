@@ -129,8 +129,8 @@ Wordt getoond na inloggen of als er geen auth is. Standaard `display: none` tot 
 |--------|------|----------------|
 | **Titel** | H2 | "Track all of your stats" |
 | **Paragraaf 1** | p | "After we've created your personal link, you will get access to your dashboard. In your dashboard you can see all the stats of your link, such as clicks, downloads, and subscriptions." |
-| **Paragraaf 2** | p | "All link data is retrieved directly from AppsFlyer." |
-| **Form note** | p, class `form-note` | "Affiliate attribution is determined by AppsFlyer. When multiple affiliate links are clicked, the most recent eligible click will receive attribution. Attribution windows may vary depending on platform policies and privacy settings." |
+| **Paragraaf 2** | p | "Tracking is measured directly by the LiftBetter app and our backend." |
+| **Form note** | p, class `form-note` | "Affiliate code is chosen during registration and can be changed in the dashboard. A download is counted when a user enters the code in the in-app paywall (no purchase). A subscription is counted when a user makes a purchase using the affiliate code. Users get 10% off when they enter a valid code. If multiple codes are entered, only the first code counts for both downloads and subscriptions." |
 | **Knop** | Link, class `btn btn-secondary` | "Privacy policy". Link: `privacy.html`, target `_blank`, rel `noopener`. Styling: `color: var(--accent)` |
 
 ### Sectie: Affiliate terms
@@ -329,7 +329,7 @@ Wordt getoond zodra de gebruiker is ingelogd en (indien van toepassing) een affi
 | **Titel** | H2 | "Commission structure & targets" |
 | **Ondertitel** | p | "Know exactly what you earn and what the next bonus is." |
 | **Subkaart titel** | H3 | "Commission rules" |
-| **Lijst** | ul, class `list-compact` | • Monthly subscription: 90% commission on our net revenue. • Yearly subscription: 50% commission on our net revenue. • No commission is paid on refunded subscriptions. • Installs and subscriptions are approved after 60 days. • Affiliate attribution is determined by AppsFlyer. When multiple affiliate links are clicked, the most recent eligible click will receive attribution. Attribution windows may vary depending on platform policies and privacy settings. |
+| **Lijst** | ul, class `list-compact` | • Monthly subscription: 90% commission on our net revenue. • Yearly subscription: 50% commission on our net revenue. • No commission is paid on refunded subscriptions. • Downloads and subscriptions are approved after 60 days. • Download = code entered in paywall. Subscription = purchase with code. |
 | **Subkaart titel** | H3 | "Current tier" |
 | **Tier** | p, strong id="commission-tier" | Bijv. "Base tier" |
 | **Uitleg** | p, muted | "As your performance grows, we may move you into a higher tier with extra bonuses." |
@@ -414,10 +414,10 @@ Onderaan: korte disclaimer dat deze pagina de affiliate terms voor OptimalFitnes
 Inhoud: OptimalFitness V.O.F., De Boog 32, Heiloo, KvK 97730238, optimalfitnessapp@outlook.com. Daarna:
 
 - **1. Information We Collect** – Account & usage data, payment data (App Store/Play, geen opslag betaalgegevens).
-- **2. Affiliate & Install Tracking** – AppsFlyer, welke data (device, IP, timestamp, referral, events), doelen (attribution, fraud, performance, dashboard).
+- **2. Affiliate & Install Tracking** – LiftBetter app + backend: clicks via referral link, download-event wanneer code in paywall wordt ingevuld, subscription-event bij aankoop met code.
 - **3. How We Use Your Data** – Operationeel, tracking, commissies, UX, fraud, legal.
 - **4. Legal Basis (GDPR)** – Contract, legitimate interest, legal obligation.
-- **5. Data Sharing** – AppsFlyer, Supabase, app stores, hosting; geen verkoop data.
+- **5. Data Sharing** – Supabase, app stores, hosting; geen verkoop data.
 - **6. Data Retention** – Zo lang nodig; verwijdering op verzoek.
 - **7. Your Rights (EU/EEA)** – Toegang, correctie, verwijdering, bezwaar, portability; contact e-mail; 30 dagen.
 - **8. Cookies & Tracking** – Doel, duur, last-click regel; toestemming gebruik site.

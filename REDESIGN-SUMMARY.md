@@ -25,7 +25,7 @@
    - Intro: what this page is, what creators can expect, what happens after they apply.  
    - Earnings block: same commission rules (90% / 50%, net revenue, platform fees, payout cadence, custom offers), improved layout and hierarchy.  
    - Sign-up process block: submit form → we contact you → dashboard + link → start sharing.  
-   - Tracking / dashboard / attribution block: same AppsFlyer and privacy wording, easier to scan.  
+  - Tracking / dashboard / attribution block: updated to first-party tracking wording, easier to scan.
    - Terms & privacy reassurance: same links and consent; presented as "review before you submit."  
    - Registration form: clearer intro, grouped fields, helper text, professional submit CTA.  
    - Post-submit: clear success state with "we’ll contact you," "dashboard available," next steps, and where the Creator Kit will live.
@@ -49,7 +49,7 @@
 
 - **Commission:** All numbers and rules unchanged: 90% on first month’s net revenue for monthly subs, 50% on first year’s net revenue for yearly subs. Notes on app store cut (15%), net revenue, payout on the 1st of the month, and "custom offers allowed but not guaranteed" are kept; only layout and wording clarity improved.
 - **Payouts:** Minimum payout (€50), payout timing (e.g. 1st of the month), and "we’ll contact you when you reach threshold" are unchanged.
-- **Attribution:** AppsFlyer attribution, "most recent eligible click," and "attribution windows may vary" are kept verbatim where they appear (become-affiliate and dashboard).
+- **Attribution:** Updated to first-party attribution (referral code stored in app) where it appears (become-affiliate, dashboard, terms, privacy).
 - **Approval / tracking:** 60-day approval for installs/subscriptions and related dashboard logic are not changed.
 - **Terms & privacy:** No changes to the content or meaning of `terms.html` and `privacy.html`. Links and required consent checkboxes remain; they are grouped in a reassurance block and positioned so creators can "review before you submit."
 

@@ -11,6 +11,8 @@ type SubscriptionType = "monthly" | "yearly";
 
 interface SubscriptionBody {
   affiliate_code?: string;
+  // Deprecated (legacy): Branch alias based attribution.
+  // Kept for backwards compatibility but should not be used going forward.
   branch_link_alias?: string;
   subscription_type?: SubscriptionType;
   gross_amount?: number;
@@ -73,7 +75,7 @@ Deno.serve(async (req) => {
   const subscriptionType = body.subscription_type;
 
   if (!affiliateCode && !branchAlias) {
-    return new Response(JSON.stringify({ error: "affiliate_code or branch_link_alias is required" }), {
+    return new Response(JSON.stringify({ error: "affiliate_code is required" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

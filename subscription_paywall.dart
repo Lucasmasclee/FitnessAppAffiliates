@@ -40,9 +40,16 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
   bool _processingPurchase = false;
   int _secretTapCount = 0;
 
+  final TextEditingController _affiliateCodeController = TextEditingController();
+  bool _affiliateLocked = false;
+  bool _affiliateValid = false;
+  bool _affiliateApplying = false;
+  String? _affiliateMessage;
+
   static const String _prefsKeyAffiliateSubscriptionRewarded =
       'affiliate_subscription_rewarded';
   static const String _prefsKeyAffiliateLastPlan = 'affiliate_last_plan';
+  static const String _prefsKeyAffiliateAttributedCode = 'affiliate_attributed_code';
 
   /// Beschrijving voor het jaarabonnement: echte prijs per jaar + gemiddelde prijs per maand.
   String get _yearlyDescription {
@@ -50,12 +57,6 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
     if (product == null) {
       return '— per jaar, jaarlijks gefactureerd (— / maand gemiddeld).';
     }
-    final perMonth = product.rawPrice / 12;
-    final formattedPerMonth = NumberFormat.currency(
-      locale: 'nl_NL',
-      symbol: product.currencySymbol.isNotEmpty ? product.currencySymbol : null,
-      decimalDigits: 2,
-    ).format(perMonth);
     return '${product.price} per jaar, jaarlijks gefactureerd.';
   }
 
@@ -68,9 +69,94 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
   Future<void> _init() async {
     await SubscriptionService.instance.init();
     await _loadProducts();
+    await _loadAffiliateState();
 
     if (SubscriptionService.instance.hasActiveSubscription) {
       await _onSubscriptionActive();
+    }
+  }
+
+  Future<void> _loadAffiliateState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final existing = (prefs.getString(_prefsKeyAffiliateAttributedCode) ?? '').trim();
+      if (existing.isNotEmpty) {
+        _affiliateCodeController.text = existing;
+        setState(() {
+          _affiliateLocked = true;
+          _affiliateValid = true;
+          _affiliateMessage =
+              'Affiliate code applied (first code wins). You get 10% off.';
+        });
+      }
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  String _normalizeAffiliateCode(String raw) {
+    return raw.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+  }
+
+  bool _isValidAffiliateCodeFormat(String code) {
+    return RegExp(r'^[a-z0-9]{4,16}$').hasMatch(code);
+  }
+
+  Future<void> _applyAffiliateCode() async {
+    if (_affiliateApplying || _affiliateLocked) return;
+    final raw = _affiliateCodeController.text;
+    final code = _normalizeAffiliateCode(raw);
+    if (code != raw) _affiliateCodeController.text = code;
+
+    if (!_isValidAffiliateCodeFormat(code)) {
+      setState(() {
+        _affiliateValid = false;
+        _affiliateMessage = 'Enter a valid code (4–16 letters/numbers).';
+      });
+      return;
+    }
+
+    setState(() {
+      _affiliateApplying = true;
+      _affiliateMessage = null;
+    });
+
+    try {
+      // First code wins: store only if none exists.
+      final stored = await SupabaseService.instance.setAffiliateCodeFirstWins(code);
+      if (!stored) {
+        setState(() {
+          _affiliateLocked = true;
+          _affiliateValid = true;
+          _affiliateMessage =
+              'A code was already set earlier. Only the first code counts for downloads and subscriptions.';
+        });
+        return;
+      }
+
+      // "Download" event = user entered a valid code in paywall.
+      final ok = await SupabaseService.instance.registerAffiliateDownload(
+        affiliateCode: code,
+      );
+
+      setState(() {
+        _affiliateLocked = true;
+        _affiliateValid = ok;
+        _affiliateMessage = ok
+            ? 'Code applied. 10% discount unlocked. Only the first code counts.'
+            : 'Code saved, but could not be verified right now.';
+      });
+    } catch (e) {
+      setState(() {
+        _affiliateValid = false;
+        _affiliateMessage = 'Could not apply code. Please try again.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _affiliateApplying = false;
+        });
+      }
     }
   }
 
@@ -246,6 +332,78 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
                   ),
             ),
             const SizedBox(height: 24),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Have an affiliate code?',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Enter a valid code to unlock 10% off. Only the first code counts for both downloads and subscriptions.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _affiliateCodeController,
+                            enabled: !_affiliateLocked && !_affiliateApplying,
+                            decoration: InputDecoration(
+                              labelText: 'Affiliate code',
+                              hintText: 'e.g. join2',
+                              errorText: (_affiliateValid || _affiliateMessage == null)
+                                  ? null
+                                  : _affiliateMessage,
+                            ),
+                            onChanged: (v) {
+                              if (_affiliateMessage != null && !_affiliateLocked) {
+                                setState(() => _affiliateMessage = null);
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        FilledButton(
+                          onPressed: (_affiliateLocked || _affiliateApplying)
+                              ? null
+                              : _applyAffiliateCode,
+                          child: _affiliateApplying
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text('Apply'),
+                        ),
+                      ],
+                    ),
+                    if (_affiliateMessage != null &&
+                        (_affiliateValid || _affiliateLocked)) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        _affiliateMessage!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: _affiliateValid
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.error,
+                            ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
             if (_loadingProducts)
               const Center(child: CircularProgressIndicator())
             else ...[
@@ -325,7 +483,7 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
     bool highlight = false,
   }) {
     final canBuy = product != null && !_processingPurchase;
-    final displayPrice = product?.price ?? '';
+    final displayPrice = _formatPrice(product);
 
     return Card(
       color: highlight
@@ -375,6 +533,28 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
         ),
       ),
     );
+  }
+
+  String _formatPrice(ProductDetails? product) {
+    if (product == null) return '';
+    if (!_affiliateLocked || !_affiliateValid) return product.price;
+
+    final discounted = product.rawPrice * 0.9;
+    try {
+      return NumberFormat.currency(
+        locale: 'nl_NL',
+        symbol: product.currencySymbol.isNotEmpty ? product.currencySymbol : null,
+        decimalDigits: 2,
+      ).format(discounted);
+    } catch (_) {
+      return product.price;
+    }
+  }
+
+  @override
+  void dispose() {
+    _affiliateCodeController.dispose();
+    super.dispose();
   }
 }
 

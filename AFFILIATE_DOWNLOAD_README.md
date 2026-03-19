@@ -1,11 +1,11 @@
 # Affiliate download tracking (automatisch) TEST
 
-## Wat er gebeurt
+## Wat er gebeurt (nieuwe definitie)
 
-- **Android:** Als iemand via `https://liftbetter.cloud/join2` naar de Play Store gaat, voegen we `referrer=affiliate_code%3Djoin2` toe aan de store-URL. De app leest bij eerste open de Install Referrer en stuurt één keer een download-registratie naar Supabase. Geen invoer van de gebruiker.
-- **iOS:** Apple biedt geen install referrer. De app probeert optioneel de **clipboard** (als die iets als `join2` of een link met `/join2` bevat). Anders wordt op iOS geen download automatisch geteld.
+- **Download:** Een download wordt geregistreerd wanneer een gebruiker in de **paywall** de affiliate code invult (zonder iets te kopen).
+- **Subscription:** Een subscription wordt geregistreerd wanneer een gebruiker met een affiliate code een aankoop doet.
 
-## In je Flutter-app
+## In je Flutter-app (high level)
 
 1. **Dependencies** in `pubspec.yaml`:
    ```yaml
@@ -25,4 +25,4 @@
    - Hernoem `referrer_android.dart` tijdelijk en pas in `start_screen.dart` de import aan tot alleen `referrer_stub.dart` (zonder conditional), of
    - Gebruik een wrapper-package die op iOS een no-op heeft.
 
-4. **Backend:** Zorg dat de Edge Function `affiliate-redirect` opnieuw is gedeployed (zodat de Play Store-URL de `referrer`-parameter meekrijgt), en dat `affiliate-download` live staat.
+4. **Backend:** Zorg dat `affiliate-download` live staat en dat je paywall bij het invullen van de code de download-call uitvoert.

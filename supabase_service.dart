@@ -12,6 +12,82 @@ class SupabaseService {
 
   SupabaseClient get client => Supabase.instance.client;
 
+  static const String _prefsKeyAffiliateAttributedCode = 'affiliate_attributed_code';
+  static const String _prefsKeyAffiliateLegacyCode = 'affiliate_code';
+  static const String _prefsKeyAffiliateDownloadReported = 'affiliate_download_reported';
+
+  /// Store affiliate code only if none is set yet.
+  /// Returns true if the code was stored, false if a code already existed.
+  Future<bool> setAffiliateCodeFirstWins(String code) async {
+    final normalized = code.trim().toLowerCase();
+    if (normalized.isEmpty) return false;
+
+    final prefs = await SharedPreferences.getInstance();
+    final existing = (prefs.getString(_prefsKeyAffiliateAttributedCode) ??
+            prefs.getString(_prefsKeyAffiliateLegacyCode) ??
+            '')
+        .trim();
+
+    if (existing.isNotEmpty) return false;
+
+    await prefs.setString(_prefsKeyAffiliateAttributedCode, normalized);
+    // Keep legacy key in sync for older code paths.
+    await prefs.setString(_prefsKeyAffiliateLegacyCode, normalized);
+    return true;
+  }
+
+  /// Read the attributed affiliate code (first code wins).
+  Future<String?> getAffiliateAttributedCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = (prefs.getString(_prefsKeyAffiliateAttributedCode) ??
+            prefs.getString(_prefsKeyAffiliateLegacyCode))
+        ?.trim()
+        .toLowerCase();
+    return (code != null && code.isNotEmpty) ? code : null;
+  }
+
+  /// Register a "download" when the user enters a valid affiliate code in paywall.
+  /// Only registers once per device.
+  Future<bool> registerAffiliateDownload({required String affiliateCode}) async {
+    final code = affiliateCode.trim().toLowerCase();
+    if (code.isEmpty) return false;
+
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_prefsKeyAffiliateDownloadReported) ?? false) {
+      return true;
+    }
+
+    const functionUrl = String.fromEnvironment('AFFILIATE_DOWNLOAD_URL');
+    const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+
+    Uri? uri;
+    if (functionUrl.isNotEmpty) {
+      uri = Uri.tryParse(functionUrl);
+    } else if (supabaseUrl.isNotEmpty) {
+      uri = Uri.tryParse('$supabaseUrl/functions/v1/affiliate-download');
+    }
+    if (uri == null) return false;
+
+    final body = jsonEncode({
+      'affiliate_code': code,
+      'platform': defaultTargetPlatform == TargetPlatform.iOS
+          ? 'ios'
+          : (defaultTargetPlatform == TargetPlatform.android ? 'android' : 'other'),
+    });
+
+    final response = await http.post(
+      uri,
+      headers: const {'Content-Type': 'application/json'},
+      body: body,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      await prefs.setBool(_prefsKeyAffiliateDownloadReported, true);
+      return true;
+    }
+    return false;
+  }
+
   /// Haal de affiliate_code op voor een gebruiker met dit e‑mailadres,
   /// print de waarde in de console (debugPrint) en sla de code lokaal op.
   ///
@@ -37,8 +113,11 @@ class SupabaseService {
       debugPrint('Supabase: affiliate_code voor $email = $code, phone = $phone');
 
       if (code != null && code.isNotEmpty) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('affiliate_code', code);
+        // Only set if none exists yet (first code wins).
+        final stored = await setAffiliateCodeFirstWins(code);
+        if (!stored) {
+          debugPrint('Supabase: affiliate_code already set locally; not overwriting.');
+        }
         debugPrint('Supabase: affiliate_code lokaal opgeslagen: $code');
       }
     } catch (e, stack) {
@@ -54,8 +133,7 @@ class SupabaseService {
   /// - affiliate_stats (monthly_subs / yearly_subs) bijwerkt.
   Future<void> registerAffiliateSubscription({required bool isYearly}) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final code = prefs.getString('affiliate_code');
+      final code = await getAffiliateAttributedCode();
 
       if (code == null || code.isEmpty) {
         debugPrint(
