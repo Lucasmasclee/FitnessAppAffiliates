@@ -34,11 +34,11 @@
   <main>
     <section class="section">
       <h1 class="section-title">Affiliate dashboard</h1>
-      <p class="section-subtitle">See exactly what your link is doing.</p>
+      <p class="section-subtitle">See exactly what your code is doing.</p>
 
       <div id="dashboard-gate" class="card dashboard-gate-card" style="display: none;">
         <h2 class="dashboard-gate-title">Sign in to your dashboard</h2>
-        <p class="dashboard-gate-text">Use the same Google account you used when you registered as an affiliate. Your dashboard and link are tied to that account.</p>
+        <p class="dashboard-gate-text">Use the same Google account you used when you registered as an affiliate. Your dashboard and code are tied to that account.</p>
         <button type="button" id="btn-google" class="btn btn-primary">Sign in with Google</button>
       </div>
 
@@ -49,14 +49,14 @@
             <h2 class="dashboard-onboarding-title">Get started</h2>
             <p class="dashboard-onboarding-lead">Here’s what to do first.</p>
             <ul class="dashboard-onboarding-steps">
-              <li><strong>Copy your link</strong> above and share it wherever you promote (bio, posts, stories). Every click is tracked here.</li>
+              <li><strong>Copy your code</strong> above and share it wherever you promote (bio, posts, stories). Users can enter it in the in-app paywall to unlock <strong>10% off</strong>.</li>
               <li><strong>Stats</strong> (clicks, downloads, subscriptions) will appear in this dashboard as people use your code. Data can take a short time to sync.</li>
               <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is €50. We’ll contact you when you reach the threshold.</li>
               <li><strong>Support</strong> and the <strong>Creator Kit</strong> (promo resources, scripts, visuals) are below. Open the Creator Kit to see where resources will live.</li>
             </ul>
             <div class="dashboard-next-steps">
               <span class="dashboard-next-steps-label">Next steps:</span>
-              <span>Copy your affiliate link</span>
+              <span>Copy your affiliate code</span>
               <span class="dashboard-next-steps-sep">·</span>
               <span>Review how <a href="#payouts-section">payouts work</a></span>
               <span class="dashboard-next-steps-sep">·</span>
@@ -69,7 +69,7 @@
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Earnings overview</h2>
               <p style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
-                Expected total earnings from your link – This number is only an estimate, and might differ from the actual earnings.
+                Expected total earnings from your code – This number is only an estimate, and might differ from the actual earnings.
               </p>
               <div class="earnings-overview">
                 <div>
@@ -94,11 +94,11 @@
               </div>
             </div>
 
-            <!-- 3. Affiliate links & tracking
+            <!-- 3. Affiliate code & tracking
             <div class="card">
-              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate link</h2>
+              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate code</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                Share this link so every click, install and subscription is tracked.
+                Share this code so every click, install and subscription is tracked.
               </p>
               <div class="affiliate-link-row">
                 <div class="affiliate-link-chip">
@@ -106,7 +106,7 @@
                   <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-link">Copy</button>
                 </div>
                 <div class="affiliate-link-meta">
-                  <span id="affiliate-qr-note">Want different links for different channels? Message us.</span>
+                  <span id="affiliate-qr-note">Want different codes for different channels? Message us.</span>
                 </div>
               </div>
             </div> -->
@@ -115,7 +115,7 @@
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Affiliate code</h2>
               <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                This code is used in your referral link and can be entered in the app paywall. A download is counted when a user enters the code (no purchase required). A subscription is counted when a user purchases with your code. Users get 10% off when they enter a valid code. If multiple codes are entered, only the first code counts for both downloads and subscriptions.
+                Share this code with your audience. Users can enter it in the app paywall to unlock <strong>10% off</strong>. A download is counted when a user enters the code (no purchase required). A subscription is counted when a user purchases with your code. If multiple codes are entered, only the first code counts for both downloads and subscriptions.
               </p>
 
               <div class="form-group" style="margin-bottom: 0.75rem;">
@@ -125,7 +125,7 @@
               </div>
 
               <div style="margin-top: 0.75rem;">
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Referral link preview</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Optional share link preview</div>
                 <div class="affiliate-link-chip" style="max-width: 100%;">
                   <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
                   <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-preview">Copy</button>
@@ -133,7 +133,7 @@
               </div>
 
               <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
-                Changing your code will update your public referral link. Tracking history will not be affected.
+                Changing your code will update your public share link. Tracking history will not be affected.
               </p>
 
               <div style="margin-top: 0.75rem; display:flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -148,7 +148,7 @@
             <div class="dashboard-section-header">
               <div>
                 <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Key metrics</h2>
-                <p>Quick snapshot of how your link is performing.</p>
+                <p>Quick snapshot of how your code is performing.</p>
               </div>
             </div>
             <div class="kpi-grid">
@@ -231,7 +231,7 @@
                 <div class="chart-header">
                   <div>
                     <div class="chart-title">Clicks per day</div>
-                    <div class="chart-subtitle">See how often people hit your link.</div>
+                    <div class="chart-subtitle">See how often people use your code.</div>
                   </div>
                 </div>
                 <div>
@@ -301,7 +301,7 @@
             <div class="dashboard-section-header">
               <div>
                 <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Transactions & installs</h2>
-                <p>Transparent list of installs and subscriptions attributed to your link.</p>
+                <p>Transparent list of installs and subscriptions attributed to your code.</p>
               </div>
               <span class="badge badge-warning">60-day hold</span>
             </div>
@@ -327,7 +327,7 @@
               </table>
             </div>
             <div class="transactions-empty" id="transactions-empty" style="display: none;">
-              No installs or subscriptions yet. Once people start signing up from your link, they will appear here.
+              No installs or subscriptions yet. Once people start signing up using your code, they will appear here.
             </div>
           </div> -->
 
@@ -1116,7 +1116,7 @@
           .then(function (result) {
             if (result.error || !result.data) {
               showContent();
-              if (linkEl) linkEl.textContent = "Complete registration on the Become affiliate page to get your link.";
+              if (linkEl) linkEl.textContent = "Complete registration on the Become affiliate page to get your code.";
               return null;
             }
             var aff = result.data;

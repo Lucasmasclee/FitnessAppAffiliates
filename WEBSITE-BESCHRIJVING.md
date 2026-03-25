@@ -45,7 +45,7 @@ Dit document beschrijft elk scherm van de website in detail: alle teksten, knopp
 | Element | Type | Tekst / Inhoud |
 |--------|------|----------------|
 | **Titel** | H2 | "How it works" |
-| **Lijst** | Genummerde lijst (ol) | 1. We give you a personal link. 2. You promote the app however you want. 3. You can track your clicks, downloads, and subscriptions live in your dashboard. 4. You get 90% commission on the first month's profits from your link. 5. You get 50% commission on the first year's profits from your link. |
+| **Lijst** | Genummerde lijst (ol) | 1. We give you a unique affiliate code. 2. You promote the app however you want. 3. You can track your clicks, downloads, and subscriptions live in your dashboard. 4. You get 90% commission on the first month's profits using your code. 5. You get 50% commission on the first year's profits using your code. |
 
 ## Sectie "Is this for you?"
 
@@ -114,21 +114,21 @@ Wordt getoond na inloggen of als er geen auth is. Standaard `display: none` tot 
 | Element | Type | Tekst / Inhoud |
 |--------|------|----------------|
 | **Titel** | H2 | "How much will you earn?" |
-| **Lijst** | ul | • Note: our prices are subject to change. • Note: The appstore and playstore take 15% of the revenue. Commission is paid on the net revenue. • For every monthly subscription from your link, we pay out 90% of the net revenue of the first month. • For every yearly subscription from your link, we pay out 50% of the net revenue of the first year. • You can track your subscriptions in your dashboard, and we will pay you out every 1st of the month. • Custom offers and partnerships are allowed, but not guaranteed. |
+| **Lijst** | ul | • Note: our prices are subject to change. • Note: The appstore and playstore take 15% of the revenue. Commission is paid on the net revenue. • For every monthly subscription using your code, we pay out 90% of the net revenue of the first month. • For every yearly subscription using your code, we pay out 50% of the net revenue of the first year. • You can track your subscriptions in your dashboard, and we will pay you out every 1st of the month. • Custom offers and partnerships are allowed, but not guaranteed. |
 
 ### Kaart: "How does the sign-up process work?"
 
 | Element | Type | Tekst / Inhoud |
 |--------|------|----------------|
 | **Titel** | H2 | "How does the sign-up process work?" |
-| **Lijst** | ul | 1. Fill out the form below, and we will contact you within 48 hours. 2. You will get access to your dashboard, where you can find your unique link too. 3. That's it, you can start sharing the link. |
+| **Lijst** | ul | 1. Fill out the form below, and we will contact you within 48 hours. 2. You will get access to your dashboard, where you can find your unique code too. 3. That's it, you can start sharing your code. |
 
 ### Kaart: "Track all of your stats"
 
 | Element | Type | Tekst / Inhoud |
 |--------|------|----------------|
 | **Titel** | H2 | "Track all of your stats" |
-| **Paragraaf 1** | p | "After we've created your personal link, you will get access to your dashboard. In your dashboard you can see all the stats of your link, such as clicks, downloads, and subscriptions." |
+| **Paragraaf 1** | p | "After we've created your affiliate code, you will get access to your dashboard. In your dashboard you can see all the stats of your code, such as clicks, downloads, and subscriptions." |
 | **Paragraaf 2** | p | "Tracking is measured directly by the LiftBetter app and our backend." |
 | **Form note** | p, class `form-note` | "Affiliate code is chosen during registration and can be changed in the dashboard. A download is counted when a user enters the code in the in-app paywall (no purchase). A subscription is counted when a user makes a purchase using the affiliate code. Users get 10% off when they enter a valid code. If multiple codes are entered, only the first code counts for both downloads and subscriptions." |
 | **Knop** | Link, class `btn btn-secondary` | "Privacy policy". Link: `privacy.html`, target `_blank`, rel `noopener`. Styling: `color: var(--accent)` |
@@ -198,7 +198,7 @@ Wordt getoond na inloggen of als er geen auth is. Standaard `display: none` tot 
 | Element | Type | Tekst |
 |--------|------|--------|
 | **Titel** | H1, class `section-title` | "Affiliate dashboard" |
-| **Ondertitel** | p, class `section-subtitle` | "See exactly what your link is doing – earnings, funnel, payouts and everything you need to grow." |
+| **Ondertitel** | p, class `section-subtitle` | "See exactly what your code is doing – earnings, funnel, payouts and everything you need to grow." |
 
 ---
 
@@ -223,7 +223,7 @@ Wordt getoond zodra de gebruiker is ingelogd en (indien van toepassing) een affi
 | Element | Type | Tekst / Inhoud (dynamisch) |
 |--------|------|----------------------------|
 | **Titel** | H2 | "Earnings overview" |
-| **Uitleg** | p, muted | "Expected total earnings from your link – This number is only an estimate, and might differ from the actual earnings." |
+| **Uitleg** | p, muted | "Expected total earnings from your code – This number is only an estimate, and might differ from the actual earnings." |
 | **Hoofdgetal** | div, id="earnings-expected-total", class `earnings-main-number` | Bijv. "€0" (format: EUR, nl-NL) |
 | **Subtitle** | div, id="earnings-subtitle" | "Based on approved & pending commissions." |
 | **Label** | div | "Paid out (all time)" |
@@ -233,22 +233,22 @@ Wordt getoond zodra de gebruiker is ingelogd en (indien van toepassing) een affi
 | **Volgende payout** | p, id="earnings-next-payout" | "Next payout: [id=earnings-next-payout-date] · Minimum payout: €50" |
 | **Datum** | span, id="earnings-next-payout-date" | Bijv. "1st of next month" (maandnaam in en-GB) |
 
-### Blok 2: Your affiliate link (kaart)
+### Blok 2: Your affiliate code (kaart)
 
 | Element | Type | Tekst / Gedrag |
 |--------|------|----------------|
-| **Titel** | H2 | "Your affiliate link" |
-| **Uitleg** | p, muted | "Share this link so every click, install and subscription is tracked." |
-| **Link** | code, id="affiliate-link" | Toont de volledige affiliate-URL (origin + "/" + affiliate_code). Als geen account: "Complete registration on the Become affiliate page to get your link." of placeholder "—". |
-| **Knop** | Button, id="btn-copy-link", class `btn btn-secondary btn-ghost` | "Copy". Kopieert de link naar klembord; korte tijd "Copied". |
-| **Meta** | span, id="affiliate-qr-note" | "Want different links for different channels? Message us." |
+| **Titel** | H2 | "Your affiliate code" |
+| **Uitleg** | p, muted | "Share this code so every click, install and subscription is tracked." |
+| **Link** | code, id="affiliate-link" | Toont de volledige share-URL (origin + "/" + affiliate_code). Als geen account: "Complete registration on the Become affiliate page to get your code." of placeholder "—". |
+| **Knop** | Button, id="btn-copy-link", class `btn btn-secondary btn-ghost` | "Copy". Kopieert de share-URL naar klembord; korte tijd "Copied". |
+| **Meta** | span, id="affiliate-qr-note" | "Want different codes for different channels? Message us." |
 
 ### Blok 3: Key metrics (kaart)
 
 | Element | Type | Labels / IDs (waarden dynamisch) |
 |--------|------|----------------------------------|
 | **Titel** | H2 | "Key metrics" |
-| **Ondertitel** | p | "Quick snapshot of how your link is performing." |
+| **Ondertitel** | p | "Quick snapshot of how your code is performing." |
 | **KPI: Clicks** | kpi-card | Label: "Clicks". Waarde: id="kpi-clicks-all" (bijv. 0). Sub: id="kpi-clicks-breakdown" → "iOS: 0" / "Android: 0" |
 | **KPI: Installs** | kpi-card | Label: "Installs (attributed)". Waarde: id="kpi-installs-all". Sub: id="kpi-installs-breakdown" → iOS/Android |
 | **KPI: Monthly subs** | kpi-card | Label: "Monthly subscriptions". Waarde: id="kpi-monthly-subs". Sub: "All-time monthly subscriptions." |
@@ -275,7 +275,7 @@ Wordt getoond zodra de gebruiker is ingelogd en (indien van toepassing) een affi
 | Element | Type | Tekst / Inhoud |
 |--------|------|----------------|
 | **Titel** | div, class `chart-title` | "Clicks per day" |
-| **Subtitle** | div, class `chart-subtitle` | "See how often people hit your link." |
+| **Subtitle** | div, class `chart-subtitle` | "See how often people use your code." |
 | **Label 7d** | div | "Last 7 days" |
 | **Sparkline** | div, id="sparkline-clicks-7d", class `sparkline` | Staafdiagram of "Waiting for data…" / "No data yet." |
 | **Label 30d** | div | "Last 30 days" |
@@ -381,7 +381,7 @@ Wordt getoond zodra de gebruiker is ingelogd en (indien van toepassing) een affi
 
 ## Secties (alleen tekst, geen knoppen)
 
-- **1. Parties and definitions** – Company, Product, Affiliate, Affiliate account, Affiliate channel, Affiliate link, Customer, Commission.
+- **1. Parties and definitions** – Company, Product, Affiliate, Affiliate account, Affiliate channel, Affiliate code, Customer, Commission.
 - **2. Joining the program** – Registratie, acceptatie voorwaarden, goedkeuring/afwijzing, afwijzing bij ongepaste content.
 - **3. Nature of the program** – Fitness app, commissie op abonnementen, onafhankelijke partner.
 - **4. Promotion rules** – Alleen goedgekeurde kanalen, transparantie, verboden (naamsmisbruik, brand bidding zonder toestemming, spam, eigen kortingen, etc.), social disclosure (#ad/#affiliate).
@@ -414,7 +414,7 @@ Onderaan: korte disclaimer dat deze pagina de affiliate terms voor OptimalFitnes
 Inhoud: OptimalFitness V.O.F., De Boog 32, Heiloo, KvK 97730238, optimalfitnessapp@outlook.com. Daarna:
 
 - **1. Information We Collect** – Account & usage data, payment data (App Store/Play, geen opslag betaalgegevens).
-- **2. Affiliate & Install Tracking** – LiftBetter app + backend: clicks via referral link, download-event wanneer code in paywall wordt ingevuld, subscription-event bij aankoop met code.
+- **2. Affiliate & Install Tracking** – LiftBetter app + backend: clicks via share URL that carries your code, download-event wanneer code in paywall wordt ingevuld, subscription-event bij aankoop met code.
 - **3. How We Use Your Data** – Operationeel, tracking, commissies, UX, fraud, legal.
 - **4. Legal Basis (GDPR)** – Contract, legitimate interest, legal obligation.
 - **5. Data Sharing** – Supabase, app stores, hosting; geen verkoop data.
