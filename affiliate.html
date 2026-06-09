@@ -839,13 +839,22 @@
             t.subscription_type === "yearly" &&
             t.status !== "refunded";
         }).length;
+        var quarterlyFromStats = Number(stats.quarterly_subs || 0);
+        var quarterlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "quarterly" &&
+            t.status !== "refunded";
+        }).length;
         var monthlySubs = monthlyFromTx || monthlyFromStats;
         var yearlySubs = yearlyFromTx || yearlyFromStats;
+        var quarterlySubs = quarterlyFromTx || quarterlyFromStats;
 
         document.getElementById("kpi-monthly-subs").textContent =
           (monthlySubs || 0).toLocaleString("en-US");
         document.getElementById("kpi-yearly-subs").textContent =
           (yearlySubs || 0).toLocaleString("en-US");
+        document.getElementById("kpi-quarterly-subs").textContent =
+          (quarterlySubs || 0).toLocaleString("en-US");
 
         // Paying users (optional KPI element if present)
         var payingUsersEl = document.getElementById("kpi-paying-users");
@@ -860,7 +869,6 @@
 
         var convClickToInstallClamped = clampPercent(convClickToInstall);
         var convInstallToPaidClamped = clampPercent(convInstallToPaid);
-        var convClickToSubClamped = clampPercent(convClickToSub);
 
         // Click → Install
         document.getElementById("kpi-conv-click-install-main").textContent =
@@ -877,14 +885,6 @@
           "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
           " subscriptions / " + (installsAllTime || 0).toLocaleString("en-US") +
           " installs = " + convInstallToPaidClamped.toFixed(1) + "%.";
-
-        // Click → Subscription
-        document.getElementById("kpi-conv-click-sub-main").textContent =
-          convClickToSubClamped.toFixed(1) + "%";
-        document.getElementById("kpi-conv-click-sub-sub").textContent =
-          "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
-          " subscriptions / " + (clicksAllTime || 0).toLocaleString("en-US") +
-          " clicks = " + convClickToSubClamped.toFixed(1) + "%.";
 
         document.getElementById("kpi-epu-main").textContent = formatCurrency(epu);
         document.getElementById("kpi-epu-breakdown").textContent =
