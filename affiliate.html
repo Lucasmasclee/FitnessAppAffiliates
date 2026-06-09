@@ -51,7 +51,7 @@
             <ul class="dashboard-onboarding-steps">
               <li><strong>Copy your code</strong> above and share it wherever you promote (bio, posts, stories). Users can enter it in the in-app paywall to unlock <strong>10% off</strong>.</li>
               <li><strong>Stats</strong> (clicks, referral code entered, subscriptions) will appear in this dashboard as people use your code. Data can take a short time to sync.</li>
-              <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is €20. We’ll contact you when you reach the threshold.</li>
+              <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is $20. We’ll contact you when you reach the threshold.</li>
               <li><strong>Support</strong> and the <strong>Creator Kit</strong> (promo resources, scripts, visuals) are below. Open the Creator Kit to see where resources will live.</li>
             </ul>
             <div class="dashboard-next-steps">
@@ -104,22 +104,22 @@
               </p>
               <div class="earnings-overview">
                 <div>
-                  <div class="earnings-main-number" id="earnings-expected-total">€0</div>
+                  <div class="earnings-main-number" id="earnings-expected-total">$0</div>
                   <div class="earnings-sub-label" id="earnings-subtitle">Based on approved & pending commissions.</div>
                 </div>
                 <div>
                   <div class="earnings-split">
                     <div>
                       <div class="earnings-split-item-label">Paid out (all time)</div>
-                      <div class="earnings-split-item-value" id="earnings-paid-out">€0</div>
+                      <div class="earnings-split-item-value" id="earnings-paid-out">$0</div>
                     </div>
                     <div>
                       <div class="earnings-split-item-label">Expected payouts</div>
-                      <div class="earnings-split-item-value" id="earnings-expected-payouts">€0</div>
+                      <div class="earnings-split-item-value" id="earnings-expected-payouts">$0</div>
                     </div>
                   </div>
                   <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
-                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: €20
+                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: $20
                   </p>
                 </div>
               </div>
@@ -187,7 +187,7 @@
               <!-- Avg earnings per user -->
               <div class="kpi-card">
                 <div class="kpi-label">Avg earnings per user (EPU)</div>
-                <div class="kpi-value" id="kpi-epu-main">€0</div>
+                <div class="kpi-value" id="kpi-epu-main">$0</div>
                 <div class="kpi-subtext" id="kpi-epu-breakdown">Based on all paying users.</div>
               </div>
             </div>
@@ -273,7 +273,7 @@
                 </div>
                 <div class="funnel-step">
                   <span class="funnel-label">4. Earned</span>
-                  <span class="funnel-value" id="funnel-earned">€0</span>
+                  <span class="funnel-value" id="funnel-earned">$0</span>
                 </div>
               </div>
             </div>
@@ -325,12 +325,12 @@
             <div class="payout-grid">
               <div>
                 <p class="payout-meta-item-label">Minimum payout</p>
-                <p class="payout-meta-item-value">€20</p>
+                <p class="payout-meta-item-value">$20</p>
 
                 <div class="payout-meta-row">
                   <div>
                     <p class="payout-meta-item-label">Available payout</p>
-                    <p class="payout-meta-item-value" id="payout-available">€0</p>
+                    <p class="payout-meta-item-value" id="payout-available">$0</p>
                   </div>
                   <div>
                     <p class="payout-meta-item-label">Next payout date</p>
@@ -596,14 +596,14 @@
         var num = Number(value || 0);
         if (!isFinite(num)) num = 0;
         try {
-          return new Intl.NumberFormat("nl-NL", {
+          return new Intl.NumberFormat("en-US", {
             style: "currency",
-            currency: "EUR",
+            currency: "USD",
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           }).format(num);
         } catch (_) {
-          return "€" + num.toFixed(2);
+          return "$" + num.toFixed(2);
         }
       }
 
@@ -712,9 +712,10 @@
           return sum + (Number(t.commission_amount) || 0);
         }, 0);
 
-        // Monthly/yearly counts voor expected payouts-formule
+        // Subscription counts voor expected payouts-formule
         var monthlyFromStats = Number(stats.monthly_subs || 0);
         var yearlyFromStats = Number(stats.yearly_subs || 0);
+        var quarterlyFromStats = Number(stats.quarterly_subs || 0);
         var monthlyFromTx = transactions.filter(function (t) {
           return t.event_type === "subscription" &&
             t.subscription_type === "monthly" &&
@@ -725,11 +726,20 @@
             t.subscription_type === "yearly" &&
             t.status !== "refunded";
         }).length;
+        var quarterlyFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "quarterly" &&
+            t.status !== "refunded";
+        }).length;
         var monthlySubsForPayout = monthlyFromTx || monthlyFromStats;
         var yearlySubsForPayout = yearlyFromTx || yearlyFromStats;
+        var quarterlySubsForPayout = quarterlyFromTx || quarterlyFromStats;
 
-        // Expected payouts = Monthly subs × 10 + Yearly subs × 20
-        var totalExpected = (monthlySubsForPayout * 10) + (yearlySubsForPayout * 20);
+        // Expected payouts = Monthly × 10 + Quarterly × 15 + Yearly × 20
+        var totalExpected =
+          (monthlySubsForPayout * 10) +
+          (quarterlySubsForPayout * 15) +
+          (yearlySubsForPayout * 20);
         var expectedTotal = totalPaid + totalExpected;
 
         document.getElementById("earnings-expected-total").textContent = formatCurrency(expectedTotal);
@@ -984,7 +994,7 @@
           var subType = t.subscription_type ? (t.subscription_type.charAt(0).toUpperCase() + t.subscription_type.slice(1)) : "—";
           var status = t.status || "pending";
           var payoutStatus = t.payout_status || "pending";
-          var commission = t.commission_amount ? formatCurrency(t.commission_amount) : "€0";
+          var commission = t.commission_amount ? formatCurrency(t.commission_amount) : "$0";
 
           var holdText = "—";
           if (t.hold_until) {
