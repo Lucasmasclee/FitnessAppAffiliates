@@ -66,51 +66,6 @@
 
           <!-- 1. Overview -->
           <div class="dashboard-top-row">
-            <div class="card">
-              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Earnings overview</h2>
-              <p style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
-                Expected total earnings from your code – This number is only an estimate, and might differ from the actual earnings due to refunds.
-              </p>
-              <div class="earnings-overview">
-                <div>
-                  <div class="earnings-main-number" id="earnings-expected-total">€0</div>
-                  <div class="earnings-sub-label" id="earnings-subtitle">Based on approved & pending commissions.</div>
-                </div>
-                <div>
-                  <div class="earnings-split">
-                    <div>
-                      <div class="earnings-split-item-label">Paid out (all time)</div>
-                      <div class="earnings-split-item-value" id="earnings-paid-out">€0</div>
-                    </div>
-                    <div>
-                      <div class="earnings-split-item-label">Expected payouts</div>
-                      <div class="earnings-split-item-value" id="earnings-expected-payouts">€0</div>
-                    </div>
-                  </div>
-                  <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
-                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: €20
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. Affiliate code & tracking
-            <div class="card">
-              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Your affiliate code</h2>
-              <p style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
-                Share this code so every click, install and subscription is tracked.
-              </p>
-              <div class="affiliate-link-row">
-                <div class="affiliate-link-chip">
-                  <code id="affiliate-link">—</code>
-                  <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-link">Copy</button>
-                </div>
-                <div class="affiliate-link-meta">
-                  <span id="affiliate-qr-note">Want different codes for different channels? Message us.</span>
-                </div>
-              </div>
-            </div> -->
-
             <!-- Affiliate code (editable) -->
             <div class="card">
               <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Affiliate code</h2>
@@ -139,6 +94,34 @@
               <div style="margin-top: 0.75rem; display:flex; gap: 0.5rem; flex-wrap: wrap;">
                 <button type="button" class="btn btn-primary" id="btn-save-affiliate-code">Save code</button>
                 <span id="affiliate-code-save-status" style="display:none; font-size: 0.9rem; color: var(--text-muted); align-self:center;"></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 style="margin-top: 0; margin-bottom: 0.5rem;">Earnings overview</h2>
+              <p style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
+                Expected total earnings from your code – This number is only an estimate, and might differ from the actual earnings due to refunds.
+              </p>
+              <div class="earnings-overview">
+                <div>
+                  <div class="earnings-main-number" id="earnings-expected-total">€0</div>
+                  <div class="earnings-sub-label" id="earnings-subtitle">Based on approved & pending commissions.</div>
+                </div>
+                <div>
+                  <div class="earnings-split">
+                    <div>
+                      <div class="earnings-split-item-label">Paid out (all time)</div>
+                      <div class="earnings-split-item-value" id="earnings-paid-out">€0</div>
+                    </div>
+                    <div>
+                      <div class="earnings-split-item-label">Expected payouts</div>
+                      <div class="earnings-split-item-value" id="earnings-expected-payouts">€0</div>
+                    </div>
+                  </div>
+                  <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
+                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: €20
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -459,27 +442,6 @@
               Need something custom (language, format, brand colours)? Reach out via support and we’ll help you.
             </p>
           </div> -->
-
-          <!-- 10. Announcements / updates -->
-          <div class="card">
-            <div class="dashboard-section-header">
-              <div>
-                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Announcements</h2>
-                <p>What’s new in the app and affiliate program.</p>
-              </div>
-            </div>
-            <div class="announcements-grid" id="announcements-list">
-              <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; margin-bottom: 0.4rem; font-size: 1rem;">Upcoming changes</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
-                  2-03 App update: New store listing: <span style="color: var(--accent);">Improves clicks → installs</span><br>
-                  2-03 App update: Updated survey:  <span style="color: var(--accent);">Improves installs → subscriptions</span><br>
-                  9-03 App update: Workout statistics page<br>
-                  Coming soon: Workout Reviewer
-                </p>
-              </div>
-            </div>
-          </div>
 
           <!-- 12–13. Account, settings & support -->
           <div class="card">

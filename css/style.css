@@ -809,16 +809,9 @@ label {
 }
 
 .dashboard-top-row {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  align-items: flex-start;
-}
-
-@media (max-width: 960px) {
-  .dashboard-top-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 .earnings-overview {
@@ -1182,7 +1175,6 @@ label {
 
 .targets-grid,
 .assets-grid,
-.announcements-grid,
 .insights-grid,
 .support-grid {
   display: grid;
