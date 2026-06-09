@@ -80,7 +80,7 @@
               </div>
 
               <div style="margin-top: 0.75rem;">
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Optional share link preview</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Link to the app:</div>
                 <div class="affiliate-link-chip" style="max-width: 100%;">
                   <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
                   <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-preview">Copy</button>
@@ -163,25 +163,25 @@
                 <div class="kpi-subtext" id="kpi-yearly-subs-sub">All-time yearly subscriptions.</div>
               </div>
 
+              <!-- Quarterly subscriptions -->
+              <div class="kpi-card">
+                <div class="kpi-label">Quarterly subscriptions</div>
+                <div class="kpi-value" id="kpi-quarterly-subs">0</div>
+                <div class="kpi-subtext" id="kpi-quarterly-subs-sub">All-time quarterly subscriptions.</div>
+              </div>
+
               <!-- Conversion: Click → Install -->
               <div class="kpi-card">
-                <div class="kpi-label">Click → Install</div>
+                <div class="kpi-label">Click → Code entered</div>
                 <div class="kpi-value" id="kpi-conv-click-install-main">0%</div>
                 <div class="kpi-subtext" id="kpi-conv-click-install-sub">All-time conversion from clicks to installs.</div>
               </div>
 
               <!-- Conversion: Install → Subscription -->
               <div class="kpi-card">
-                <div class="kpi-label">Install → Subscription</div>
+                <div class="kpi-label">Code entered → Subscription</div>
                 <div class="kpi-value" id="kpi-conv-install-sub-main">0%</div>
                 <div class="kpi-subtext" id="kpi-conv-install-sub-sub">All-time conversion from installs to subscriptions.</div>
-              </div>
-
-              <!-- Conversion: Click → Subscription -->
-              <div class="kpi-card">
-                <div class="kpi-label">Click → Subscription</div>
-                <div class="kpi-value" id="kpi-conv-click-sub-main">0%</div>
-                <div class="kpi-subtext" id="kpi-conv-click-sub-sub">All-time conversion from clicks to subscriptions.</div>
               </div>
 
               <!-- Avg earnings per user -->
@@ -772,7 +772,9 @@
           return t.event_type === "subscription" && t.status !== "refunded";
         }).length;
         var subsFromStats =
-          Number(stats.monthly_subs || 0) + Number(stats.yearly_subs || 0);
+          Number(stats.monthly_subs || 0) +
+          Number(stats.yearly_subs || 0) +
+          Number(stats.quarterly_subs || 0);
         var subsAllTime = subsFromTransactions || subsFromStats;
 
         var now = new Date();
@@ -798,7 +800,6 @@
 
         var convClickToInstall = clicksAllTime ? (installsAllTime / clicksAllTime) * 100 : 0;
         var convInstallToPaid = installsAllTime ? (subsAllTime / installsAllTime) * 100 : 0;
-        var convClickToSub = clicksAllTime ? (subsAllTime / clicksAllTime) * 100 : 0;
 
         var totalCommission = transactions.reduce(function (sum, t) {
           return sum + (Number(t.commission_amount) || 0);
