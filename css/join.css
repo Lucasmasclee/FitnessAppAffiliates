@@ -42,6 +42,36 @@
   padding-top: env(safe-area-inset-top, 0px);
 }
 
+.join-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--join-space-4);
+  min-height: 33vh;
+  padding: var(--join-space-6) var(--join-gutter);
+}
+
+.join-brand-logo {
+  width: auto;
+  height: clamp(4.5rem, 14vw, 6.5rem);
+  object-fit: contain;
+}
+
+.join-brand-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.join-brand-name span {
+  color: var(--accent);
+}
+
 .join-section {
   max-width: 880px;
   margin: 0 auto;
@@ -110,7 +140,7 @@
 /* ── Hero ── */
 
 .join-hero {
-  padding-top: var(--join-space-6);
+  padding-top: 0;
   padding-bottom: var(--join-section-y);
 }
 
@@ -601,8 +631,12 @@
     --join-lh-body: 1.6;
   }
 
-  .join-hero {
-    padding-top: var(--join-space-8);
+  .join-brand {
+    gap: var(--join-space-4);
+  }
+
+  .join-brand-logo {
+    height: clamp(5rem, 10vw, 7rem);
   }
 
   .join-cta-btn {
