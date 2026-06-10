@@ -493,19 +493,21 @@
 }
 
 .join-copy-inline {
-  display: inline-block;
-  margin-left: var(--join-space-2);
-  margin-top: var(--join-space-2);
-  padding: var(--join-space-1) var(--join-space-2);
-  font-size: var(--join-text-small);
-  font-family: var(--font-sans);
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
   font-weight: 600;
   color: var(--accent);
-  background: rgba(var(--accent-rgb), 0.1);
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
-  border-radius: 6px;
+  background: none;
+  border: none;
   cursor: pointer;
-  vertical-align: middle;
+  vertical-align: baseline;
+  text-decoration: none;
+}
+
+.join-copy-inline:hover {
+  color: var(--accent-hover);
 }
 
 .join-stores {
@@ -650,10 +652,6 @@
   .join-cta-sub,
   .join-code-banner {
     max-width: none;
-  }
-
-  .join-copy-inline {
-    margin-top: 0;
   }
 
   .join-bullet-list-grid {
