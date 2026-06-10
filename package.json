@@ -2,6 +2,6 @@
   "name": "fitness-app-affiliates",
   "private": true,
   "scripts": {
-    "serve": "npx serve . -l 3000"
+    "serve": "npx serve . -l 3000 --config serve.json"
   }
 }
