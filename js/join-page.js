@@ -32,10 +32,24 @@
     return "https://liftbetter.cloud/join";
   }
 
+  function trackPageView(code) {
+    if (window.JoinAnalytics && window.JoinAnalytics.trackPageView) {
+      window.JoinAnalytics.trackPageView(code || null);
+    }
+  }
+
+  function trackCtaClick(code) {
+    if (window.JoinAnalytics && window.JoinAnalytics.trackCtaClick) {
+      window.JoinAnalytics.trackCtaClick(code || null);
+    }
+  }
+
   function init() {
     var code = getAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
     var redirectUrl = buildRedirectUrl(code);
+
+    trackPageView(code);
 
     var ctaLinks = document.querySelectorAll(".join-cta-link");
     var codeText = document.getElementById("join-code-text");
@@ -46,6 +60,9 @@
 
     ctaLinks.forEach(function (link) {
       link.href = redirectUrl;
+      link.addEventListener("click", function () {
+        trackCtaClick(code);
+      });
     });
 
     if (appStore) appStore.href = redirectUrl;

@@ -14,9 +14,16 @@
 </head>
 <body class="join-page">
   <main class="join-scroll">
-    <div class="join-brand">
-      <img src="/Logo%201.png" alt="" class="join-brand-logo" width="96" height="96">
-      <p class="join-brand-name">Lift<span>Better</span></p>
+    <div class="join-brand" id="download">
+      <div class="join-brand-row">
+        <img src="/Logo%201.png" alt="" class="join-brand-logo" width="96" height="96">
+        <p class="join-brand-name">Lift<span>Better</span></p>
+      </div>
+      <a href="#" class="btn btn-primary join-cta-btn join-cta-link" id="join-primary-cta">Get started</a>
+      <p class="join-code-banner" id="join-code-row" hidden>
+        Use code <strong id="join-code-text">YOURCODE</strong> for 10% off at checkout!
+        <button type="button" class="join-copy-inline" id="join-copy-code" hidden>Copy</button>
+      </p>
     </div>
 
     <!-- Hero -->
@@ -237,26 +244,6 @@
       </div>
     </section>
 
-    <!-- Final CTA -->
-    <section class="join-section join-cta" id="download">
-      <h2 class="join-heading">Ready to make a transformation?</h2>
-      <p class="join-cta-sub">Build your personalized workout plan in just a few minutes.</p>
-      <a href="#" class="btn btn-primary join-cta-btn join-cta-link" id="join-primary-cta">Get started</a>
-      <p class="join-code-banner" id="join-code-row" hidden>
-        Use code <strong id="join-code-text">YOURCODE</strong> for 10% off at checkout!
-        <button type="button" class="join-copy-inline" id="join-copy-code" hidden>Copy</button>
-      </p>
-      <!-- <p class="join-trust-line">Available on iPhone and Android.</p> -->
-      <!-- <div class="join-stores" id="join-stores">
-        <a href="#" class="store-button store-button-image join-store-link" id="join-appstore" aria-label="Download Lift Better on the App Store">
-          <img src="/images/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store">
-        </a>
-        <a href="#" class="store-button store-button-image join-store-link" id="join-playstore" aria-label="Get Lift Better on Google Play">
-          <img src="/images/Google_Play_Store_badge_EN.svg.webp" alt="Get it on Google Play">
-        </a>
-      </div> -->
-    </section>
-
     <!-- FAQ -->
     <section class="join-section join-faq">
       <h2 class="join-heading">FAQ</h2>
@@ -299,6 +286,8 @@
     LiftBetter – The fitness app that actually works.
   </footer>
 
+  <script src="/js/config.js"></script>
+  <script src="/js/join-analytics.js"></script>
   <script src="/js/join-page.js"></script>
 </body>
 </html>

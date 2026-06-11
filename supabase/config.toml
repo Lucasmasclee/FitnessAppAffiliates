@@ -28,3 +28,11 @@ verify_jwt = false
 # Public availability check for affiliate codes (no JWT).
 [functions.check-affiliate-code]
 verify_jwt = false
+
+# Join landing page analytics (page views & CTA clicks).
+[functions.join-analytics]
+verify_jwt = false
+
+# Join page stats dashboard (protected by ANALYTICS_ADMIN_KEY header).
+[functions.join-analytics-stats]
+verify_jwt = false

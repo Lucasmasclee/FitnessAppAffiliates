@@ -44,12 +44,31 @@
 
 .join-brand {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--join-space-4);
   min-height: 33vh;
   padding: var(--join-space-6) var(--join-gutter);
+  text-align: center;
+}
+
+.join-brand-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--join-space-4);
+}
+
+.join-brand .join-cta-btn {
+  margin-top: var(--join-space-2);
+  max-width: 18rem;
+}
+
+.join-brand .join-code-banner {
+  margin: 0;
+  max-width: 20rem;
 }
 
 .join-brand-logo {
@@ -630,12 +649,20 @@
     --join-lh-body: 1.6;
   }
 
-  .join-brand {
-    gap: var(--join-space-4);
-  }
-
   .join-brand-logo {
     height: clamp(5rem, 10vw, 7rem);
+  }
+
+  .join-brand .join-cta-btn {
+    display: inline-flex;
+    width: auto;
+    max-width: none;
+    font-size: 1.05rem;
+    padding: 1rem 2rem;
+  }
+
+  .join-brand .join-code-banner {
+    max-width: none;
   }
 
   .join-cta-btn {
@@ -643,15 +670,6 @@
     width: auto;
     font-size: 1.05rem;
     padding: 1rem 2rem;
-  }
-
-  .join-cta .join-cta-btn {
-    max-width: none;
-  }
-
-  .join-cta-sub,
-  .join-code-banner {
-    max-width: none;
   }
 
   .join-bullet-list-grid {

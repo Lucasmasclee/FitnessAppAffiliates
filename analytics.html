@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/logo_rond.png" type="image/png">
+  <title>Join page analytics – Lift Better</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/analytics.css">
+</head>
+<body class="analytics-page">
+  <main class="analytics-main">
+    <header class="analytics-header">
+      <h1>Join page analytics</h1>
+      <p class="analytics-sub">Page visits and CTA clicks on <code>/join</code> (last 30 days).</p>
+    </header>
+
+    <div id="analytics-gate" class="card analytics-gate">
+      <h2>Enter analytics key</h2>
+      <p>Set <code>ANALYTICS_ADMIN_KEY</code> in Supabase Edge Function secrets, then enter it here.</p>
+      <div class="analytics-gate-row">
+        <input type="password" id="analytics-key-input" placeholder="Analytics admin key" autocomplete="off">
+        <button type="button" class="btn btn-primary" id="analytics-key-submit">View stats</button>
+      </div>
+      <p id="analytics-gate-error" class="analytics-error" hidden></p>
+    </div>
+
+    <div id="analytics-content" hidden>
+      <div class="analytics-kpi-grid">
+        <div class="card analytics-kpi">
+          <div class="analytics-kpi-label">Page visits</div>
+          <div class="analytics-kpi-value" id="stat-page-views">—</div>
+          <div class="analytics-kpi-hint">One per browser session</div>
+        </div>
+        <div class="card analytics-kpi">
+          <div class="analytics-kpi-label">CTA clicks</div>
+          <div class="analytics-kpi-value" id="stat-cta-clicks">—</div>
+          <div class="analytics-kpi-hint">Get started button</div>
+        </div>
+        <div class="card analytics-kpi">
+          <div class="analytics-kpi-label">Click rate</div>
+          <div class="analytics-kpi-value" id="stat-conversion">—</div>
+          <div class="analytics-kpi-hint">CTA clicks ÷ visits</div>
+        </div>
+      </div>
+
+      <section class="card analytics-section">
+        <h2>Daily (last 30 days)</h2>
+        <div class="analytics-table-wrap">
+          <table class="analytics-table" id="analytics-daily-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Visits</th>
+                <th>CTA clicks</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card analytics-section">
+        <h2>By affiliate code</h2>
+        <div class="analytics-table-wrap">
+          <table class="analytics-table" id="analytics-code-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Visits</th>
+                <th>CTA clicks</th>
+                <th>Click rate</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="analytics-footer-note">
+        <button type="button" class="analytics-link-btn" id="analytics-logout">Clear key</button>
+        · <button type="button" class="analytics-link-btn" id="analytics-refresh">Refresh</button>
+      </p>
+    </div>
+  </main>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/analytics-page.js"></script>
+</body>
+</html>
