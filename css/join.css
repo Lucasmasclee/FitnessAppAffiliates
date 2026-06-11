@@ -68,7 +68,8 @@
 
 .join-brand .join-code-banner {
   margin: 0;
-  max-width: 20rem;
+  max-width: none;
+  width: 100%;
 }
 
 .join-brand-logo {
@@ -497,14 +498,22 @@
 }
 
 .join-code-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0 auto var(--join-gap-stack);
+  width: 100%;
+}
+
+.join-code-line {
+  margin: 0;
   font-size: var(--join-text-body);
   line-height: var(--join-lh-body);
   color: var(--text-muted);
-  max-width: 20rem;
+  white-space: nowrap;
 }
 
-.join-code-banner strong {
+.join-code-line strong {
   color: var(--accent);
   font-family: var(--font-display);
   font-weight: 800;
@@ -512,16 +521,16 @@
 }
 
 .join-copy-inline {
-  display: inline;
-  margin: 0;
+  display: block;
+  margin: var(--join-space-2) 0 0;
   padding: 0;
-  font: inherit;
+  font-size: var(--join-text-body);
+  font-family: var(--font-sans);
   font-weight: 600;
   color: var(--accent);
   background: none;
   border: none;
   cursor: pointer;
-  vertical-align: baseline;
   text-decoration: none;
 }
 
@@ -661,9 +670,6 @@
     padding: 1rem 2rem;
   }
 
-  .join-brand .join-code-banner {
-    max-width: none;
-  }
 
   .join-cta-btn {
     display: inline-flex;
