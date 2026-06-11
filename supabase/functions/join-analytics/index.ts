@@ -22,6 +22,91 @@ function normalizeCode(raw: string | undefined | null): string | null {
   return code;
 }
 
+async function incrementLandingTotals(
+  supabase: ReturnType<typeof createClient>,
+  eventType: EventType,
+) {
+  const column = eventType === "page_view" ? "page_views" : "cta_clicks";
+
+  const { data: row, error: readError } = await supabase
+    .from("join_landing_totals")
+    .select(column)
+    .eq("id", 1)
+    .single();
+
+  if (readError && readError.code !== "PGRST116") {
+    console.error("join-analytics: totals read error:", readError.message);
+    return;
+  }
+
+  const current = Number((row as Record<string, unknown> | null)?.[column] ?? 0);
+
+  const { error: writeError } = await supabase
+    .from("join_landing_totals")
+    .upsert({
+      id: 1,
+      [column]: current + 1,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (writeError) {
+    console.error("join-analytics: totals write error:", writeError.message);
+  }
+}
+
+async function incrementAffiliateJoinStats(
+  supabase: ReturnType<typeof createClient>,
+  affiliateCode: string,
+  eventType: EventType,
+) {
+  const column = eventType === "page_view" ? "join_page_views" : "join_cta_clicks";
+
+  const { data: affiliate, error: affError } = await supabase
+    .from("affiliates")
+    .select("id")
+    .eq("affiliate_code", affiliateCode)
+    .single();
+
+  if (affError || !affiliate) return;
+
+  const { data: stats, error: statsError } = await supabase
+    .from("affiliate_stats")
+    .select(column)
+    .eq("affiliate_id", affiliate.id)
+    .single();
+
+  if (statsError && statsError.code !== "PGRST116") {
+    console.error("join-analytics: affiliate stats read error:", statsError.message);
+    return;
+  }
+
+  const current = Number((stats as Record<string, unknown> | null)?.[column] ?? 0);
+
+  if (!stats) {
+    const { error: insertError } = await supabase.from("affiliate_stats").insert({
+      affiliate_id: affiliate.id,
+      [column]: 1,
+      updated_at: new Date().toISOString(),
+    });
+    if (insertError) {
+      console.error("join-analytics: affiliate stats insert error:", insertError.message);
+    }
+    return;
+  }
+
+  const { error: updateError } = await supabase
+    .from("affiliate_stats")
+    .update({
+      [column]: current + 1,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("affiliate_id", affiliate.id);
+
+  if (updateError) {
+    console.error("join-analytics: affiliate stats update error:", updateError.message);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { status: 200, headers: corsHeaders });
@@ -64,10 +149,11 @@ Deno.serve(async (req) => {
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const affiliateCode = normalizeCode(body.affiliate_code);
 
   const { error } = await supabase.from("join_page_events").insert({
     event_type: eventType,
-    affiliate_code: normalizeCode(body.affiliate_code),
+    affiliate_code: affiliateCode,
     page_path: (body.page_path || "").trim().slice(0, 500) || null,
     occurred_at: new Date().toISOString(),
   });
@@ -78,6 +164,12 @@ Deno.serve(async (req) => {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+  }
+
+  await incrementLandingTotals(supabase, eventType);
+
+  if (affiliateCode) {
+    await incrementAffiliateJoinStats(supabase, affiliateCode, eventType);
   }
 
   return new Response(JSON.stringify({ success: true }), {

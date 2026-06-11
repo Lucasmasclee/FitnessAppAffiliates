@@ -382,24 +382,23 @@ De affiliate code is de slug in de link, bijv. `join1` in `https://liftbetter.cl
 
 ### 9.4 Join page analytics (`/join`)
 
-De join-landingspagina registreert **page visits** (één per browsersessie) en **CTA clicks** (Get started-knop).
+De join-landingspagina registreert **page visits** (één per browsersessie) en **CTA clicks** (Get started-knop) in Supabase.
 
-1. **Migratie**  
-   Voer `supabase/migrations/011_join_page_analytics.sql` uit in Supabase (SQL Editor of `supabase db push`).
+1. **Migraties**  
+   Voer uit in Supabase SQL Editor (of `supabase db push`):
+   - `supabase/migrations/011_join_page_analytics.sql`
+   - `supabase/migrations/012_join_stats_on_affiliate_stats.sql`
 
-2. **Secrets**  
-   Supabase Dashboard → **Edge Functions** → **Secrets**:
-   - `ANALYTICS_ADMIN_KEY`: kies een lang willekeurig wachtwoord (alleen voor het stats-dashboard)
-
-3. **Deploy**
+2. **Deploy**
 
 ```bash
 npx supabase functions deploy join-analytics
-npx supabase functions deploy join-analytics-stats
 ```
 
-4. **Stats bekijken**  
-   Open `https://liftbetter.cloud/analytics.html` en voer je `ANALYTICS_ADMIN_KEY` in. Je ziet totaal visits, CTA clicks, click rate, dagelijkse breakdown en stats per affiliate code.
+3. **Stats bekijken in Supabase** (Table Editor of SQL):
+   - **`join_page_events`** — elk event met timestamp, type (`page_view` / `cta_click`), affiliate code
+   - **`join_landing_totals`** — globale totalen (één rij, `id = 1`)
+   - **`affiliate_stats`** — kolommen `join_page_views` en `join_cta_clicks` per affiliate
 
 ---
 
