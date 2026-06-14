@@ -72,12 +72,12 @@
     var codeRow = document.getElementById("join-code-row");
     var copyBtn = document.getElementById("join-copy-code");
 
-    if (code && codeText && codeRow) {
+    if (code && codeText && codeRow && code !== "mrgrind") {
       codeText.textContent = displayCode;
       codeRow.hidden = false;
     }
 
-    if (copyBtn && code) {
+    if (copyBtn && code && code !== "mrgrind") {
       copyBtn.hidden = false;
       copyBtn.addEventListener("click", function () {
         var value = code.toUpperCase();
