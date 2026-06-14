@@ -19,7 +19,20 @@
         <img src="/Logo%201.png" alt="" class="join-brand-logo" width="96" height="96">
         <p class="join-brand-name">Lift<span>Better</span></p>
       </div>
-      <a href="#" class="btn btn-primary join-cta-btn join-cta-link" id="join-primary-cta">Get started</a>
+      <a href="#" class="btn btn-primary join-cta-btn join-cta-link" id="join-primary-cta" data-join-cta>Get started</a>
+      <script>
+        (function () {
+          var parts = location.pathname.replace(/\/+$/, "").split("/");
+          var joinIdx = parts.indexOf("join");
+          var slug = joinIdx >= 0 ? (parts[joinIdx + 1] || "") : "";
+          if (slug && slug !== "index.html" && /^[a-z0-9]{4,10}$/i.test(slug)) {
+            var href = (location.origin || "https://liftbetter.cloud") + "/" + encodeURIComponent(slug.toLowerCase());
+            document.querySelectorAll("[data-join-cta], .join-cta-link").forEach(function (el) {
+              el.href = href;
+            });
+          }
+        })();
+      </script>
       <div class="join-code-banner" id="join-code-row" hidden>
         <p class="join-code-line">Use code <strong id="join-code-text">YOURCODE</strong> for 10% off at checkout!</p>
         <button type="button" class="join-copy-inline" id="join-copy-code" hidden>Copy</button>

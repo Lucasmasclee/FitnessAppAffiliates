@@ -25,11 +25,28 @@
     return "";
   }
 
-  function buildRedirectUrl(code) {
+  function buildAffiliateLink(code) {
+    var origin =
+      (window.location && window.location.origin) || "https://liftbetter.cloud";
     if (code) {
-      return "https://liftbetter.cloud/" + encodeURIComponent(code);
+      return origin + "/" + encodeURIComponent(code);
     }
-    return "https://liftbetter.cloud/join";
+    return origin + "/join";
+  }
+
+  function applyAffiliateLinks(code) {
+    var affiliateLink = buildAffiliateLink(code);
+    var ctaSelector = "[data-join-cta], .join-cta-link, #join-appstore, #join-playstore";
+
+    document.querySelectorAll(ctaSelector).forEach(function (link) {
+      link.href = affiliateLink;
+      if (!link.dataset.joinCtaBound) {
+        link.dataset.joinCtaBound = "1";
+        link.addEventListener("click", function () {
+          trackCtaClick(code);
+        });
+      }
+    });
   }
 
   function trackPageView(code) {
@@ -47,26 +64,13 @@
   function init() {
     var code = getAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
-    var redirectUrl = buildRedirectUrl(code);
 
     trackPageView(code);
+    applyAffiliateLinks(code);
 
-    var ctaLinks = document.querySelectorAll(".join-cta-link");
     var codeText = document.getElementById("join-code-text");
     var codeRow = document.getElementById("join-code-row");
     var copyBtn = document.getElementById("join-copy-code");
-    var appStore = document.getElementById("join-appstore");
-    var playStore = document.getElementById("join-playstore");
-
-    ctaLinks.forEach(function (link) {
-      link.href = redirectUrl;
-      link.addEventListener("click", function () {
-        trackCtaClick(code);
-      });
-    });
-
-    if (appStore) appStore.href = redirectUrl;
-    if (playStore) playStore.href = redirectUrl;
 
     if (code && codeText && codeRow) {
       codeText.textContent = displayCode;

@@ -51,7 +51,7 @@
             <ul class="dashboard-onboarding-steps">
               <li><strong>Copy your code</strong> above and share it wherever you promote (bio, posts, stories). Users can enter it in the in-app paywall to unlock <strong>10% off</strong>.</li>
               <li><strong>Stats</strong> (clicks, referral code entered, subscriptions) will appear in this dashboard as people use your code. Data can take a short time to sync.</li>
-              <li><strong>Payouts</strong> are processed monthly (1st of the month). Minimum payout is $20. We’ll contact you when you reach the threshold.</li>
+              <li><strong>Payouts</strong> are processed monthly on the 7th of each month.</li>
               <li><strong>Support</strong> and the <strong>Creator Kit</strong> (promo resources, scripts, visuals) are below. Open the Creator Kit to see where resources will live.</li>
             </ul>
             <div class="dashboard-next-steps">
@@ -119,7 +119,7 @@
                     </div>
                   </div>
                   <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="earnings-next-payout">
-                    Next payout: <span id="earnings-next-payout-date">1st of next month</span> · Minimum payout: $20
+                    Next payout: <span id="earnings-next-payout-date">—</span>
                   </p>
                 </div>
               </div>
@@ -327,9 +327,6 @@
             </div>
             <div class="payout-grid">
               <div>
-                <p class="payout-meta-item-label">Minimum payout</p>
-                <p class="payout-meta-item-value">$20</p>
-
                 <div class="payout-meta-row">
                   <div>
                     <p class="payout-meta-item-label">Available payout</p>
@@ -351,7 +348,7 @@
                   <!-- Filled from affiliate_payout_entries -->
                 </ul>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-                  Payouts are processed manually. If you have reached the minimum payout threshold, we’ll contact you using your preferred method.
+                  Payouts are processed manually on the 7th of each month.
                 </p>
               </div>
             </div>
@@ -623,9 +620,20 @@
 
       function getNextPayoutDateString() {
         var now = new Date();
-        var next = new Date(now.getFullYear(), now.getMonth() + 2, 1);
+        var year = now.getFullYear();
+        var month = now.getMonth();
+
+        if (now.getDate() >= 7) {
+          month += 1;
+          if (month > 11) {
+            month = 0;
+            year += 1;
+          }
+        }
+
+        var next = new Date(year, month, 7);
         var monthName = next.toLocaleDateString("en-GB", { month: "long" });
-        return "1 " + monthName;
+        return "7 " + monthName;
       }
 
       function setNextPayoutDate() {
