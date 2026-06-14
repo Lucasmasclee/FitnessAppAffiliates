@@ -1169,6 +1169,15 @@ label {
   border-bottom: 1px dashed rgba(55, 65, 81, 0.6);
 }
 
+.payout-history-list li.payout-entry-item {
+  display: block;
+}
+
+.payout-history-list li.payout-entry-item span {
+  display: block;
+  line-height: 1.45;
+}
+
 .payout-history-list li:last-child {
   border-bottom: none;
 }

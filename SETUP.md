@@ -423,7 +423,53 @@ Resolve `affiliateId` by looking up `affiliates` (by `affiliate_code`).
 
 ---
 
-## 11. Troubleshooting
+## 11. Handmatige payouts toevoegen
+
+Payout history in het affiliate-dashboard komt uit de tabel **`affiliate_payout_entries`**. Je voegt rijen toe via **Supabase → Table Editor** (geen SQL nodig).
+
+### Deploy (eenmalig)
+
+Voer de migratie uit in **Supabase → SQL Editor**:
+
+```sql
+-- Inhoud van supabase/migrations/013_affiliate_payout_entries.sql
+```
+
+Of via CLI: `npx supabase db push`
+
+### Nieuwe payout toevoegen
+
+1. Ga naar **Table Editor → `affiliate_payout_entries` → Insert row**
+2. Vul in:
+   - **`affiliate_id`** — kies de affiliate uit de dropdown (foreign key naar `affiliates`)
+   - **`entry_text`** — vrije tekst die de affiliate ziet, bijv. `June 2026 · €45.00 · Bank transfer`
+   - **`amount`** *(optioneel)* — numeriek bedrag; wordt opgeteld in **Paid out (all time)**
+   - **`payout_date`** *(optioneel)* — standaard vandaag; bepaalt de volgorde (nieuwste bovenaan)
+3. Sla op. De affiliate ziet de entry na refresh onder **Payout history**.
+
+### Affiliate ID snel vinden
+
+In **SQL Editor**:
+
+```sql
+SELECT id, affiliate_code, email FROM public.affiliates ORDER BY created_at DESC;
+```
+
+Kopieer de `id` als de dropdown in Table Editor onhandig is.
+
+### Voorbeeld: meerdere entries voor één affiliate
+
+| entry_text | amount | payout_date |
+|---|---|---|
+| March 2026 · €28.50 · PayPal | 28.50 | 2026-03-01 |
+| April 2026 · €41.00 · Bank transfer | 41.00 | 2026-04-01 |
+| Bonus Q1 campaign | *(leeg)* | 2026-04-15 |
+
+Alle entries verschijnen onder elkaar in het dashboard. Alleen `entry_text` is zichtbaar voor de affiliate; `amount` is optioneel voor het totaal **Paid out (all time)**.
+
+---
+
+## 12. Troubleshooting
 
 - **“Missing authorization” or “Invalid or expired session”**  
   User is not signed in or token expired. They should sign in again with Google on the become-affiliate page.

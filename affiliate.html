@@ -349,7 +349,7 @@
               <div>
                 <p class="payout-meta-item-label">Payout history</p>
                 <ul class="payout-history-list" id="payout-history">
-                  <!-- Derived from paid transactions -->
+                  <!-- Filled from affiliate_payout_entries -->
                 </ul>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
                   Payouts are processed manually. If you have reached the minimum payout threshold, we’ll contact you using your preferred method.
@@ -700,10 +700,49 @@
         return arr;
       }
 
-      function updateOverviewAndKpis(aff, stats, transactions, clickEvents) {
+      function updatePayoutHistory(payoutEntries) {
+        payoutEntries = payoutEntries || [];
+
+        var payoutHistoryEl = document.getElementById("payout-history");
+        if (!payoutHistoryEl) return;
+        payoutHistoryEl.innerHTML = "";
+
+        if (!payoutEntries.length) {
+          var liEmpty = document.createElement("li");
+          liEmpty.className = "payout-entry-item";
+          liEmpty.innerHTML = "<span>No payouts yet</span>";
+          payoutHistoryEl.appendChild(liEmpty);
+          return;
+        }
+
+        payoutEntries
+          .slice()
+          .sort(function (a, b) {
+            var da = new Date(a.payout_date || a.created_at || 0);
+            var db = new Date(b.payout_date || b.created_at || 0);
+            return db.getTime() - da.getTime();
+          })
+          .forEach(function (entry) {
+            var li = document.createElement("li");
+            li.className = "payout-entry-item";
+            li.innerHTML = "<span>" + escapeHtml(entry.entry_text || "") + "</span>";
+            payoutHistoryEl.appendChild(li);
+          });
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries) {
         stats = stats || {};
         transactions = transactions || [];
         clickEvents = clickEvents || [];
+        payoutEntries = payoutEntries || [];
 
         var paidTransactions = transactions.filter(function (t) {
           return t.payout_status === "paid" && t.commission_amount > 0;
@@ -712,9 +751,13 @@
           return t.payout_status !== "paid" && t.commission_amount > 0;
         });
 
-        var totalPaid = paidTransactions.reduce(function (sum, t) {
+        var totalPaidFromTransactions = paidTransactions.reduce(function (sum, t) {
           return sum + (Number(t.commission_amount) || 0);
         }, 0);
+        var totalPaidFromEntries = payoutEntries.reduce(function (sum, e) {
+          return sum + (Number(e.amount) || 0);
+        }, 0);
+        var totalPaid = totalPaidFromTransactions + totalPaidFromEntries;
 
         // Subscription counts voor expected payouts-formule
         var monthlyFromStats = Number(stats.monthly_subs || 0);
@@ -749,28 +792,6 @@
         document.getElementById("earnings-expected-total").textContent = formatCurrency(expectedTotal);
         document.getElementById("earnings-paid-out").textContent = formatCurrency(totalPaid);
         document.getElementById("earnings-expected-payouts").textContent = formatCurrency(totalExpected);
-
-        var payoutsByMonth = {};
-        paidTransactions.forEach(function (t) {
-          var d = t.payout_date ? new Date(t.payout_date) : new Date(t.event_date || t.created_at || new Date());
-          var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
-          if (!payoutsByMonth[key]) payoutsByMonth[key] = 0;
-          payoutsByMonth[key] += Number(t.commission_amount) || 0;
-        });
-
-        var payoutHistoryEl = document.getElementById("payout-history");
-        payoutHistoryEl.innerHTML = "";
-        Object.keys(payoutsByMonth).sort().forEach(function (k) {
-          var li = document.createElement("li");
-          var label = k.slice(0, 4) + "-" + k.slice(5);
-          li.innerHTML = "<span>" + label + "</span><span>" + formatCurrency(payoutsByMonth[k]) + "</span>";
-          payoutHistoryEl.appendChild(li);
-        });
-        if (!Object.keys(payoutsByMonth).length) {
-          var liEmpty = document.createElement("li");
-          liEmpty.innerHTML = "<span>No payouts yet</span><span>—</span>";
-          payoutHistoryEl.appendChild(liEmpty);
-        }
 
         var clicksAllTime = Number(stats.clicks || 0);
         var clicksIosAllTime = Number(stats.clicks_ios || 0);
@@ -1210,6 +1231,13 @@
                 .order("occurred_at", { ascending: false })
                 .limit(2000)
                 .then(function (r) { return r.error ? [] : (r.data || []); }),
+              window.__affiliateSupabase
+                .from("affiliate_payout_entries")
+                .select("entry_text, amount, payout_date, created_at")
+                .eq("affiliate_id", aff.id)
+                .order("payout_date", { ascending: false })
+                .limit(200)
+                .then(function (r) { return r.error ? [] : (r.data || []); }),
             ]);
           })
           .then(function (bundle) {
@@ -1218,8 +1246,10 @@
             var stats = bundle[1] || {};
             var transactions = bundle[2] || [];
             var clickEvents = bundle[3] || [];
+            var payoutEntries = bundle[4] || [];
 
-            updateOverviewAndKpis(aff, stats, transactions, clickEvents);
+            updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries);
+            updatePayoutHistory(payoutEntries);
             updateTransactionsTable(transactions);
             updateCharts(transactions, clickEvents);
 
