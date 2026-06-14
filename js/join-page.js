@@ -72,7 +72,9 @@
     var codeRow = document.getElementById("join-code-row");
     var copyBtn = document.getElementById("join-copy-code");
 
-    if (code && codeText && codeRow && code !== "mrgrind") {
+    if (code === "mrgrind" && codeRow) {
+      codeRow.remove();
+    } else if (code && codeText && codeRow) {
       codeText.textContent = displayCode;
       codeRow.hidden = false;
     }

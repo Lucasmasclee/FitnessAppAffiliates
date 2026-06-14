@@ -505,6 +505,10 @@
   width: 100%;
 }
 
+.join-code-banner[hidden] {
+  display: none !important;
+}
+
 .join-code-line {
   margin: 0;
   font-size: var(--join-text-body);
