@@ -283,7 +283,7 @@
             </div>
           </div>
 
-          <!-- 4. Transactions / installs list + 5. Hold-periode
+          <!-- Transactions table hidden for now
           <div class="transactions-card">
             <div class="dashboard-section-header">
               <div>
@@ -308,15 +308,14 @@
                     <th>Hold</th>
                   </tr>
                 </thead>
-                <tbody id="transactions-body">
-                  <!-- Filled by JS -->
-                <!-- </tbody>
+                <tbody id="transactions-body"></tbody>
               </table>
             </div>
             <div class="transactions-empty" id="transactions-empty" style="display: none;">
               No installs or subscriptions yet. Once people start signing up using your code, they will appear here.
             </div>
-          </div> -->
+          </div>
+          -->
 
           <!-- 6. Payout section -->
           <div id="payouts-section" class="card">
@@ -700,6 +699,11 @@
         return arr;
       }
 
+      function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
       function updatePayoutHistory(payoutEntries) {
         payoutEntries = payoutEntries || [];
 
@@ -802,9 +806,9 @@
           (yearlySubsForPayout * 20);
         var expectedTotal = totalPaid + totalExpected;
 
-        document.getElementById("earnings-expected-total").textContent = formatCurrency(expectedTotal);
-        document.getElementById("earnings-paid-out").textContent = formatCurrency(totalPaid);
-        document.getElementById("earnings-expected-payouts").textContent = formatCurrency(totalExpected);
+        setText("earnings-expected-total", formatCurrency(expectedTotal));
+        setText("earnings-paid-out", formatCurrency(totalPaid));
+        setText("earnings-expected-payouts", formatCurrency(totalExpected));
 
         var clicksAllTime = Number(stats.clicks || 0);
         var clicksIosAllTime = Number(stats.clicks_ios || 0);
@@ -952,12 +956,12 @@
           }
           return sum;
         }, 0);
-        document.getElementById("payout-available").textContent = formatCurrency(available);
+        setText("payout-available", formatCurrency(available));
         setNextPayoutDate();
 
         var commissionTier = (aff.commission_tier || "Base tier");
-        document.getElementById("commission-tier").textContent = commissionTier;
-        document.getElementById("account-commission-tier").textContent = commissionTier;
+        setText("commission-tier", commissionTier);
+        setText("account-commission-tier", commissionTier);
 
         var salesForMilestone = subsAllTime;
         var pct10Sales = clampPercent((salesForMilestone / 10) * 100);
@@ -981,14 +985,13 @@
             installsThisMonth + " / 25 installs (all-time).";
         }
 
-        document.getElementById("account-affiliate-id").textContent = aff.id || "—";
-        document.getElementById("account-affiliate-code").textContent = aff.affiliate_code || "—";
+        setText("account-affiliate-id", aff.id || "—");
+        setText("account-affiliate-code", aff.affiliate_code || "—");
         if (aff.join_date) {
           var jd = new Date(aff.join_date);
-          document.getElementById("account-join-date").textContent = jd.toISOString().slice(0, 10);
+          setText("account-join-date", jd.toISOString().slice(0, 10));
         }
-        var taxStatus = aff.tax_info_status || "Not provided yet";
-        document.getElementById("account-tax-status").textContent = taxStatus;
+        setText("account-tax-status", aff.tax_info_status || "Not provided yet");
 
         var payoutMethodEl = document.getElementById("payout-method");
         if (payoutMethodEl) {
@@ -1113,8 +1116,10 @@
         });
 
         buildSparkline("sparkline-revenue", revenueSeries, convSeries);
-        document.getElementById("chart-revenue-subtitle").textContent =
-          revenueDates[0].key + " → " + revenueDates[revenueDates.length - 1].key;
+        setText(
+          "chart-revenue-subtitle",
+          revenueDates[0].key + " → " + revenueDates[revenueDates.length - 1].key
+        );
       }
 
       function loadDashboard(user) {
@@ -1265,8 +1270,8 @@
             var clickEvents = bundle[3] || [];
             var payoutEntries = bundle[4] || [];
 
-            updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries);
             updatePayoutHistory(payoutEntries);
+            updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries);
             updateTransactionsTable(transactions);
             updateCharts(transactions, clickEvents);
 
