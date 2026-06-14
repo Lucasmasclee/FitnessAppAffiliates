@@ -723,11 +723,24 @@
             return db.getTime() - da.getTime();
           })
           .forEach(function (entry) {
+            var text = String(entry.entry_text || "").trim();
+            if (!text && entry.amount) {
+              text = formatCurrency(entry.amount);
+            }
+            if (!text) return;
+
             var li = document.createElement("li");
             li.className = "payout-entry-item";
-            li.innerHTML = "<span>" + escapeHtml(entry.entry_text || "") + "</span>";
+            li.innerHTML = "<span>" + escapeHtml(text) + "</span>";
             payoutHistoryEl.appendChild(li);
           });
+
+        if (!payoutHistoryEl.children.length) {
+          var liEmptyAfter = document.createElement("li");
+          liEmptyAfter.className = "payout-entry-item";
+          liEmptyAfter.innerHTML = "<span>No payouts yet</span>";
+          payoutHistoryEl.appendChild(liEmptyAfter);
+        }
       }
 
       function escapeHtml(str) {
@@ -977,17 +990,21 @@
         var taxStatus = aff.tax_info_status || "Not provided yet";
         document.getElementById("account-tax-status").textContent = taxStatus;
 
-        var payoutMethodText = aff.payout_method || "Not set yet";
-        document.getElementById("payout-method").textContent = payoutMethodText;
+        var payoutMethodEl = document.getElementById("payout-method");
+        if (payoutMethodEl) {
+          payoutMethodEl.textContent = aff.payout_method || "Not set yet";
+        }
         var badge = document.getElementById("payout-verified-badge");
-        if (aff.tax_info_status === "verified" && aff.payout_details) {
-          badge.textContent = "Payment details verified";
-          badge.classList.remove("badge-muted");
-          badge.classList.add("badge-success");
-        } else {
-          badge.textContent = "Payment details not verified";
-          badge.classList.remove("badge-success");
-          badge.classList.add("badge-muted");
+        if (badge) {
+          if (aff.tax_info_status === "verified" && aff.payout_details) {
+            badge.textContent = "Payment details verified";
+            badge.classList.remove("badge-muted");
+            badge.classList.add("badge-success");
+          } else {
+            badge.textContent = "Payment details not verified";
+            badge.classList.remove("badge-success");
+            badge.classList.add("badge-muted");
+          }
         }
       }
 
