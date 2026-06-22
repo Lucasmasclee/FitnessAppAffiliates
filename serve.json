@@ -1,9 +1,5 @@
 {
-  "redirects": [
-    { "source": "/join", "destination": "/website", "type": 302 },
-    { "source": "/join/", "destination": "/website", "type": 302 }
-  ],
   "rewrites": [
-    { "source": "/join/*", "destination": "/index.html" }
+    { "source": "/join/:code", "destination": "/index.html" }
   ]
 }
