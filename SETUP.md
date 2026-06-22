@@ -352,23 +352,27 @@ Daarna is de site live op **https://liftbetter.cloud**. Bij elke push naar je br
 
 ## 9. Routing: landingspagina vs app-download links
 
-Drie lagen werken samen. Dit is de bedoeling:
+**Gisteren werkend patroon (vóór de landingspagina-redesign):** de website ving alleen `/join/<code>` af. Paden als `/join`, `/website` en `/xyz` stonden **niet** in `_redirects` / `render.yaml` — die worden afgehandeld door je **externe redirect-systeem** (meestal handmatige regels in het Render-dashboard die doorsturen naar Supabase `affiliate-redirect` of Branch).
 
-| URL | Wie regelt het | Wat gebeurt er |
-|-----|----------------|----------------|
-| `liftbetter.cloud` | **Website** (`index.html`) | Landingspagina |
-| `liftbetter.cloud/join/xyz` | **Website** (`_redirects` → `index.html` + `join-page.js`) | Zelfde landingspagina + banner “10% OFF WITH CODE 'XYZ'”; store-knoppen → `liftbetter.cloud/xyz` |
-| `liftbetter.cloud/join` | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Doorsturen naar App Store / Play Store |
-| `liftbetter.cloud/website` | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Doorsturen naar App Store / Play Store (store-knoppen op landingspagina) |
-| `liftbetter.cloud/xyz` (enige slug) | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Click tellen + doorsturen naar app |
+| URL | Wie regelt het |
+|-----|----------------|
+| `liftbetter.cloud` | Website (`index.html`) |
+| `liftbetter.cloud/join/xyz` | Website (`/join/*` → `index.html` + `join-page.js`) |
+| `liftbetter.cloud/join` | **Extern** (niet de website) |
+| `liftbetter.cloud/website` | **Extern** |
+| `liftbetter.cloud/xyz` | **Extern** (Supabase `affiliate-redirect`) |
 
-**Website (HTML/JS)** toont alleen content en zet knoppen op de juiste URL. **Render** kiest per pad of de landingspagina of Supabase wordt aangeroepen. **Supabase `affiliate-redirect`** telt clicks en stuurt door naar de juiste store (iOS/Android).
+**Wat het vandaag kapot maakte:** in commit `0e2b85e` zijn regels toegevoegd die **bare `/join`** naar `index.html` stuurden. Daardoor pakte de website app-links af vóór je externe redirect.
 
-Bij elke deploy genereert `node scripts/render-build.js` het bestand `_redirects` uit `SUPABASE_URL`. Zonder die env var op Render worden app-link redirects niet geschreven.
+**In deze repo hoort alleen te staan:**
 
-**Render-dashboard:** verwijder oude handmatige Redirects/Rewrites die `/join` of `/*` naar `index.html` sturen — die overschrijven dit gedrag.
+```
+/join/*  /index.html  200
+```
 
-**Store-knoppen op de landingspagina:** `liftbetter.cloud/website` (standaard) of `liftbetter.cloud/xyz` (op `/join/xyz`).
+Geen `/join`, geen `/join/`, geen `/:code` catch-all. Store-knoppen op de landingspagina linken naar `/website` of `/<affiliate-code>`; het doorsturen naar de app doet je externe systeem zodra iemand die URL opent.
+
+**Render-dashboard:** controleer of er geen oude regel `/join` → `index.html` meer staat (die overschrijft het externe systeem).
 
 ---
 

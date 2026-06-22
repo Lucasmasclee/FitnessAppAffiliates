@@ -1,3 +1,2 @@
-# Affiliate promo landing page (local / fallback without build).
-# On Render, scripts/render-build.js regenerates this file with app-link redirects.
-/join/:code  /index.html  200
+# Promo landing only for /join/<code> — NOT bare /join (app links stay external).
+/join/*  /index.html  200

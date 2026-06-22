@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/join/:code", "destination": "/index.html" }
+    { "source": "/join/**", "destination": "/index.html" }
   ]
 }
