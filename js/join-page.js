@@ -96,9 +96,13 @@
 
     trackPageView(code);
 
-    if (code && code !== "mrgrind") {
+    if (code) {
       applyStoreLinks(buildAffiliateLink(code), code);
+    } else {
+      applyStoreLinks(buildWebsiteLink(), null);
+    }
 
+    if (code && code !== "mrgrind") {
       var promoBanner = document.getElementById("join-promo-banner");
       var promoCode = document.getElementById("join-promo-code");
       if (promoBanner && promoCode) {
@@ -106,8 +110,6 @@
         promoBanner.hidden = false;
         bindPromoCopyButton(code, displayCode);
       }
-    } else {
-      applyStoreLinks(buildWebsiteLink(), null);
     }
   }
 
