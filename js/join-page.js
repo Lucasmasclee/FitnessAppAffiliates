@@ -21,22 +21,27 @@
     return "";
   }
 
-  function buildAffiliateLink(code) {
-    var origin =
-      (window.location && window.location.origin) || "https://liftbetter.cloud";
-    return origin + "/" + encodeURIComponent(code);
+  function getOrigin() {
+    return (window.location && window.location.origin) || "https://liftbetter.cloud";
   }
 
-  function applyStoreAffiliateLinks(code) {
-    var affiliateLink = buildAffiliateLink(code);
+  function buildAffiliateLink(code) {
+    return getOrigin() + "/" + encodeURIComponent(code);
+  }
+
+  function buildWebsiteLink() {
+    return getOrigin() + "/website";
+  }
+
+  function applyStoreLinks(url, code) {
     var storeLinks = document.querySelectorAll(".join-mf-store");
 
     storeLinks.forEach(function (link) {
-      link.href = affiliateLink;
+      link.href = url;
       if (!link.dataset.joinCtaBound) {
         link.dataset.joinCtaBound = "1";
         link.addEventListener("click", function () {
-          trackCtaClick(code);
+          trackCtaClick(code || null);
         });
       }
     });
@@ -61,7 +66,7 @@
     trackPageView(code);
 
     if (code && code !== "mrgrind") {
-      applyStoreAffiliateLinks(code);
+      applyStoreLinks(buildAffiliateLink(code), code);
 
       var promoBanner = document.getElementById("join-promo-banner");
       var promoCode = document.getElementById("join-promo-code");
@@ -69,6 +74,8 @@
         promoCode.textContent = "'" + displayCode + "'";
         promoBanner.hidden = false;
       }
+    } else {
+      applyStoreLinks(buildWebsiteLink(), null);
     }
 
     if (code) {

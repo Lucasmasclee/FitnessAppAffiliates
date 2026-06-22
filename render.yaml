@@ -10,6 +10,3 @@ services:
       - type: rewrite
         source: /join/*
         destination: /index.html
-      - type: rewrite
-        source: /join
-        destination: /index.html
