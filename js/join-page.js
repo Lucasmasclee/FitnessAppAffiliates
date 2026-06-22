@@ -109,10 +109,6 @@
     } else {
       applyStoreLinks(buildWebsiteLink(), null);
     }
-
-    if (code) {
-      document.title = "Lift Better – Personalized Training Plan (" + displayCode + ")";
-    }
   }
 
   if (document.readyState === "loading") {

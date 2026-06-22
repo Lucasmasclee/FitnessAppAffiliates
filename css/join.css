@@ -1288,11 +1288,16 @@
     margin-top: 1.5rem;
   }
 
-  .join-mf-hero-grid .join-mf-review:nth-child(1),
-  .join-mf-hero-grid .join-mf-phone,
+  .join-mf-hero-grid .join-mf-review:nth-child(1) {
+    order: 1;
+  }
+
   .join-mf-hero-grid .join-mf-review:nth-child(3) {
-    order: unset;
-    grid-column: auto;
+    order: 2;
+  }
+
+  .join-mf-hero-grid .join-mf-phone {
+    order: 3;
   }
 
   .join-mf-phone img {
@@ -1328,13 +1333,47 @@
   }
 
   .join-mf-feature-grid {
-    gap: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-left: calc(var(--join-gutter) * -1);
+    margin-right: calc(var(--join-gutter) * -1);
+    padding-left: var(--join-gutter);
+    padding-right: var(--join-gutter);
+    padding-bottom: var(--join-space-1);
+  }
+
+  .join-mf-feature-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .join-mf-feature {
+    flex: 0 0 calc((100% - 1rem) / 3);
+    min-width: 6.5rem;
+    scroll-snap-align: start;
+  }
+
+  .join-mf-feature-shot {
+    margin-bottom: 0.5rem;
   }
 
   .join-mf-feature-shot img {
-    max-width: 220px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .join-mf-feature-title {
+    font-size: 0.8rem;
+  }
+
+  .join-mf-feature-text {
+    font-size: 0.7rem;
+    line-height: 1.35;
   }
 
   .join-mf-split {
