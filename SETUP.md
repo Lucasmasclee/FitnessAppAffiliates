@@ -350,16 +350,38 @@ Daarna is de site live op **https://liftbetter.cloud**. Bij elke push naar je br
 
 ---
 
-## 9. Affiliate links + clicks in dashboard
+## 9. Routing: landingspagina vs app-download links
+
+Drie lagen werken samen. Dit is de bedoeling:
+
+| URL | Wie regelt het | Wat gebeurt er |
+|-----|----------------|----------------|
+| `liftbetter.cloud` | **Website** (`index.html`) | Landingspagina |
+| `liftbetter.cloud/join/xyz` | **Website** (`_redirects` → `index.html` + `join-page.js`) | Zelfde landingspagina + banner “10% OFF WITH CODE 'XYZ'”; store-knoppen → `liftbetter.cloud/xyz` |
+| `liftbetter.cloud/join` | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Doorsturen naar App Store / Play Store |
+| `liftbetter.cloud/website` | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Doorsturen naar App Store / Play Store (store-knoppen op landingspagina) |
+| `liftbetter.cloud/xyz` (enige slug) | **Render `_redirects`** → **Supabase `affiliate-redirect`** | Click tellen + doorsturen naar app |
+
+**Website (HTML/JS)** toont alleen content en zet knoppen op de juiste URL. **Render** kiest per pad of de landingspagina of Supabase wordt aangeroepen. **Supabase `affiliate-redirect`** telt clicks en stuurt door naar de juiste store (iOS/Android).
+
+Bij elke deploy genereert `node scripts/render-build.js` het bestand `_redirects` uit `SUPABASE_URL`. Zonder die env var op Render worden app-link redirects niet geschreven.
+
+**Render-dashboard:** verwijder oude handmatige Redirects/Rewrites die `/join` of `/*` naar `index.html` sturen — die overschrijven dit gedrag.
+
+**Store-knoppen op de landingspagina:** `liftbetter.cloud/website` (standaard) of `liftbetter.cloud/xyz` (op `/join/xyz`).
+
+---
+
+## 10. Affiliate links + clicks in dashboard
 
 Affiliate-links zijn je eigen links op je domein (bijv. `https://liftbetter.cloud/join1`). De Edge Function `affiliate-redirect` telt clicks en redirect daarna naar de juiste store.
 
-### 9.1 Edge Functions
+### 10.1 Edge Functions
 
 - De Edge Function **affiliate-redirect** telt clicks en schrijft (optioneel) event-rows in `affiliate_click_events` voor tijdsgrafieken.
 - De Edge Functions **affiliate-download** en **affiliate-subscription** worden door de app aangeroepen om downloads (code ingevuld in paywall) en subscriptions (aankoop met code) te registreren.
 
-### 9.2 `affiliate-redirect` deployen + secrets
+### 10.2 `affiliate-redirect` deployen + secrets
 
 1. **Supabase secrets**  
    Supabase Dashboard → **Edge Functions** → **Secrets**. Voeg toe:
@@ -376,11 +398,11 @@ npx supabase functions deploy affiliate-download
 npx supabase functions deploy affiliate-subscription
 ```
 
-### 9.3 Affiliate code
+### 10.3 Affiliate code
 
 De affiliate code is de slug in de link, bijv. `join1` in `https://liftbetter.cloud/join1`. De code beheer je via je affiliate registratie/dashboard.
 
-### 9.4 Join page analytics (`/join`)
+### 10.4 Join page analytics (`/join`)
 
 De join-landingspagina registreert **page visits** (één per browsersessie) en **CTA clicks** (Get started-knop) in Supabase.
 
@@ -402,7 +424,7 @@ npx supabase functions deploy join-analytics
 
 ---
 
-## 10. Overige stats (downloads, subscriptions)
+## 11. Overige stats (downloads, subscriptions)
 
 Het dashboard leest verder uit `affiliate_stats` en `affiliate_transactions`. Clicks komen uit `affiliate-redirect`. Downloads en abonnementen komen uit je app via de Edge Functions `affiliate-download` en `affiliate-subscription`.
 
@@ -423,7 +445,7 @@ Resolve `affiliateId` by looking up `affiliates` (by `affiliate_code`).
 
 ---
 
-## 11. Handmatige payouts toevoegen
+## 12. Handmatige payouts toevoegen
 
 Payout history in het affiliate-dashboard komt uit de tabel **`affiliate_payout_entries`**. Je voegt rijen toe via **Supabase → Table Editor** (geen SQL nodig).
 
@@ -469,7 +491,7 @@ Alle entries verschijnen onder elkaar in het dashboard. Alleen `entry_text` is z
 
 ---
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 - **“Missing authorization” or “Invalid or expired session”**  
   User is not signed in or token expired. They should sign in again with Google on the become-affiliate page.

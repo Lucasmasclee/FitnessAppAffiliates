@@ -1,12 +1,8 @@
 # Render Blueprint – optional. If your site was created manually in the dashboard,
-# add the /join/* rewrite under Redirects/Rewrites (see SETUP.md).
+# routing is generated into _redirects by scripts/render-build.js at deploy time.
 services:
   - type: web
     name: liftbetter-affiliates
     runtime: static
     buildCommand: node scripts/render-build.js
     staticPublishPath: .
-    routes:
-      - type: rewrite
-        source: /join/*
-        destination: /index.html

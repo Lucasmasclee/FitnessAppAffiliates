@@ -1,3 +1,3 @@
-# Only affiliate promo pages: /join/<code> → landing (index.html).
-# Bare /join, /website, /<code>, etc. are NOT handled here — external redirect system owns those.
+# Affiliate promo landing page (local / fallback without build).
+# On Render, scripts/render-build.js regenerates this file with app-link redirects.
 /join/:code  /index.html  200
