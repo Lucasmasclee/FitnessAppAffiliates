@@ -19,14 +19,14 @@
 
       if (user) {
         if (loginBtn) loginBtn.style.display = "none";
-        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        if (logoutBtn) logoutBtn.style.display = "block";
         if (emailEl) {
           emailEl.textContent = user.email || "";
           emailEl.style.display = user.email ? "inline-flex" : "none";
         }
       } else {
         if (loginBtn) {
-          loginBtn.style.display = "inline-flex";
+          loginBtn.style.display = "block";
           loginBtn.disabled = false;
         }
         if (logoutBtn) {
@@ -45,9 +45,9 @@
         e.preventDefault();
         // Send users to the affiliate dashboard gate where they can choose Google, Apple or email.
         if (typeof location !== "undefined" && location.assign) {
-          location.assign("affiliate.html");
+          location.assign("/affiliate.html");
         } else {
-          window.location.href = "affiliate.html";
+          window.location.href = "/affiliate.html";
         }
       });
     }

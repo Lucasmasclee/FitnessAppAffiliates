@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="logo">Lift<span>Better</span></a>
+  <nav class="site-nav" aria-label="Main">
     <button type="button" class="nav-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
       <span class="nav-menu-label">Menu</span>
       <span class="nav-menu-icon" aria-hidden="true">
@@ -21,14 +20,26 @@
         <span></span>
       </span>
     </button>
-    <div class="nav-menu-panel" id="nav-menu" hidden>
-      <a href="index.html" class="nav-menu-link">Home</a>
-      <a href="become-affiliate.html" class="nav-menu-link">Become affiliate</a>
-      <a href="affiliate.html" class="nav-menu-link">Affiliate dashboard</a>
-      <a href="creator-kit.html" class="nav-menu-link">Creator Kit</a>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login style="display: none;">Log in</button>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
-    </div>
+    <ul class="nav-menu" id="nav-menu" hidden>
+      <li class="nav-item">
+        <a href="/" class="nav-top-link" data-nav-id="liftbetter">LiftBetter</a>
+      </li>
+      <li class="nav-item nav-item-dropdown">
+        <button type="button" class="nav-top-link nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="nav-affiliate-submenu" data-nav-id="affiliate">
+          Affiliate Program
+          <span class="nav-chevron" aria-hidden="true"></span>
+        </button>
+        <ul class="nav-submenu" id="nav-affiliate-submenu" role="menu" hidden>
+          <li><a href="/affiliate-program.html" class="nav-submenu-link" data-nav-affiliate="home">Home</a></li>
+          <li><a href="/become-affiliate.html" class="nav-submenu-link" data-nav-affiliate="become">Become affiliate</a></li>
+          <li><a href="/affiliate.html" class="nav-submenu-link" data-nav-affiliate="dashboard">Affiliate dashboard</a></li>
+          <li><a href="/creator-kit.html" class="nav-submenu-link" data-nav-affiliate="creator-kit">Creator Kit</a></li>
+          <li><a href="/terms.html" class="nav-submenu-link" data-nav-affiliate="terms">Terms &amp; conditions</a></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-login style="display: none;">Log in</button></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-logout style="display: none;">Log out</button></li>
+        </ul>
+      </li>
+    </ul>
   </nav>
 
   <main>
@@ -38,7 +49,7 @@
 
       <p><strong>Last updated: 26 February 2026</strong></p>
 
-      <p>LiftBetter is operated by <strong>OptimalFitness V.O.F.</strong>, trading under the name LiftBetter, located at De Boog 32, 1851 ZS Heiloo, Netherlands.<br>
+      <p>LiftBetter is operated by <strong>OptimalFitness V.O.F.</strong>, trading under the name LiftBetter, located in Heiloo, Netherlands.<br>
       KvK number: 97730238<br>
       Email: <a href="mailto:optimalfitnessapp@outlook.com">optimalfitnessapp@outlook.com</a></p>
 
@@ -173,8 +184,7 @@
       <p>For privacy-related questions or requests:</p>
       <p>
         OptimalFitness V.O.F. (LiftBetter)<br>
-        De Boog 32<br>
-        1851 ZS Heiloo<br>
+        Heiloo<br>
         Netherlands<br>
         Email: <a href="mailto:optimalfitnessapp@outlook.com">optimalfitnessapp@outlook.com</a>
       </p>
@@ -185,7 +195,7 @@
     </footer>
   </main>
 
-  <script src="js/nav-menu.js?v=1"></script>
+  <script src="js/nav-menu.js?v=3"></script>
 </body>
 </html>
 

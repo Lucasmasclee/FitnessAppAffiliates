@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="logo_rond.png" type="image/png">
-  <title>Lift Better Affiliates – Earn with the app that actually works</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="/logo_rond.png" type="image/png">
+  <title>Lift Better – Personalized Training Plans Built For You</title>
+  <meta name="description" content="Lift Better generates science-based, personalized workout plans based on your goals, experience, schedule, and muscle priorities.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/join.css">
 </head>
-<body>
-  <nav>
-    <a href="index.html" class="logo">Lift<span>Better</span></a>
+<body class="join-page">
+  <nav class="site-nav" aria-label="Main">
     <button type="button" class="nav-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
       <span class="nav-menu-label">Menu</span>
       <span class="nav-menu-icon" aria-hidden="true">
@@ -21,128 +19,243 @@
         <span></span>
       </span>
     </button>
-    <div class="nav-menu-panel" id="nav-menu" hidden>
-      <a href="index.html" class="nav-menu-link active">Home</a>
-      <a href="become-affiliate.html" class="nav-menu-link">Become affiliate</a>
-      <a href="affiliate.html" class="nav-menu-link">Affiliate dashboard</a>
-      <a href="creator-kit.html" class="nav-menu-link">Creator Kit</a>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login style="display: none;">Log in</button>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
-    </div>
+    <ul class="nav-menu" id="nav-menu" hidden>
+      <li class="nav-item">
+        <a href="/" class="nav-top-link" data-nav-id="liftbetter">LiftBetter</a>
+      </li>
+      <li class="nav-item nav-item-dropdown">
+        <button type="button" class="nav-top-link nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="nav-affiliate-submenu" data-nav-id="affiliate">
+          Affiliate Program
+          <span class="nav-chevron" aria-hidden="true"></span>
+        </button>
+        <ul class="nav-submenu" id="nav-affiliate-submenu" role="menu" hidden>
+          <li><a href="/affiliate-program.html" class="nav-submenu-link" data-nav-affiliate="home">Home</a></li>
+          <li><a href="/become-affiliate.html" class="nav-submenu-link" data-nav-affiliate="become">Become affiliate</a></li>
+          <li><a href="/affiliate.html" class="nav-submenu-link" data-nav-affiliate="dashboard">Affiliate dashboard</a></li>
+          <li><a href="/creator-kit.html" class="nav-submenu-link" data-nav-affiliate="creator-kit">Creator Kit</a></li>
+          <li><a href="/terms.html" class="nav-submenu-link" data-nav-affiliate="terms">Terms &amp; conditions</a></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-login style="display: none;">Log in</button></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-logout style="display: none;">Log out</button></li>
+        </ul>
+      </li>
+    </ul>
   </nav>
 
-  <main>
-    <section class="section">
-      <!-- HERO -->
-      <header class="hero-block">
-        <p class="hero-eyebrow">Affiliate program</p>
-        <h1 class="hero-title">Promote Lift Better. Earn real commission.</h1>
-        <p class="hero-subtitle">
-          We built the product; you promote it. You get <span class="hero-highlight">78% commission</span> on monthly subscriptions and <span class="hero-highlight">52%</span> on yearly subscriptions started with your code.
+  <main class="join-scroll">
+    <div class="join-promo-banner" id="join-promo-banner" hidden>
+      <p class="join-promo-banner-text">
+        10% OFF WITH CODE <span class="join-promo-code" id="join-promo-code"></span>
+      </p>
+    </div>
+
+    <!-- Hero (MacroFactor-style) -->
+    <section class="join-mf-hero" id="download">
+      <div class="join-mf-wrap">
+        <p class="join-mf-stat">
+          Loved by 10,000 users with <span class="join-mf-star" aria-hidden="true">★</span> 4.8 rating
         </p>
-        <p class="hero-who">For creators, coaches, and anyone with an audience who cares about fitness.</p>
-        <div class="hero-actions">
-          <a href="become-affiliate.html" class="btn btn-primary" id="btn-become-affiliate">See program details & apply</a>
-          <a href="#the-app" class="btn btn-secondary">See the app first</a>
-        </div>
-      </header>
+        <h1 class="join-mf-title">Your personalized, optimized training plan.</h1>
 
-      <!-- HOW IT WORKS – step cards -->
-      <div class="steps-section">
-        <h2 class="steps-heading">How it works</h2>
-        <div class="steps-grid">
-          <div class="card step-card">
-            <span class="step-num" aria-hidden="true">1</span>
-            <h3 class="step-title">Get your code</h3>
-            <p class="step-text">You get a unique affiliate code to share with your audience.</p>
-          </div>
-          <div class="card step-card">
-            <span class="step-num" aria-hidden="true">2</span>
-            <h3 class="step-title">Promote your way</h3>
-            <p class="step-text">Share the app on Instagram, TikTok, YouTube, or anywhere. Full creative freedom.</p>
-          </div>
-          <div class="card step-card">
-            <span class="step-num" aria-hidden="true">3</span>
-            <h3 class="step-title">Track everything</h3>
-            <p class="step-text">Clicks, installs, and subscriptions show up live in your dashboard.</p>
-          </div>
-          <div class="card step-card">
-            <span class="step-num" aria-hidden="true">4</span>
-            <h3 class="step-title">Get paid</h3>
-            <p class="step-text">78% of monthly net revenue and 52% of yearly net revenue.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- WHY CREATORS JOIN -->
-      <div class="benefits-section card">
-        <h2 class="benefits-heading">Is this for you?</h2>
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <span class="benefit-label">You believe in the product</span>
-            <p class="benefit-tagline">We built the first app that gives every user their optimal workout schedule. Real programming, not generic plans. Easy to stand behind.</p>
-          </div>
-          <div class="benefit-card">
-            <span class="benefit-label">You can sell</span>
-            <p class="benefit-tagline">€14.99/month (or €44.99/year) for a workout app takes conviction. You get full creative freedom—your audience, your pitch, your earnings.</p>
-          </div>
-          <div class="benefit-card">
-            <span class="benefit-label">You want to grow with us</span>
-            <p class="benefit-tagline">We’re serious about helping affiliates succeed. You help us reach more gym goers; we help you get better at promoting.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- APP PROOF -->
-      <div class="app-section" id="the-app">
-        <h2 class="app-section-title">The app your audience actually uses</h2>
-        <p class="app-section-lead">A real product with real results—so you’re not promoting something weak.</p>
-        <div class="app-grid">
-          <div class="app-copy">
-            <p>Structured training plans, clear exercise instructions, and progress tracking that keeps users coming back. The app is built so people make more progress in less time—which makes it easy for you to recommend.</p>
-            <p>We ship updates regularly and keep programming aligned with real training science. You never have to worry about maintaining the product yourself.</p>
-          </div>
-          <div class="app-screenshots">
-            <div class="app-screenshot">
-              <img src="images/Screenshot-1.png" alt="Lift Better app – home and overview screen">
-            </div>
-            <div class="app-screenshot">
-              <img src="images/Screenshot-2.png" alt="Lift Better app – training plan and week overview">
-            </div>
-            <div class="app-screenshot">
-              <img src="images/Screenshot-3.png" alt="Lift Better app – exercise execution and technique cues">
-            </div>
-            <div class="app-screenshot">
-              <img src="images/Screenshot-4.png" alt="Lift Better app – progress tracking and history">
-            </div>
-          </div>
-        </div>
-        <div class="app-stores">
-          <a href="https://liftbetter.cloud/join2/" class="store-button store-button-image" aria-label="Download Lift Better on the App Store">
-            <img src="images/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store">
+        <div class="join-mf-store-row">
+          <a href="#" class="join-mf-store join-cta-link" data-join-cta aria-label="Download Lift Better on the App Store">
+            <img src="/images/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" width="180" height="54">
           </a>
-          <a href="https://liftbetter.cloud/join2/" class="store-button store-button-image" aria-label="Get Lift Better on Google Play">
-            <img src="images/Google_Play_Store_badge_EN.svg.webp" alt="Get it on Google Play">
+          <a href="#" class="join-mf-store join-cta-link" data-join-cta aria-label="Get Lift Better on Google Play">
+            <img src="/images/Google_Play_Store_badge_EN.svg.webp" alt="Get it on Google Play" width="180" height="54">
           </a>
         </div>
-      </div>
 
-      <!-- PRIMARY CTA -->
-      <div class="cta-block">
-        <h2 class="cta-heading">Ready to start?</h2>
-        <p class="cta-text">See full details, commission rules, and the sign-up process on the next page. No commitment until you apply.</p>
-        <a href="become-affiliate.html" class="btn btn-primary btn-cta">See program details & apply</a>
+        <div class="join-mf-hero-grid">
+          <article class="join-mf-review">
+            <p class="join-mf-review-stars" aria-hidden="true">★★★★★</p>
+            <blockquote class="join-mf-review-quote">The app is very clear and personal. The layout is simple to navigate and you can choose between multiple workout splits, which you don't have in most apps; thanks to this handy feature, you can customize your workout to suit you. Definitely recommended!</blockquote>
+            <p class="join-mf-review-author">Timmy</p>
+          </article>
+
+          <figure class="join-mf-phone">
+            <img src="/alle_screenshots/ss6.png" alt="Lift Better app – Monday upper workout overview" width="400" height="800" loading="eager">
+          </figure>
+
+          <article class="join-mf-review">
+            <p class="join-mf-review-stars" aria-hidden="true">★★★★★</p>
+            <blockquote class="join-mf-review-quote">Yo ts is peak, like i am a maximalist and it quite literally allows people to either be a minimalist or a maximalist, it doesnt automatically choose it in a arbitrary manner.</blockquote>
+            <p class="join-mf-review-author">Sayori</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <footer>
-      Lift Better Affiliates – Together for a fitness app that actually works.
-    </footer>
+    <!-- Tagline band -->
+    <section class="join-mf-band">
+      <div class="join-mf-wrap">
+        <h2 class="join-mf-band-title">Your goals are unique. So should your training plan be.</h2>
+      </div>
+    </section>
+
+    <!-- Feature pillars -->
+    <section class="join-mf-features">
+      <div class="join-mf-wrap">
+        <h3 class="join-mf-features-lead">Whether you're just getting started in the gym, or want to set goals as detailed as you want, we got you covered. LiftBetter lets you choose <strong>7 options</strong> for how much you want to train <strong>21</strong> different muscle groups. For very advanced lifters, there is even the option to set <strong>muscle biases</strong>. The app uses <strong>20.000 lines of code</strong> to calculate *your* optimal training schedule.</h3>
+        <div class="join-mf-feature-grid">
+          <article class="join-mf-feature">
+            <figure class="join-mf-feature-shot">
+              <img src="/alle_screenshots/ss4-5.png" alt="Lift Better – choose your main training goal" loading="lazy">
+            </figure>
+            <h4 class="join-mf-feature-title">Goals</h4>
+            <p class="join-mf-feature-text">Set goals as detailed as you want.</p>
+          </article>
+          <article class="join-mf-feature">
+            <figure class="join-mf-feature-shot">
+              <img src="/alle_screenshots/ss4-1.png" alt="Lift Better – set training volume per muscle group" loading="lazy">
+            </figure>
+            <h4 class="join-mf-feature-title">Availability</h4>
+            <p class="join-mf-feature-text">Set your availability</p>
+          </article>
+          <article class="join-mf-feature">
+            <figure class="join-mf-feature-shot">
+              <img src="/alle_screenshots/ss4-4.png" alt="Lift Better – your personalized weekly plan" loading="lazy">
+            </figure>
+            <h4 class="join-mf-feature-title">Progress</h4>
+            <p class="join-mf-feature-text">Get your 100% optimized training plan, and start your transformation.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it helps -->
+    <section class="join-section join-mf-split">
+      <div class="join-mf-wrap join-mf-split-grid">
+        <div class="join-mf-split-copy">
+          <h2 class="join-heading">LiftBetter makes it easy.</h2>
+          <p class="join-body">LiftBetter users find themselves feeling much more confident in the gym, and staying much more consistent. LiftBetter gives you everything you need for a plan that you can follow and stick to:</p>
+          <ul class="join-bullet-list">
+            <li>Video tutorials for every exercise.</li>
+            <li>Clear instructions on sets, reps, and rest times.</li>
+            <li>A clear schedule of what to train when.</li>
+            <li>Clear progress visualization.</li>
+          </ul>
+        </div>
+        <figure class="join-mf-split-phone">
+          <img src="/ss4.png" alt="Lift Better – exercise instructions in your workout" loading="lazy">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Transformations -->
+    <section class="join-section join-hero join-mf-transforms">
+      <div class="join-mf-wrap">
+        <h2 class="join-title">Transformations with LiftBetter</h2>
+        <p class="join-lead">
+          Every coach and every tool claims to be the best. We recommend taking a look at the transformations made with LiftBetter, and letting the results speak for themselves.
+        </p>
+        <div class="join-transforms join-hero-transforms">
+          <article class="join-transform-card">
+            <p class="join-transform-name">Karter, 19</p>
+            <div class="join-transform-compare">
+              <figure class="join-transform-shot">
+                <img src="/transformaties/before4.jpeg" alt="Karter before" loading="lazy">
+              </figure>
+              <figure class="join-transform-shot">
+                <img src="/transformaties/after4.jpeg" alt="Karter after" loading="lazy">
+              </figure>
+            </div>
+            <p class="join-transform-headline">Made this transformation in 18 months</p>
+          </article>
+          <article class="join-transform-card">
+            <p class="join-transform-name">Zavad, 22</p>
+            <div class="join-transform-compare">
+              <figure class="join-transform-shot">
+                <img src="/transformaties/before1.jpg" alt="Zavad before" loading="lazy">
+              </figure>
+              <figure class="join-transform-shot">
+                <img src="/transformaties/afterr1.jpeg" alt="Zavad after" loading="lazy">
+              </figure>
+            </div>
+            <p class="join-transform-headline">Made this transformation in 15 months</p>
+          </article>
+          <article class="join-transform-card">
+            <p class="join-transform-name">Lucas, 17</p>
+            <div class="join-transform-compare">
+              <figure class="join-transform-shot">
+                <img src="/transformaties/before2.jpeg" alt="Lucas before" loading="lazy">
+              </figure>
+              <figure class="join-transform-shot">
+                <img src="/transformaties/after2.jpeg" alt="Lucas after" loading="lazy">
+              </figure>
+            </div>
+            <p class="join-transform-headline">Made this transformation in 13 months</p>
+          </article>
+          <article class="join-transform-card">
+            <p class="join-transform-name">Tyler, 20</p>
+            <div class="join-transform-compare">
+              <figure class="join-transform-shot">
+                <img src="/transformaties/before3.jpeg" alt="Tyler before" loading="lazy">
+              </figure>
+              <figure class="join-transform-shot">
+                <img src="/transformaties/after3.jpeg" alt="Tyler after" loading="lazy">
+              </figure>
+            </div>
+            <p class="join-transform-headline">Made this transformation in 14 months</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="join-section join-faq">
+      <div class="join-mf-wrap">
+        <h2 class="join-heading">FAQ</h2>
+        <div class="join-faq-list">
+          <details class="join-faq-item">
+            <summary>How is LiftBetter different from other workout apps?</summary>
+            <div class="join-faq-answer">
+              <p>Other apps give you predetermined splits, predetermined volume, too much volume to recover from, too many sets, too little rest time, and recommend suboptimal exercises.</p>
+            </div>
+          </details>
+          <details class="join-faq-item">
+            <summary>Is LiftBetter good for beginners?</summary>
+            <div class="join-faq-answer">
+              <p>Yes. The onboarding process adapts your plan to your experience level and helps you know exactly what to do in the gym. The video instructions as well as the intelligent workout planner will help you stay consistent.</p>
+            </div>
+          </details>
+          <details class="join-faq-item">
+            <summary>Can I prioritize certain muscle groups?</summary>
+            <div class="join-faq-answer">
+              <p>Yes. You can adjust how much emphasis you want on different muscle groups in as much detail as you want and prioritize the muscles you care about most.</p>
+            </div>
+          </details>
+          <details class="join-faq-item">
+            <summary>Can I track my workouts?</summary>
+            <div class="join-faq-answer">
+              <p>Yes. You can log sets, reps, and RIR while comparing your performance to previous workouts. You will also get to see a summary of each completed workout together with its statistics.</p>
+            </div>
+          </details>
+          <details class="join-faq-item">
+            <summary>How long does it take to create a plan?</summary>
+            <div class="join-faq-answer">
+              <p>5-15 minutes, depending on how much personalization and optimization you want. After answering a short survey, the app will generate your personalized training plan.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="join-mf-final">
+      <div class="join-mf-wrap join-mf-final-inner">
+        <h2 class="join-mf-final-title">Get started today</h2>
+        <p class="join-mf-final-lead">Build your optimized plan based on your goals, schedule, and recovery.</p>
+      </div>
+    </section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=2"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/nav-auth.js?v=1"></script>
-  <script src="js/nav-menu.js?v=1"></script>
+
+  <footer class="join-footer">
+    LiftBetter – The fitness app that actually works.
+  </footer>
+
+  <script src="/js/nav-menu.js?v=3"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/join-analytics.js"></script>
+  <script src="/js/join-page.js"></script>
 </body>
 </html>

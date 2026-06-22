@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="logo">Lift<span>Better</span></a>
+  <nav class="site-nav" aria-label="Main">
     <button type="button" class="nav-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
       <span class="nav-menu-label">Menu</span>
       <span class="nav-menu-icon" aria-hidden="true">
@@ -21,14 +20,26 @@
         <span></span>
       </span>
     </button>
-    <div class="nav-menu-panel" id="nav-menu" hidden>
-      <a href="index.html" class="nav-menu-link">Home</a>
-      <a href="become-affiliate.html" class="nav-menu-link active">Become affiliate</a>
-      <a href="affiliate.html" class="nav-menu-link">Affiliate dashboard</a>
-      <a href="creator-kit.html" class="nav-menu-link">Creator Kit</a>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-login style="display: none;">Log in</button>
-      <button type="button" class="nav-menu-link nav-menu-link-button" data-nav-logout style="display: none;">Log out</button>
-    </div>
+    <ul class="nav-menu" id="nav-menu" hidden>
+      <li class="nav-item">
+        <a href="/" class="nav-top-link" data-nav-id="liftbetter">LiftBetter</a>
+      </li>
+      <li class="nav-item nav-item-dropdown">
+        <button type="button" class="nav-top-link nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="nav-affiliate-submenu" data-nav-id="affiliate">
+          Affiliate Program
+          <span class="nav-chevron" aria-hidden="true"></span>
+        </button>
+        <ul class="nav-submenu" id="nav-affiliate-submenu" role="menu" hidden>
+          <li><a href="/affiliate-program.html" class="nav-submenu-link" data-nav-affiliate="home">Home</a></li>
+          <li><a href="/become-affiliate.html" class="nav-submenu-link" data-nav-affiliate="become">Become affiliate</a></li>
+          <li><a href="/affiliate.html" class="nav-submenu-link" data-nav-affiliate="dashboard">Affiliate dashboard</a></li>
+          <li><a href="/creator-kit.html" class="nav-submenu-link" data-nav-affiliate="creator-kit">Creator Kit</a></li>
+          <li><a href="/terms.html" class="nav-submenu-link" data-nav-affiliate="terms">Terms &amp; conditions</a></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-login style="display: none;">Log in</button></li>
+          <li><button type="button" class="nav-submenu-link nav-submenu-button" data-nav-logout style="display: none;">Log out</button></li>
+        </ul>
+      </li>
+    </ul>
   </nav>
 
   <main>
@@ -244,7 +255,7 @@
   </script>
   <script src="js/auth.js?v=2"></script>
   <script src="js/nav-auth.js?v=1"></script>
-  <script src="js/nav-menu.js?v=1"></script>
+  <script src="js/nav-menu.js?v=3"></script>
   <script>
     (function () {
       var authGate = document.getElementById("auth-gate");

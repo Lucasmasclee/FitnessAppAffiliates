@@ -3,7 +3,7 @@
 
   var CODE_PATTERN = /^[a-z0-9]{4,10}$/i;
 
-  function getAffiliateCode() {
+  function getJoinPathAffiliateCode() {
     var parts = window.location.pathname.replace(/\/+$/, "").split("/");
     var joinIdx = -1;
     for (var i = 0; i < parts.length; i++) {
@@ -18,27 +18,20 @@
         return fromPath.toLowerCase();
       }
     }
-    var fromQuery = (new URLSearchParams(window.location.search).get("code") || "").trim();
-    if (CODE_PATTERN.test(fromQuery)) {
-      return fromQuery.toLowerCase();
-    }
     return "";
   }
 
   function buildAffiliateLink(code) {
     var origin =
       (window.location && window.location.origin) || "https://liftbetter.cloud";
-    if (code) {
-      return origin + "/" + encodeURIComponent(code);
-    }
-    return origin + "/join";
+    return origin + "/" + encodeURIComponent(code);
   }
 
-  function applyAffiliateLinks(code) {
+  function applyStoreAffiliateLinks(code) {
     var affiliateLink = buildAffiliateLink(code);
-    var ctaSelector = "[data-join-cta], .join-cta-link, #join-appstore, #join-playstore";
+    var storeLinks = document.querySelectorAll(".join-mf-store");
 
-    document.querySelectorAll(ctaSelector).forEach(function (link) {
+    storeLinks.forEach(function (link) {
       link.href = affiliateLink;
       if (!link.dataset.joinCtaBound) {
         link.dataset.joinCtaBound = "1";
@@ -62,38 +55,20 @@
   }
 
   function init() {
-    var code = getAffiliateCode();
+    var code = getJoinPathAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
 
     trackPageView(code);
-    applyAffiliateLinks(code);
 
-    var codeText = document.getElementById("join-code-text");
-    var codeRow = document.getElementById("join-code-row");
-    var copyBtn = document.getElementById("join-copy-code");
+    if (code && code !== "mrgrind") {
+      applyStoreAffiliateLinks(code);
 
-    if (code === "mrgrind" && codeRow) {
-      codeRow.remove();
-    } else if (code && codeText && codeRow) {
-      codeText.textContent = displayCode;
-      codeRow.hidden = false;
-    }
-
-    if (copyBtn && code && code !== "mrgrind") {
-      copyBtn.hidden = false;
-      copyBtn.addEventListener("click", function () {
-        var value = code.toUpperCase();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(value).then(function () {
-            copyBtn.textContent = "Copied";
-            setTimeout(function () {
-              copyBtn.textContent = "Copy";
-            }, 2000);
-          });
-        } else {
-          window.prompt("Copy your code:", value);
-        }
-      });
+      var promoBanner = document.getElementById("join-promo-banner");
+      var promoCode = document.getElementById("join-promo-code");
+      if (promoBanner && promoCode) {
+        promoCode.textContent = "'" + displayCode + "'";
+        promoBanner.hidden = false;
+      }
     }
 
     if (code) {
