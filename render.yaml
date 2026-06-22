@@ -7,6 +7,12 @@ services:
     buildCommand: node scripts/render-build.js
     staticPublishPath: .
     routes:
+      - type: redirect
+        source: /join
+        destination: /website
+      - type: redirect
+        source: /join/
+        destination: /website
       - type: rewrite
         source: /join/*
         destination: /index.html
