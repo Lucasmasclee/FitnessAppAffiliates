@@ -24,3 +24,13 @@ const outPath = path.join(outDir, "config.js");
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(outPath, config, "utf8");
 console.log("Wrote js/config.js from environment variables.");
+
+// Render serves /join/<code> via rewrite to join/index.html (see _redirects).
+// Rewriting to /index.html alone returns an empty body on Render; this matches the pre-redesign setup.
+const rootDir = path.join(__dirname, "..");
+const indexPath = path.join(rootDir, "index.html");
+const joinDir = path.join(rootDir, "join");
+const joinIndexPath = path.join(joinDir, "index.html");
+if (!fs.existsSync(joinDir)) fs.mkdirSync(joinDir, { recursive: true });
+fs.copyFileSync(indexPath, joinIndexPath);
+console.log("Copied index.html → join/index.html for /join/* routes.");

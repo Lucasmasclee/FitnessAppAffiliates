@@ -357,18 +357,20 @@ Daarna is de site live op **https://liftbetter.cloud**. Bij elke push naar je br
 | URL | Wie regelt het |
 |-----|----------------|
 | `liftbetter.cloud` | Website (`index.html`) |
-| `liftbetter.cloud/join/xyz` | Website (`/join/*` → `index.html` + `join-page.js`) |
+| `liftbetter.cloud/join/xyz` | Website (`/join/*` → `join/index.html` + `join-page.js`) |
 | `liftbetter.cloud/join` | **Extern** (niet de website) |
 | `liftbetter.cloud/website` | **Extern** |
 | `liftbetter.cloud/xyz` | **Extern** (Supabase `affiliate-redirect`) |
 
 **Wat het vandaag kapot maakte:** in commit `0e2b85e` zijn regels toegevoegd die **bare `/join`** naar `index.html` stuurden. Daardoor pakte de website app-links af vóór je externe redirect.
 
-**In deze repo hoort alleen te staan:**
+**In deze repo hoort te staan:**
 
 ```
-/join/*  /index.html  200
+/join/*  /join/index.html  200
 ```
+
+Bij elke deploy kopieert `render-build.js` `index.html` naar `join/index.html`. Render serveert `/join/<code>` via dat bestand (een rewrite naar `/index.html` alleen gaf op Render een lege pagina).
 
 Geen `/join`, geen `/join/`, geen `/:code` catch-all. Store-knoppen op de landingspagina linken naar `/website` of `/<affiliate-code>`; het doorsturen naar de app doet je externe systeem zodra iemand die URL opent.
 

@@ -9,4 +9,4 @@ services:
     routes:
       - type: rewrite
         source: /join/*
-        destination: /index.html
+        destination: /join/index.html

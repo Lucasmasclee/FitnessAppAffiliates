@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var CODE_PATTERN = /^[a-z0-9]{4,10}$/i;
+  var CODE_PATTERN = /^[a-z0-9]{4,16}$/i;
 
   function getJoinPathAffiliateCode() {
     var parts = window.location.pathname.replace(/\/+$/, "").split("/");
@@ -12,11 +12,18 @@
         break;
       }
     }
-    if (joinIdx >= 0 && parts[joinIdx + 1]) {
-      var fromPath = parts[joinIdx + 1].trim();
-      if (fromPath.toLowerCase() !== "index.html" && CODE_PATTERN.test(fromPath)) {
-        return fromPath.toLowerCase();
-      }
+    if (joinIdx < 0 || !parts[joinIdx + 1]) {
+      return "";
+    }
+
+    var fromPath = parts[joinIdx + 1].trim();
+    if (!fromPath || fromPath.toLowerCase() === "index.html") {
+      return "";
+    }
+
+    var normalized = fromPath.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (CODE_PATTERN.test(normalized)) {
+      return normalized;
     }
     return "";
   }
@@ -59,6 +66,30 @@
     }
   }
 
+  function bindPromoCopyButton(code, displayCode) {
+    var copyBtn = document.getElementById("join-promo-copy");
+    if (!copyBtn || !code) return;
+
+    copyBtn.hidden = false;
+    copyBtn.addEventListener("click", function () {
+      var value = displayCode;
+      function showCopied() {
+        copyBtn.textContent = "Copied";
+        setTimeout(function () {
+          copyBtn.textContent = "Copy";
+        }, 2000);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(showCopied).catch(function () {
+          window.prompt("Copy your code:", value);
+        });
+      } else {
+        window.prompt("Copy your code:", value);
+      }
+    });
+  }
+
   function init() {
     var code = getJoinPathAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
@@ -73,6 +104,7 @@
       if (promoBanner && promoCode) {
         promoCode.textContent = "'" + displayCode + "'";
         promoBanner.hidden = false;
+        bindPromoCopyButton(code, displayCode);
       }
     } else {
       applyStoreLinks(buildWebsiteLink(), null);

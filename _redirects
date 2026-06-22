@@ -1,2 +1,2 @@
-# Promo landing only for /join/<code> — NOT bare /join (app links stay external).
-/join/*  /index.html  200
+# Promo landing for /join/<code> — Render needs join/index.html (not root index.html).
+/join/*  /join/index.html  200
