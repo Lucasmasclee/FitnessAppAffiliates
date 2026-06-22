@@ -1,1 +1,3 @@
+/join    /website  302
+/join/   /website  302
 /join/*  /index.html  200
