@@ -375,10 +375,16 @@
             </div>
             <div class="targets-grid">
               <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Commission rules</h3>
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Commission tiers</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">Every affiliate starts at Tier 1. Commissions are flat amounts per qualifying referral, based on subscription type:</p>
                 <ul class="list-compact">
-                  <li>Monthly subscription: 78% commission on our net revenue.</li>
-                  <li>Yearly subscription: 52% commission on our net revenue.</li>
+                  <li><strong>Tier 1:</strong> $5 monthly · $7.50 quarterly · $10 yearly · $20 lifetime</li>
+                  <li><strong>Tier 2</strong> (after 5 promotions): $7.50 · $10 · $15 · $30</li>
+                  <li><strong>Tier 3</strong> (after 10 referrals): $10 · $15 · $20 · $50</li>
+                </ul>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.75rem 0;">A <strong>promotion</strong> is any post where the app is shown or mentioned in any way. A <strong>referral</strong> is a paid subscription started with your affiliate code.</p>
+                <h3 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem;">Other rules</h3>
+                <ul class="list-compact">
                   <li>No commission is paid on refunded subscriptions.</li>
                   <li>Subscriptions are approved after 60 days.</li>
                   <li><strong>Affiliate code:</strong> you choose your code during registration and you can change it later in your dashboard.</li>
@@ -388,15 +394,15 @@
                   <li><strong>First code wins:</strong> when multiple codes are entered, the last entered code counts.</li>
                 </ul>
               </div>
-              <!-- <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Current tier</h3>
+              <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Your current tier</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
-                  <strong id="commission-tier">Base tier</strong>
+                  <strong id="commission-tier">Tier 1</strong>
                 </p>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">
-                  As your performance grows, we may move you into a higher tier with extra bonuses.
+                  Reach Tier 2 after 5 promotions. Reach Tier 3 after 10 referrals.
                 </p>
-              </div> -->
+              </div>
               <!-- <div class="card" style="margin-bottom: 0;">
                 <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Milestones</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 0.4rem;">
@@ -766,6 +772,26 @@
         }
       }
 
+      function getCommissionRates(tier) {
+        var t = String(tier || "").toLowerCase();
+        if (t.indexOf("3") !== -1 || t.indexOf("tier3") !== -1) {
+          return { monthly: 10, quarterly: 15, yearly: 20, lifetime: 50 };
+        }
+        if (t.indexOf("2") !== -1 || t.indexOf("tier2") !== -1) {
+          return { monthly: 7.5, quarterly: 10, yearly: 15, lifetime: 30 };
+        }
+        return { monthly: 5, quarterly: 7.5, yearly: 10, lifetime: 20 };
+      }
+
+      function formatCommissionTier(tier) {
+        if (!tier) return "Tier 1";
+        var t = String(tier).toLowerCase();
+        if (t.indexOf("3") !== -1 || t.indexOf("tier3") !== -1) return "Tier 3";
+        if (t.indexOf("2") !== -1 || t.indexOf("tier2") !== -1) return "Tier 2";
+        if (t.indexOf("1") !== -1 || t.indexOf("tier1") !== -1 || t.indexOf("base") !== -1) return "Tier 1";
+        return tier;
+      }
+
       function escapeHtml(str) {
         return String(str)
           .replace(/&/g, "&amp;")
@@ -817,12 +843,20 @@
         var monthlySubsForPayout = monthlyFromTx || monthlyFromStats;
         var yearlySubsForPayout = yearlyFromTx || yearlyFromStats;
         var quarterlySubsForPayout = quarterlyFromTx || quarterlyFromStats;
+        var lifetimeFromStats = Number(stats.lifetime_subs || 0);
+        var lifetimeFromTx = transactions.filter(function (t) {
+          return t.event_type === "subscription" &&
+            t.subscription_type === "lifetime" &&
+            t.status !== "refunded";
+        }).length;
+        var lifetimeSubsForPayout = lifetimeFromTx || lifetimeFromStats;
 
-        // Expected payouts = Monthly × 10 + Quarterly × 15 + Yearly × 20
+        var rates = getCommissionRates(aff && aff.commission_tier);
         var totalExpected =
-          (monthlySubsForPayout * 10) +
-          (quarterlySubsForPayout * 15) +
-          (yearlySubsForPayout * 20);
+          (monthlySubsForPayout * rates.monthly) +
+          (quarterlySubsForPayout * rates.quarterly) +
+          (yearlySubsForPayout * rates.yearly) +
+          (lifetimeSubsForPayout * rates.lifetime);
         var expectedTotal = totalPaid + totalExpected;
 
         setText("earnings-expected-total", formatCurrency(expectedTotal));
@@ -978,7 +1012,7 @@
         setText("payout-available", formatCurrency(available));
         setNextPayoutDate();
 
-        var commissionTier = (aff.commission_tier || "Base tier");
+        var commissionTier = formatCommissionTier(aff.commission_tier);
         setText("commission-tier", commissionTier);
         setText("account-commission-tier", commissionTier);
 

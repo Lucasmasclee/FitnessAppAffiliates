@@ -111,6 +111,13 @@
         bindPromoCopyButton(code, displayCode);
       }
     }
+
+    if (code === "mrgrind") {
+      var giftsSection = document.getElementById("join-mrgrind-gifts");
+      if (giftsSection) {
+        giftsSection.hidden = false;
+      }
+    }
   }
 
   if (document.readyState === "loading") {
