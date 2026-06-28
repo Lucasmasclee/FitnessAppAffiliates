@@ -93,7 +93,7 @@
               <div style="margin-top: 0.75rem;">
                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Link to the app:</div>
                 <div class="affiliate-link-chip" style="max-width: 100%;">
-                  <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
+                  <code id="affiliate-link-preview">liftbetter.cloud/join/yourcode</code>
                   <button type="button" class="btn btn-secondary btn-ghost" id="btn-copy-preview">Copy</button>
                 </div>
               </div>
@@ -596,9 +596,62 @@
       }
 
       function updateAffiliateLinkPreviews(code) {
-        if (affiliateLinkPreview) affiliateLinkPreview.textContent = "https://liftbetter.cloud/" + (code || "yourcode");
-        if (linkEl) linkEl.textContent = originBaseUrl + "/" + (code || "your-code");
+        if (affiliateLinkPreview) affiliateLinkPreview.textContent = "liftbetter.cloud/join/" + (code || "yourcode");
+        if (linkEl) linkEl.textContent = originBaseUrl.replace(/^https?:\/\//, "") + "/join/" + (code || "your-code");
       }
+
+      function copyTextToClipboard(text, onSuccess) {
+        if (!text) return;
+        function done() {
+          if (onSuccess) onSuccess();
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () {
+            fallbackCopyText(text, done);
+          });
+          return;
+        }
+        fallbackCopyText(text, done);
+      }
+
+      function fallbackCopyText(text, onSuccess) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          if (document.execCommand("copy") && onSuccess) onSuccess();
+        } catch (_) {}
+        document.body.removeChild(ta);
+      }
+
+      function bindCopyButtons() {
+        if (copyPreviewBtn && !copyPreviewBtn.dataset.bound) {
+          copyPreviewBtn.dataset.bound = "1";
+          copyPreviewBtn.addEventListener("click", function () {
+            var txt = (affiliateLinkPreview && affiliateLinkPreview.textContent) || "";
+            copyTextToClipboard(txt, function () {
+              copyPreviewBtn.textContent = "Copied";
+              setTimeout(function () { copyPreviewBtn.textContent = "Copy"; }, 1500);
+            });
+          });
+        }
+        if (copyBtn && !copyBtn.dataset.bound) {
+          copyBtn.dataset.bound = "1";
+          copyBtn.addEventListener("click", function () {
+            var txt = (linkEl && linkEl.textContent) || (affiliateLinkPreview && affiliateLinkPreview.textContent) || "";
+            copyTextToClipboard(txt, function () {
+              copyBtn.textContent = "Copied";
+              setTimeout(function () { copyBtn.textContent = "Copy"; }, 1500);
+            });
+          });
+        }
+      }
+
+      bindCopyButtons();
 
       function showGate() {
         gate.style.display = "block";
@@ -1194,31 +1247,12 @@
             }
             var aff = result.data;
             currentAffiliate = aff;
-            if (linkEl) linkEl.textContent = originBaseUrl + "/" + aff.affiliate_code;
+            if (linkEl) linkEl.textContent = originBaseUrl.replace(/^https?:\/\//, "") + "/join/" + aff.affiliate_code;
 
             if (affiliateCodeInput) affiliateCodeInput.value = aff.affiliate_code || "";
             setAffiliateCodeError("");
             setSaveStatus("");
             updateAffiliateLinkPreviews(aff.affiliate_code || "");
-
-            if (copyBtn && navigator.clipboard) {
-              copyBtn.onclick = function () {
-                navigator.clipboard.writeText(linkEl.textContent || "").then(function () {
-                  copyBtn.textContent = "Copied";
-                  setTimeout(function () { copyBtn.textContent = "Copy"; }, 1500);
-                }).catch(function () {});
-              };
-            }
-
-            if (copyPreviewBtn && navigator.clipboard) {
-              copyPreviewBtn.onclick = function () {
-                var txt = (affiliateLinkPreview && affiliateLinkPreview.textContent) || "";
-                navigator.clipboard.writeText(txt).then(function () {
-                  copyPreviewBtn.textContent = "Copied";
-                  setTimeout(function () { copyPreviewBtn.textContent = "Copy"; }, 1500);
-                }).catch(function () {});
-              };
-            }
 
             if (affiliateCodeInput) {
               affiliateCodeInput.oninput = function () {
@@ -1340,7 +1374,7 @@
       }
 
       if (typeof window.affiliateAuth === "undefined") {
-        if (linkEl) linkEl.textContent = originBaseUrl + "/your-code";
+        if (linkEl) linkEl.textContent = originBaseUrl.replace(/^https?:\/\//, "") + "/join/your-code";
         showContent();
         return;
       }

@@ -173,7 +173,7 @@
             <div id="affiliate-code-error" class="form-feedback form-feedback-error" style="display: none; margin-top: 0.5rem;"></div>
             
             <div class="form-note" style="margin-top: 0.5rem;">
-              <strong>Optional share link:</strong> <code id="affiliate-link-preview">https://liftbetter.cloud/yourcode</code>
+              <strong>Optional share link:</strong> <code id="affiliate-link-preview">liftbetter.cloud/join/yourcode</code>
             </div>
           </div>
 
@@ -390,7 +390,7 @@
       function updateAffiliateLinkPreview() {
         if (!affiliateLinkPreview) return;
         var code = normalizeAffiliateCode(affiliateCodeInput ? affiliateCodeInput.value : "");
-        affiliateLinkPreview.textContent = "https://liftbetter.cloud/" + (code || "yourcode");
+        affiliateLinkPreview.textContent = "liftbetter.cloud/join/" + (code || "yourcode");
       }
 
       var lastCodeCheck = { code: "", ts: 0, pending: null, available: null };
