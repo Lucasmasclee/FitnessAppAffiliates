@@ -90,6 +90,45 @@
     });
   }
 
+  function initGuaranteeSheet() {
+    var openBtn = document.getElementById("join-guarantee-open");
+    var sheet = document.getElementById("join-guarantee-sheet");
+    var backdrop = document.getElementById("join-guarantee-backdrop");
+    var closeBtn = document.getElementById("join-guarantee-close");
+    if (!openBtn || !sheet || !backdrop) return;
+
+    function openSheet() {
+      sheet.hidden = false;
+      backdrop.hidden = false;
+      requestAnimationFrame(function () {
+        sheet.classList.add("join-guarantee-sheet-open");
+        backdrop.classList.add("join-guarantee-backdrop-open");
+      });
+      document.body.classList.add("join-guarantee-sheet-active");
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeSheet() {
+      sheet.classList.remove("join-guarantee-sheet-open");
+      backdrop.classList.remove("join-guarantee-backdrop-open");
+      document.body.classList.remove("join-guarantee-sheet-active");
+      window.setTimeout(function () {
+        sheet.hidden = true;
+        backdrop.hidden = true;
+      }, 320);
+      openBtn.focus();
+    }
+
+    openBtn.addEventListener("click", openSheet);
+    if (closeBtn) closeBtn.addEventListener("click", closeSheet);
+    backdrop.addEventListener("click", closeSheet);
+    document.addEventListener("keydown", function (e) {
+      if ((e.key === "Escape" || e.key === "Esc") && !sheet.hidden) {
+        closeSheet();
+      }
+    });
+  }
+
   function init() {
     var code = getJoinPathAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
@@ -118,6 +157,8 @@
         giftsSection.hidden = false;
       }
     }
+
+    initGuaranteeSheet();
   }
 
   if (document.readyState === "loading") {

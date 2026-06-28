@@ -1,6 +1,6 @@
 /* Fitness App Affiliates – shared styles */
 :root {
-  /* Lift Better (app) design tokens */
+  /* LiftBetter (app) design tokens */
   --lb-primary: #5091CA;
   --lb-on-primary: #FFFFFF;
   --lb-primary-container: #D6E7FF;
@@ -1949,4 +1949,43 @@ footer {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+}
+
+/* Progress guarantee page */
+.guarantee-promise {
+  margin-bottom: 2rem;
+  border-color: rgba(var(--accent-rgb), 0.35);
+}
+
+.guarantee-promise p,
+.guarantee-closing p {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.guarantee-closing {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.guarantee-legal-note {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin-top: 1.5rem;
+}
+
+#progress-guarantee ol,
+#progress-guarantee ul {
+  padding-left: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+#progress-guarantee ol li,
+#progress-guarantee ul li {
+  margin-bottom: 1rem;
+}
+
+#progress-guarantee ol li:last-child,
+#progress-guarantee ul li:last-child {
+  margin-bottom: 0;
 }

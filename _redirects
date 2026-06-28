@@ -1,2 +1,14 @@
 # Promo landing for /join/<code> — Render needs join/index.html (not root index.html).
 /join/*  /join/index.html  200
+
+# Clean URL for contact page (referenced in app guarantee copy).
+/contact   /contact.html   200
+/contact/  /contact.html   200
+
+# Clean URL for progress guarantee page.
+/progress-guarantee   /progress-guarantee.html   200
+/progress-guarantee/  /progress-guarantee.html   200
+
+# Legacy URL redirect.
+/90-day-progress-guarantee   /progress-guarantee.html   200
+/90-day-progress-guarantee/  /progress-guarantee.html   200
