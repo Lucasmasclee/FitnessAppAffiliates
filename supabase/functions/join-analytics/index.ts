@@ -18,7 +18,7 @@ interface AnalyticsBody {
 function normalizeCode(raw: string | undefined | null): string | null {
   const code = (raw || "").trim().toLowerCase();
   if (!code) return null;
-  if (!/^[a-z0-9]{4,10}$/i.test(code)) return null;
+  if (!/^[a-z0-9]{4,16}$/i.test(code)) return null;
   return code;
 }
 
