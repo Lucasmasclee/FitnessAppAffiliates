@@ -99,7 +99,7 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
   }
 
   bool _isValidAffiliateCodeFormat(String code) {
-    return RegExp(r'^[a-z0-9]{4,16}$').hasMatch(code);
+    return RegExp(r'^[a-z0-9]{3,16}$').hasMatch(code);
   }
 
   Future<void> _applyAffiliateCode() async {
@@ -111,7 +111,7 @@ class _SubscriptionPaywallScreenState extends State<SubscriptionPaywallScreen> {
     if (!_isValidAffiliateCodeFormat(code)) {
       setState(() {
         _affiliateValid = false;
-        _affiliateMessage = 'Enter a valid code (4–16 letters/numbers).';
+        _affiliateMessage = 'Enter a valid code (3–16 letters/numbers).';
       });
       return;
     }

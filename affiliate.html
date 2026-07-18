@@ -550,7 +550,6 @@
         help: true,
         api: true,
         www: true,
-        app: true,
         dashboard: true,
         login: true,
         signup: true,
@@ -569,7 +568,7 @@
 
       function validateAffiliateCode(code) {
         if (!code) return "Affiliate code is required";
-        if (code.length < 4 || code.length > 16) return "Code must be 4–16 characters";
+        if (code.length < 3 || code.length > 16) return "Code must be 3–16 characters";
         if (!/^[a-z0-9]+$/.test(code)) return "Only letters and numbers allowed";
         if (RESERVED_CODES[code]) return "This code is not allowed";
         return null;

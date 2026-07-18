@@ -83,7 +83,7 @@ function extractAffiliateCode(url: URL): string {
   }
 
   const pathSlug = url.pathname.replace(/^\/+|\/+$/g, "").split("/").pop() || "";
-  if (/^[a-z0-9]{4,16}$/i.test(pathSlug)) {
+  if (/^[a-z0-9]{3,16}$/i.test(pathSlug)) {
     return pathSlug.toLowerCase();
   }
 

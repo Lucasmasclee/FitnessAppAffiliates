@@ -13,7 +13,6 @@ const RESERVED_CODES = new Set([
   "help",
   "api",
   "www",
-  "app",
   "dashboard",
   "login",
   "signup",
@@ -32,7 +31,7 @@ function normalize(input: unknown): string {
 
 function validate(code: string): { ok: true } | { ok: false; error: string } {
   if (!code) return { ok: false, error: "Affiliate code is required" };
-  if (code.length < 4 || code.length > 16) return { ok: false, error: "Code must be 4–16 characters" };
+  if (code.length < 3 || code.length > 16) return { ok: false, error: "Code must be 3–16 characters" };
   if (!/^[a-z0-9]+$/.test(code)) return { ok: false, error: "Only letters and numbers allowed" };
   if (RESERVED_CODES.has(code)) return { ok: false, error: "This code is not allowed" };
   return { ok: true };

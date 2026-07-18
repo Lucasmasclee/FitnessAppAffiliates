@@ -58,7 +58,7 @@ class AffiliateTracker {
     await _tryCaptureAndReportDownload();
   }
 
-  static final RegExp _affiliateCodeRegex = RegExp(r'^[a-z0-9]{4,16}$');
+  static final RegExp _affiliateCodeRegex = RegExp(r'^[a-z0-9]{3,16}$');
 
   String? _normalizeCandidate(String? raw) {
     final v = (raw ?? '').trim().toLowerCase();
@@ -73,13 +73,13 @@ class AffiliateTracker {
     final t = text.trim();
 
     // 1) Query-style: affiliate_code=xxxx or code=xxxx
-    final mQuery = RegExp(r'(?:affiliate_code|code)=([a-z0-9]{4,16})',
+    final mQuery = RegExp(r'(?:affiliate_code|code)=([a-z0-9]{3,16})',
             caseSensitive: false)
         .firstMatch(t);
     if (mQuery != null) return _normalizeCandidate(mQuery.group(1));
 
     // 2) Path-style: https://liftbetter.cloud/{code}
-    final mPath = RegExp(r'/(?:[a-z0-9]{4,16})(?:\b|/|\?|#)',
+    final mPath = RegExp(r'/(?:[a-z0-9]{3,16})(?:\b|/|\?|#)',
             caseSensitive: false)
         .firstMatch(t);
     if (mPath != null) {

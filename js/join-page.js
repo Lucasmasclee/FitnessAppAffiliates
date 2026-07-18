@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var CODE_PATTERN = /^[a-z0-9]{4,16}$/i;
+  var CODE_PATTERN = /^[a-z0-9]{3,16}$/i;
 
   function getJoinPathAffiliateCode() {
     var parts = window.location.pathname.replace(/\/+$/, "").split("/");
