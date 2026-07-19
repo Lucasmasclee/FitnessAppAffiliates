@@ -129,6 +129,24 @@
     });
   }
 
+  function initProcessScrollLink() {
+    var link = document.querySelector('a.join-mf-depth-link[href="#workout-generation-process"]');
+    var target = document.getElementById("workout-generation-process");
+    if (!link || !target) return;
+
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      var nav = document.querySelector(".site-nav");
+      var navHeight = nav ? nav.offsetHeight : 64;
+      var rect = target.getBoundingClientRect();
+      var currentY = window.pageYOffset || document.documentElement.scrollTop;
+      // Keep the section in the upper-middle of the screen (not top, not dead center).
+      var desiredOffset = Math.max(navHeight + 24, window.innerHeight * 0.22);
+      var nextY = currentY + rect.top - desiredOffset;
+      window.scrollTo({ top: Math.max(0, nextY), behavior: "smooth" });
+    });
+  }
+
   function init() {
     var code = getJoinPathAffiliateCode();
     var displayCode = code ? code.toUpperCase() : "";
@@ -159,6 +177,7 @@
     }
 
     initGuaranteeSheet();
+    initProcessScrollLink();
   }
 
   if (document.readyState === "loading") {
