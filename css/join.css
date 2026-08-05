@@ -929,6 +929,28 @@ body.join-guarantee-sheet-active {
   border-top: 1px solid var(--border);
 }
 
+.join-footer .footer-tagline {
+  margin: 0 0 1rem;
+}
+
+.join-footer .fatsecret-attribution {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.join-footer .fatsecret-attribution a {
+  display: inline-block;
+  line-height: 0;
+}
+
+.join-footer .fatsecret-attribution img {
+  height: 28px;
+  width: auto;
+  max-width: 100%;
+  border: 0;
+}
+
 /* ── Desktop scale-up ── */
 
 @media (min-width: 768px) {

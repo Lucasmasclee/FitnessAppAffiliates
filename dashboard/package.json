@@ -1,0 +1,8 @@
+{
+  "name": "fitness-analytics-dashboard",
+  "private": true,
+  "scripts": {
+    "start": ".venv/bin/python -u server.py",
+    "dev": ".venv/bin/python -u server.py"
+  }
+}

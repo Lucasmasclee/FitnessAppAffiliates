@@ -1907,6 +1907,28 @@ footer {
   font-size: 0.9rem;
 }
 
+footer .footer-tagline {
+  margin: 0 0 1rem;
+}
+
+footer .fatsecret-attribution {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+footer .fatsecret-attribution a {
+  display: inline-block;
+  line-height: 0;
+}
+
+footer .fatsecret-attribution img {
+  height: 28px;
+  width: auto;
+  max-width: 100%;
+  border: 0;
+}
+
 /* Mobile layout */
 @media (max-width: 720px) {
   html,

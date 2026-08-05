@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acquisition Funnel</title>
+    <link rel="stylesheet" href="styles.css?v=19" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div>
+          <h1>Acquisition funnel</h1>
+        </div>
+        <button type="button" id="refresh" class="refresh">Refresh</button>
+      </header>
+
+      <section class="range-bar" aria-label="Date range">
+        <div class="presets" role="group" aria-label="Presets">
+          <button type="button" class="preset" data-preset="today">
+            Today
+          </button>
+          <button type="button" class="preset" data-preset="yesterday">
+            Yesterday
+          </button>
+          <button type="button" class="preset" data-preset="last_week">
+            Last week
+          </button>
+          <button type="button" class="preset" data-preset="last_month">
+            Last Month
+          </button>
+        </div>
+        <div class="range-fields">
+          <label class="field">
+            <span>From</span>
+            <input type="date" id="from" />
+          </label>
+          <label class="field">
+            <span>To</span>
+            <input type="date" id="to" />
+          </label>
+          <button type="button" id="apply-range" class="refresh">Apply</button>
+        </div>
+      </section>
+
+      <p id="status" class="status"></p>
+
+      <section class="section overall-section">
+        <div class="table-wrap">
+          <table class="funnel overall-funnel">
+            <thead>
+              <tr id="overall-head"></tr>
+            </thead>
+            <tbody id="overall-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Free trial stats</h2>
+        <div class="table-wrap">
+          <table class="funnel trial-metrics">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="trial-metrics-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section charts-section">
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h2>Onboarding → Paywall</h2>
+            <p class="chart-sub">Conversie per dag: paywall viewed / onboarding started</p>
+            <div
+              id="chart-onboarding-paywall"
+              class="chart"
+              role="img"
+              aria-label="Onboarding naar paywall conversie per dag"
+            ></div>
+          </article>
+          <article class="chart-card">
+            <h2>Paywall → Free trial</h2>
+            <p class="chart-sub">Conversie per dag: trial started / paywall viewed</p>
+            <div
+              id="chart-paywall-sub"
+              class="chart"
+              role="img"
+              aria-label="Paywall naar free trial conversie per dag"
+            ></div>
+          </article>
+          <article class="chart-card">
+            <h2>Free trial → Sub</h2>
+            <p class="chart-sub">
+              Rolling 7 dagen: opens after D3 / trial started (cohort = trial starts op die dag t/m 1 week terug)
+            </p>
+            <div
+              id="chart-trial-sub"
+              class="chart"
+              role="img"
+              aria-label="Free trial naar abonnement conversie per dag"
+            ></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section sources-section">
+        <div class="table-wrap">
+          <table class="funnel">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Impressions</th>
+                <th>PP views</th>
+                <th>Clicks</th>
+                <th>Downloads</th>
+                <th>App opens</th>
+                <th>Paywall views</th>
+                <th>Abonnementen</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Survey screens</h2>
+        <div class="table-wrap">
+          <table class="funnel survey-steps">
+            <thead>
+              <tr>
+                <th>Screen</th>
+                <th>Views</th>
+              </tr>
+            </thead>
+            <tbody id="survey-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Plan selected</h2>
+        <div class="table-wrap">
+          <table class="funnel plan-selected">
+            <thead>
+              <tr>
+                <th></th>
+                <th>monthly</th>
+                <th>quarterly</th>
+                <th>yearly</th>
+                <th>lifetime</th>
+              </tr>
+            </thead>
+            <tbody id="plan-selected-rows">
+              <tr id="plan-selected-row">
+                <td>selected</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+              </tr>
+              <tr id="plan-selected-unique-row">
+                <td>unique</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+                <td class="na">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Survey MCQ outcomes</h2>
+        <div class="table-wrap">
+          <table class="funnel mcq-outcomes">
+            <thead>
+              <tr>
+                <th>step_name</th>
+                <th>answer_value</th>
+                <th>users_selected</th>
+                <th>subscription_rate</th>
+                <th>survey_completion_rate</th>
+                <th>subscription_count</th>
+              </tr>
+            </thead>
+            <tbody id="mcq-outcome-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="app.js?v=49"></script>
+  </body>
+</html>
