@@ -173,14 +173,14 @@
               <div class="kpi-card">
                 <div class="kpi-label">Monthly subscriptions</div>
                 <div class="kpi-value" id="kpi-monthly-subs">0</div>
-                <div class="kpi-subtext" id="kpi-monthly-subs-sub">All-time monthly subscriptions.</div>
+                <div class="kpi-subtext" id="kpi-monthly-subs-sub">Paid monthly subscriptions (before free trials).</div>
               </div>
 
               <!-- Quarterly subscriptions -->
               <div class="kpi-card">
                 <div class="kpi-label">Quarterly subscriptions</div>
                 <div class="kpi-value" id="kpi-quarterly-subs">0</div>
-                <div class="kpi-subtext" id="kpi-quarterly-subs-sub">All-time quarterly subscriptions.</div>
+                <div class="kpi-subtext" id="kpi-quarterly-subs-sub">Paid quarterly subscriptions (before free trials).</div>
               </div>
 
 
@@ -188,7 +188,7 @@
               <div class="kpi-card">
                 <div class="kpi-label">Yearly subscriptions</div>
                 <div class="kpi-value" id="kpi-yearly-subs">0</div>
-                <div class="kpi-subtext" id="kpi-yearly-subs-sub">All-time yearly subscriptions.</div>
+                <div class="kpi-subtext" id="kpi-yearly-subs-sub">Paid yearly subscriptions (before free trials).</div>
               </div>
 
               <!-- Installs -->
@@ -219,6 +219,48 @@
                 <div class="kpi-value" id="kpi-epu-main">$0</div>
                 <div class="kpi-subtext" id="kpi-epu-breakdown">Based on all paying users.</div>
               </div>
+            </div>
+          </div>
+
+          <!-- Free trials (purchase_success from 18 July 2026 onwards) -->
+          <div class="card">
+            <div class="dashboard-section-header">
+              <div>
+                <h2 style="margin-top: 0; margin-bottom: 0.25rem;">Free trials</h2>
+                <p>On july 18th 2026, free trials have been added to subscriptions. Conversions to subscriptions are tracked automatically.</p>
+              </div>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="transactions-table" id="free-trials-table">
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Free trials</th>
+                  </tr>
+                </thead>
+                <tbody id="free-trials-body">
+                  <tr>
+                    <td>Monthly</td>
+                    <td id="free-trials-monthly">0</td>
+                  </tr>
+                  <tr>
+                    <td>Quarterly</td>
+                    <td id="free-trials-quarterly">0</td>
+                  </tr>
+                  <tr>
+                    <td>Yearly</td>
+                    <td id="free-trials-yearly">0</td>
+                  </tr>
+                  <tr>
+                    <td>Lifetime</td>
+                    <td id="free-trials-lifetime">0</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Total</strong></td>
+                    <td id="free-trials-total"><strong>0</strong></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -297,7 +339,7 @@
                   <span class="funnel-value" id="funnel-installs">0 (0%)</span>
                 </div>
                 <div class="funnel-step">
-                  <span class="funnel-label">3. Paying users</span>
+                  <span class="funnel-label">3. Paying users / free trials</span>
                   <span class="funnel-value" id="funnel-paying-users">0 (0%)</span>
                 </div>
                 <div class="funnel-step">
@@ -871,16 +913,71 @@
           .replace(/"/g, "&quot;");
       }
 
+      // From this date, purchase_success / subscription events are free trials (not paid subs).
+      var FREE_TRIAL_START_DATE = "2026-07-18";
+
+      function getTransactionDateKey(t) {
+        return String(t.event_date || t.created_at || "").slice(0, 10);
+      }
+
+      function isNonRefundedSubscription(t) {
+        return t.event_type === "subscription" && t.status !== "refunded";
+      }
+
+      function isFreeTrialTransaction(t) {
+        if (!isNonRefundedSubscription(t)) return false;
+        var key = getTransactionDateKey(t);
+        return !!key && key >= FREE_TRIAL_START_DATE;
+      }
+
+      function isLegacySubscriptionTransaction(t) {
+        if (!isNonRefundedSubscription(t)) return false;
+        var key = getTransactionDateKey(t);
+        return !!key && key < FREE_TRIAL_START_DATE;
+      }
+
+      function countSubsByType(list, type) {
+        return list.filter(function (t) {
+          return t.subscription_type === type;
+        }).length;
+      }
+
+      function updateFreeTrialsTable(transactions) {
+        transactions = transactions || [];
+        var freeTrials = transactions.filter(isFreeTrialTransaction);
+        var monthly = countSubsByType(freeTrials, "monthly");
+        var quarterly = countSubsByType(freeTrials, "quarterly");
+        var yearly = countSubsByType(freeTrials, "yearly");
+        var lifetime = countSubsByType(freeTrials, "lifetime");
+        var total = freeTrials.length;
+
+        function setCount(id, value) {
+          var el = document.getElementById(id);
+          if (el) el.textContent = (value || 0).toLocaleString("en-US");
+        }
+        setCount("free-trials-monthly", monthly);
+        setCount("free-trials-quarterly", quarterly);
+        setCount("free-trials-yearly", yearly);
+        setCount("free-trials-lifetime", lifetime);
+        var totalEl = document.getElementById("free-trials-total");
+        if (totalEl) totalEl.innerHTML = "<strong>" + (total || 0).toLocaleString("en-US") + "</strong>";
+      }
+
       function updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries) {
         stats = stats || {};
         transactions = transactions || [];
         clickEvents = clickEvents || [];
         payoutEntries = payoutEntries || [];
 
-        var paidTransactions = transactions.filter(function (t) {
+        var legacySubscriptions = transactions.filter(isLegacySubscriptionTransaction);
+        var freeTrials = transactions.filter(isFreeTrialTransaction);
+        var hasSubscriptionTxData = transactions.some(isNonRefundedSubscription);
+
+        // Commission only on legacy (pre–free trial) subscription events; trials convert later.
+        var paidTransactions = legacySubscriptions.filter(function (t) {
           return t.payout_status === "paid" && t.commission_amount > 0;
         });
-        var pendingTransactions = transactions.filter(function (t) {
+        var pendingTransactions = legacySubscriptions.filter(function (t) {
           return t.payout_status !== "paid" && t.commission_amount > 0;
         });
 
@@ -892,35 +989,19 @@
         }, 0);
         var totalPaid = totalPaidFromTransactions + totalPaidFromEntries;
 
-        // Subscription counts voor expected payouts-formule
+        // Subscription counts voor expected payouts-formule (pre–free trial only)
         var monthlyFromStats = Number(stats.monthly_subs || 0);
         var yearlyFromStats = Number(stats.yearly_subs || 0);
         var quarterlyFromStats = Number(stats.quarterly_subs || 0);
-        var monthlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "monthly" &&
-            t.status !== "refunded";
-        }).length;
-        var yearlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "yearly" &&
-            t.status !== "refunded";
-        }).length;
-        var quarterlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "quarterly" &&
-            t.status !== "refunded";
-        }).length;
-        var monthlySubsForPayout = monthlyFromTx || monthlyFromStats;
-        var yearlySubsForPayout = yearlyFromTx || yearlyFromStats;
-        var quarterlySubsForPayout = quarterlyFromTx || quarterlyFromStats;
+        var monthlyFromTx = countSubsByType(legacySubscriptions, "monthly");
+        var yearlyFromTx = countSubsByType(legacySubscriptions, "yearly");
+        var quarterlyFromTx = countSubsByType(legacySubscriptions, "quarterly");
+        var monthlySubsForPayout = hasSubscriptionTxData ? monthlyFromTx : monthlyFromStats;
+        var yearlySubsForPayout = hasSubscriptionTxData ? yearlyFromTx : yearlyFromStats;
+        var quarterlySubsForPayout = hasSubscriptionTxData ? quarterlyFromTx : quarterlyFromStats;
         var lifetimeFromStats = Number(stats.lifetime_subs || 0);
-        var lifetimeFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "lifetime" &&
-            t.status !== "refunded";
-        }).length;
-        var lifetimeSubsForPayout = lifetimeFromTx || lifetimeFromStats;
+        var lifetimeFromTx = countSubsByType(legacySubscriptions, "lifetime");
+        var lifetimeSubsForPayout = hasSubscriptionTxData ? lifetimeFromTx : lifetimeFromStats;
 
         var rates = getCommissionRates(aff && aff.commission_tier);
         var totalExpected =
@@ -941,17 +1022,18 @@
         var installsAllTime = Number(stats.downloads || 0);
         var installsIosAllTime = Number(stats.downloads_ios || 0);
         var installsAndroidAllTime = Number(stats.downloads_android || 0);
-        // Betaalde gebruikers op twee manieren tellen:
-        // 1) Nieuwe event-tabel (affiliate_transactions)
-        // 2) Backwards compatible fallback via affiliate_stats (monthly_subs + yearly_subs)
-        var subsFromTransactions = transactions.filter(function (t) {
-          return t.event_type === "subscription" && t.status !== "refunded";
-        }).length;
+        // Paid subscriptions = pre–18 July events only. From 18 July they are free trials.
+        var subsFromTransactions = legacySubscriptions.length;
         var subsFromStats =
           Number(stats.monthly_subs || 0) +
           Number(stats.yearly_subs || 0) +
           Number(stats.quarterly_subs || 0);
-        var subsAllTime = subsFromTransactions || subsFromStats;
+        var subsAllTime = hasSubscriptionTxData ? subsFromTransactions : subsFromStats;
+        var freeTrialsAllTime = freeTrials.length;
+        // Funnel / conversion: code entered → purchase (legacy sub or free trial start)
+        var purchaseStartsAllTime = hasSubscriptionTxData
+          ? (subsAllTime + freeTrialsAllTime)
+          : subsFromStats;
 
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -970,14 +1052,14 @@
         var clicks30d = clickEvents.filter(function (e) { return inRange(e.occurred_at, start30d); }).length;
 
         var payingUsersAll = subsAllTime;
-        var payingUsers30d = transactions.filter(function (t) {
-          return t.event_type === "subscription" && t.status !== "refunded" && inRange(t.event_date || t.created_at, start30d);
+        var payingUsers30d = legacySubscriptions.filter(function (t) {
+          return inRange(t.event_date || t.created_at, start30d);
         }).length;
 
         var convClickToInstall = clicksAllTime ? (installsAllTime / clicksAllTime) * 100 : 0;
-        var convInstallToPaid = installsAllTime ? (subsAllTime / installsAllTime) * 100 : 0;
+        var convInstallToPaid = installsAllTime ? (purchaseStartsAllTime / installsAllTime) * 100 : 0;
 
-        var totalCommission = transactions.reduce(function (sum, t) {
+        var totalCommission = legacySubscriptions.reduce(function (sum, t) {
           return sum + (Number(t.commission_amount) || 0);
         }, 0);
         var epu = payingUsersAll ? totalCommission / payingUsersAll : 0;
@@ -1002,28 +1084,10 @@
             "Android: " + (installsAndroidAllTime || 0).toLocaleString("en-US");
         }
 
-        // Subscriptions (monthly / yearly)
-        var monthlyFromStats = Number(stats.monthly_subs || 0);
-        var yearlyFromStats = Number(stats.yearly_subs || 0);
-        var monthlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "monthly" &&
-            t.status !== "refunded";
-        }).length;
-        var yearlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "yearly" &&
-            t.status !== "refunded";
-        }).length;
-        var quarterlyFromStats = Number(stats.quarterly_subs || 0);
-        var quarterlyFromTx = transactions.filter(function (t) {
-          return t.event_type === "subscription" &&
-            t.subscription_type === "quarterly" &&
-            t.status !== "refunded";
-        }).length;
-        var monthlySubs = monthlyFromTx || monthlyFromStats;
-        var yearlySubs = yearlyFromTx || yearlyFromStats;
-        var quarterlySubs = quarterlyFromTx || quarterlyFromStats;
+        // Subscriptions (monthly / yearly) — pre–18 July only
+        var monthlySubs = hasSubscriptionTxData ? monthlyFromTx : monthlyFromStats;
+        var yearlySubs = hasSubscriptionTxData ? yearlyFromTx : yearlyFromStats;
+        var quarterlySubs = hasSubscriptionTxData ? quarterlyFromTx : quarterlyFromStats;
 
         document.getElementById("kpi-monthly-subs").textContent =
           (monthlySubs || 0).toLocaleString("en-US");
@@ -1054,12 +1118,12 @@
           " installs / " + (clicksAllTime || 0).toLocaleString("en-US") +
           " clicks = " + convClickToInstallClamped.toFixed(1) + "%.";
 
-        // Install → Subscription
+        // Install → Subscription / free trial start
         document.getElementById("kpi-conv-install-sub-main").textContent =
           convInstallToPaidClamped.toFixed(1) + "%";
         document.getElementById("kpi-conv-install-sub-sub").textContent =
-          "All-time: " + (subsAllTime || 0).toLocaleString("en-US") +
-          " subscriptions / " + (installsAllTime || 0).toLocaleString("en-US") +
+          "All-time: " + (purchaseStartsAllTime || 0).toLocaleString("en-US") +
+          " subscriptions & free trials / " + (installsAllTime || 0).toLocaleString("en-US") +
           " installs = " + convInstallToPaidClamped.toFixed(1) + "%.";
 
         document.getElementById("kpi-epu-main").textContent = formatCurrency(epu);
@@ -1070,7 +1134,7 @@
         document.getElementById("funnel-installs").textContent =
           installsAllTime.toLocaleString("en-US") + " (" + clampPercent(convClickToInstall).toFixed(1) + "%)";
         document.getElementById("funnel-paying-users").textContent =
-          subsAllTime.toLocaleString("en-US") + " (" + clampPercent(convInstallToPaid).toFixed(1) + "%)";
+          purchaseStartsAllTime.toLocaleString("en-US") + " (" + clampPercent(convInstallToPaid).toFixed(1) + "%)";
         document.getElementById("funnel-earned").textContent = formatCurrency(totalCommission);
 
         var available = pendingTransactions.reduce(function (sum, t) {
@@ -1221,7 +1285,7 @@
         var revenueByDay = {};
         var convByDay = {};
         transactions.forEach(function (t) {
-          if (t.event_type !== "subscription") return;
+          if (!isLegacySubscriptionTransaction(t)) return;
           var key = (t.event_date || t.created_at || "").slice(0, 10);
           if (!key) return;
           if (!revenueByDay[key]) revenueByDay[key] = 0;
@@ -1377,6 +1441,7 @@
 
             updatePayoutHistory(payoutEntries);
             updateOverviewAndKpis(aff, stats, transactions, clickEvents, payoutEntries);
+            updateFreeTrialsTable(transactions);
             updateTransactionsTable(transactions);
             updateCharts(transactions, clickEvents);
 
