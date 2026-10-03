@@ -989,19 +989,12 @@
         }, 0);
         var totalPaid = totalPaidFromTransactions + totalPaidFromEntries;
 
-        // Subscription counts voor expected payouts-formule (pre–free trial only)
-        var monthlyFromStats = Number(stats.monthly_subs || 0);
-        var yearlyFromStats = Number(stats.yearly_subs || 0);
-        var quarterlyFromStats = Number(stats.quarterly_subs || 0);
-        var monthlyFromTx = countSubsByType(legacySubscriptions, "monthly");
-        var yearlyFromTx = countSubsByType(legacySubscriptions, "yearly");
-        var quarterlyFromTx = countSubsByType(legacySubscriptions, "quarterly");
-        var monthlySubsForPayout = hasSubscriptionTxData ? monthlyFromTx : monthlyFromStats;
-        var yearlySubsForPayout = hasSubscriptionTxData ? yearlyFromTx : yearlyFromStats;
-        var quarterlySubsForPayout = hasSubscriptionTxData ? quarterlyFromTx : quarterlyFromStats;
-        var lifetimeFromStats = Number(stats.lifetime_subs || 0);
-        var lifetimeFromTx = countSubsByType(legacySubscriptions, "lifetime");
-        var lifetimeSubsForPayout = hasSubscriptionTxData ? lifetimeFromTx : lifetimeFromStats;
+        // Expected payouts: alleen uit affiliate_transactions (pre–free trial, niet-refunded).
+        // Geen fallback naar affiliate_stats.
+        var monthlySubsForPayout = countSubsByType(legacySubscriptions, "monthly");
+        var quarterlySubsForPayout = countSubsByType(legacySubscriptions, "quarterly");
+        var yearlySubsForPayout = countSubsByType(legacySubscriptions, "yearly");
+        var lifetimeSubsForPayout = countSubsByType(legacySubscriptions, "lifetime");
 
         var rates = getCommissionRates(aff && aff.commission_tier);
         var totalExpected =
@@ -1085,9 +1078,18 @@
         }
 
         // Subscriptions (monthly / yearly) — pre–18 July only
-        var monthlySubs = hasSubscriptionTxData ? monthlyFromTx : monthlyFromStats;
-        var yearlySubs = hasSubscriptionTxData ? yearlyFromTx : yearlyFromStats;
-        var quarterlySubs = hasSubscriptionTxData ? quarterlyFromTx : quarterlyFromStats;
+        var monthlyFromStats = Number(stats.monthly_subs || 0);
+        var yearlyFromStats = Number(stats.yearly_subs || 0);
+        var quarterlyFromStats = Number(stats.quarterly_subs || 0);
+        var monthlySubs = hasSubscriptionTxData
+          ? monthlySubsForPayout
+          : monthlyFromStats;
+        var yearlySubs = hasSubscriptionTxData
+          ? yearlySubsForPayout
+          : yearlyFromStats;
+        var quarterlySubs = hasSubscriptionTxData
+          ? quarterlySubsForPayout
+          : quarterlyFromStats;
 
         document.getElementById("kpi-monthly-subs").textContent =
           (monthlySubs || 0).toLocaleString("en-US");
